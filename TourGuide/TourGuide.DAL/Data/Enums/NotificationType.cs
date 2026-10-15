@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace TourGuide.DAL.Data.Enums
 {
-    internal class NotificationType
+    public enum NotificationType
     {
+        NewBookingRequest
     }
 }

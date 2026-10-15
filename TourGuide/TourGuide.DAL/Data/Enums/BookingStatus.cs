@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace TourGuide.DAL.Data.Enums
 {
-    internal class BookingStatus
-    {
+    public enum BookingStatus
+    { 
+        Pending, 
+        Confirmed, 
+        Completed, 
+        Cancelled 
     }
 }

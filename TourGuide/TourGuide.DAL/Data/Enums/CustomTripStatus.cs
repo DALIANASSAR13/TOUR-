@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace TourGuide.DAL.Data.Enums
 {
-    internal class CustomTripStatus
-    {
+    public enum CustomTripStatus
+    { 
+        Requested, 
+        InProgress, 
+        Delivered, 
+        Cancelled 
     }
 }

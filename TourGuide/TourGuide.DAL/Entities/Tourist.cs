@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace TourGuide.DAL.Entities
 {
-    internal class Tourist
+    public class Tourist : ApplicationUser
     {
+        public ICollection<Booking> TripHistory { get; set; } = new List<Booking>();
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+
     }
 }

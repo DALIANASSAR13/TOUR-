@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace TourGuide.DAL.Data.Enums
 {
-    internal class TourType
-    {
+    public enum TourType
+    { 
+        Historical, 
+        Camping, 
+        Cruise, 
+        Walking, 
+        Photography 
     }
 }

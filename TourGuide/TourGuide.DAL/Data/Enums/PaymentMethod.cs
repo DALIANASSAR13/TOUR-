@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace TourGuide.DAL.Data.Enums
 {
-    internal class Class1
-    {
+    public enum PaymentMethod
+    { 
+        CreditCard, 
+        PayPal, 
+        ApplePay 
     }
 }

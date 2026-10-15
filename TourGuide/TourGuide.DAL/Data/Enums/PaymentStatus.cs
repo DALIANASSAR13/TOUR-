@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace TourGuide.DAL.Data.Enums
 {
-    internal class PaymentStatus
+    public enum PaymentStatus
     {
+      Pending, 
+      HeldInEscrow, 
+      Paid, 
+      Refunded,
+      Failed 
     }
 }
