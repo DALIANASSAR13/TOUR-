@@ -1,0 +1,44 @@
+﻿@model TourGuide.BLL.ViewModels.GuideListViewModel
+
+<link rel="stylesheet" href="~/css/Guides/Index.css" />
+
+<section class="guides-page">
+    <h1>Meet Your Expert Guides</h1>
+    <p class="lead-text">
+        Connect with passionate historians, master mountaineers, and cultural insiders
+        who turn ordinary trips into legendary journeys.
+    </p>
+
+    <form method="get" asp-action="Index" class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" name="search" value="@Model.Search"
+               placeholder="Search by name, expertise, or language..." />
+    </form>
+
+    @if (!Model.Guides.Any())
+    {
+        <p class="no-results">No guides found.</p>
+    }
+
+    <div class="guides-grid">
+        @foreach (var g in Model.Guides)
+        {
+            <div class="guide-card">
+                <div class="guide-photo"
+                     style="background-image:url('@(g.ProfileImageUrl ?? "/images/default-guide.jpg")')">
+                    <div class="guide-caption">
+                        <span class="location-chip">@g.Country</span>
+                        <h3>@g.FullName</h3>
+                    </div>
+                </div>
+                <div class="guide-body">
+                    <p class="about">@g.AboutMe</p>
+                    <div class="guide-footer">
+                        <span class="price">$@g.PricePerHour.ToString("0")</span>
+                        <a class="book-btn" href="#">Book Guide</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

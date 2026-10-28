@@ -13,8 +13,12 @@ namespace TourGuide.DAL.Data.Contexts
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
+        { 
+        
+        
+        }
+        public AppDbContext() { }
         public DbSet<Tourist> Tourists => Set<Tourist>();
         public DbSet<Guide> Guides => Set<Guide>();
         public DbSet<Tour> Tours => Set<Tour>();
@@ -24,6 +28,14 @@ namespace TourGuide.DAL.Data.Contexts
         public DbSet<CustomTripRequest> CustomTripRequests => Set<CustomTripRequest>();
         public DbSet<Notification> Notifications => Set<Notification>();
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(
+                    "Data Source=DESKTOP-AN0VDPS;Initial Catalog=TourGuideDb;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
+            }
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);  
