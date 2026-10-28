@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TourGuide.DAL.Data.Seeding;
 using TourGuide.DAL.Entities;
 
 namespace TourGuide.DAL.Configurations
@@ -20,6 +21,8 @@ namespace TourGuide.DAL.Configurations
                    .WithMany(g => g.CustomTripRequests)
                    .HasForeignKey(c => c.GuideId)
                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasData(SeedData.CustomTripRequests);
         }
     }
 }

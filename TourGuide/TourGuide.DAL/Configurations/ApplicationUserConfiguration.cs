@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TourGuide.DAL.Data.Seeding;
 using TourGuide.DAL.Entities;
 
 namespace TourGuide.DAL.Configurations
@@ -22,9 +23,10 @@ namespace TourGuide.DAL.Configurations
 
       
             builder.HasDiscriminator<string>("UserType")
-                   .HasValue<ApplicationUser>("User")
                    .HasValue<Tourist>("Tourist")
                    .HasValue<Guide>("Guide");
+
+
         }
     }
 }

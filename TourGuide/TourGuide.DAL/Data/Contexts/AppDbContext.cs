@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TourGuide.DAL.Entities;
+using TourGuide.DAL.Data.Seeding;
 
 namespace TourGuide.DAL.Data.Contexts
 {
@@ -27,6 +28,10 @@ namespace TourGuide.DAL.Data.Contexts
         {
             base.OnModelCreating(modelBuilder);  
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+
+            modelBuilder.Entity<IdentityRole<int>>().HasData(SeedData.Roles);
+            modelBuilder.Entity<IdentityUserRole<int>>().HasData(SeedData.UserRoles);
         }
     }
 }

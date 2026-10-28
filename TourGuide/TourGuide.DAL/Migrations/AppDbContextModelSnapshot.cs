@@ -50,6 +50,22 @@ namespace TourGuide.DAL.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "role-guide-0001",
+                            Name = "Guide",
+                            NormalizedName = "GUIDE"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConcurrencyStamp = "role-tourist-0002",
+                            Name = "Tourist",
+                            NormalizedName = "TOURIST"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -134,6 +150,48 @@ namespace TourGuide.DAL.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            UserId = 3,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            UserId = 4,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            UserId = 5,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            UserId = 6,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            UserId = 7,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            UserId = 8,
+                            RoleId = 2
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -238,8 +296,8 @@ namespace TourGuide.DAL.Migrations
 
                     b.Property<string>("UserType")
                         .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
 
                     b.HasKey("Id");
 
@@ -253,7 +311,7 @@ namespace TourGuide.DAL.Migrations
 
                     b.ToTable("AspNetUsers", (string)null);
 
-                    b.HasDiscriminator<string>("UserType").HasValue("User");
+                    b.HasDiscriminator<string>("UserType").HasValue("ApplicationUser");
 
                     b.UseTphMappingStrategy();
                 });
@@ -294,6 +352,68 @@ namespace TourGuide.DAL.Migrations
                     b.HasIndex("TouristId");
 
                     b.ToTable("Bookings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2026, 10, 20, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            NumberOfPeople = 2,
+                            Status = "Confirmed",
+                            TotalPrice = 120.00m,
+                            TourId = 1,
+                            TouristId = 5
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2026, 10, 25, 15, 30, 0, 0, DateTimeKind.Unspecified),
+                            NumberOfPeople = 3,
+                            Status = "Pending",
+                            TotalPrice = 180.00m,
+                            TourId = 1,
+                            TouristId = 8
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2026, 10, 22, 9, 15, 0, 0, DateTimeKind.Unspecified),
+                            NumberOfPeople = 4,
+                            Status = "Confirmed",
+                            TotalPrice = 560.00m,
+                            TourId = 2,
+                            TouristId = 6
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2026, 8, 30, 11, 0, 0, 0, DateTimeKind.Unspecified),
+                            NumberOfPeople = 2,
+                            Status = "Completed",
+                            TotalPrice = 80.00m,
+                            TourId = 5,
+                            TouristId = 5
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2026, 9, 1, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            NumberOfPeople = 2,
+                            Status = "Completed",
+                            TotalPrice = 80.00m,
+                            TourId = 5,
+                            TouristId = 6
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2026, 9, 10, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            NumberOfPeople = 2,
+                            Status = "Completed",
+                            TotalPrice = 190.00m,
+                            TourId = 6,
+                            TouristId = 7
+                        });
                 });
 
             modelBuilder.Entity("TourGuide.DAL.Entities.CustomTripRequest", b =>
@@ -335,6 +455,30 @@ namespace TourGuide.DAL.Migrations
                     b.HasIndex("TouristId");
 
                     b.ToTable("CustomTripRequests");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Budget = 1500.00m,
+                            CreatedAt = new DateTime(2026, 10, 26, 13, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2027, 3, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GuideId = 1,
+                            StartDate = new DateTime(2027, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Requested",
+                            TouristId = 7
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Budget = 1200.00m,
+                            CreatedAt = new DateTime(2026, 10, 18, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2027, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            GuideId = 3,
+                            StartDate = new DateTime(2027, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "InProgress",
+                            TouristId = 8
+                        });
                 });
 
             modelBuilder.Entity("TourGuide.DAL.Entities.Notification", b =>
@@ -369,6 +513,44 @@ namespace TourGuide.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2026, 10, 20, 12, 1, 0, 0, DateTimeKind.Unspecified),
+                            IsRead = true,
+                            Message = "New booking request for Pyramids of Giza & Sphinx Day Tour (2 people).",
+                            NotificationType = "NewBookingRequest",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2026, 10, 25, 15, 31, 0, 0, DateTimeKind.Unspecified),
+                            IsRead = false,
+                            Message = "New booking request for Pyramids of Giza & Sphinx Day Tour (3 people).",
+                            NotificationType = "NewBookingRequest",
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2026, 10, 22, 9, 16, 0, 0, DateTimeKind.Unspecified),
+                            IsRead = false,
+                            Message = "New booking request for Luxor East & West Bank Highlights (4 people).",
+                            NotificationType = "NewBookingRequest",
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2026, 9, 10, 10, 1, 0, 0, DateTimeKind.Unspecified),
+                            IsRead = true,
+                            Message = "New booking request for Luxor Sunrise Hot Air Balloon (2 people).",
+                            NotificationType = "NewBookingRequest",
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("TourGuide.DAL.Entities.Payment", b =>
@@ -409,6 +591,67 @@ namespace TourGuide.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Payments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BookingId = 1,
+                            GuideFee = 108.00m,
+                            Method = "CreditCard",
+                            PaidAt = new DateTime(2026, 10, 20, 12, 5, 0, 0, DateTimeKind.Unspecified),
+                            PlatformFee = 12.00m,
+                            Status = "HeldInEscrow"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BookingId = 2,
+                            GuideFee = 162.00m,
+                            Method = "PayPal",
+                            PlatformFee = 18.00m,
+                            Status = "Pending"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BookingId = 3,
+                            GuideFee = 504.00m,
+                            Method = "ApplePay",
+                            PaidAt = new DateTime(2026, 10, 22, 9, 20, 0, 0, DateTimeKind.Unspecified),
+                            PlatformFee = 56.00m,
+                            Status = "HeldInEscrow"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BookingId = 4,
+                            GuideFee = 72.00m,
+                            Method = "CreditCard",
+                            PaidAt = new DateTime(2026, 8, 30, 11, 5, 0, 0, DateTimeKind.Unspecified),
+                            PlatformFee = 8.00m,
+                            Status = "Paid"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BookingId = 5,
+                            GuideFee = 72.00m,
+                            Method = "PayPal",
+                            PaidAt = new DateTime(2026, 9, 1, 14, 5, 0, 0, DateTimeKind.Unspecified),
+                            PlatformFee = 8.00m,
+                            Status = "Paid"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            BookingId = 6,
+                            GuideFee = 171.00m,
+                            Method = "CreditCard",
+                            PaidAt = new DateTime(2026, 9, 10, 10, 5, 0, 0, DateTimeKind.Unspecified),
+                            PlatformFee = 19.00m,
+                            Status = "Paid"
+                        });
                 });
 
             modelBuilder.Entity("TourGuide.DAL.Entities.Review", b =>
@@ -446,6 +689,35 @@ namespace TourGuide.DAL.Migrations
                     b.ToTable("Reviews", t =>
                         {
                             t.HasCheckConstraint("CK_Review_Rating", "[Rating] >= 1 AND [Rating] <= 5");
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Comment = "Ahmed made Old Cairo come alive. The food stops were the highlight of our trip!",
+                            CreatedAt = new DateTime(2026, 9, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Rating = 5.0,
+                            TourId = 5,
+                            TouristId = 5
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Comment = "Great stories and a well-paced evening. It got a little crowded in the bazaar.",
+                            CreatedAt = new DateTime(2026, 9, 15, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Rating = 4.0,
+                            TourId = 5,
+                            TouristId = 6
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Comment = "Unforgettable sunrise over Luxor. Mariam organized everything perfectly.",
+                            CreatedAt = new DateTime(2026, 10, 3, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            Rating = 5.0,
+                            TourId = 6,
+                            TouristId = 7
                         });
                 });
 
@@ -515,6 +787,110 @@ namespace TourGuide.DAL.Migrations
 
                             t.HasCheckConstraint("CK_Tour_SlotsLeft", "[SlotsLeft] >= 0");
                         });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AverageRating = 0.0,
+                            Description = "Walk the Giza Plateau with an Egyptologist: the Great Pyramid, the Sphinx, the Valley Temple and the best panoramic viewpoint.",
+                            DurationDays = 1,
+                            EndDate = new DateTime(2026, 12, 12, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            GuideId = 1,
+                            ImageUrl = "/images/tours/pyramids.jpg",
+                            IsActive = true,
+                            MaxGroupSize = 12,
+                            PricePerPerson = 60.00m,
+                            SlotsLeft = 7,
+                            StartDate = new DateTime(2026, 12, 12, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Pyramids of Giza & Sphinx Day Tour",
+                            Type = "Historical"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AverageRating = 0.0,
+                            Description = "Two days across Luxor: Karnak and Luxor Temples on the East Bank, then the Valley of the Kings and Hatshepsut Temple on the West Bank.",
+                            DurationDays = 2,
+                            EndDate = new DateTime(2027, 1, 16, 17, 0, 0, 0, DateTimeKind.Unspecified),
+                            GuideId = 2,
+                            ImageUrl = "/images/tours/luxor.jpg",
+                            IsActive = true,
+                            MaxGroupSize = 10,
+                            PricePerPerson = 140.00m,
+                            SlotsLeft = 6,
+                            StartDate = new DateTime(2027, 1, 15, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Luxor East & West Bank Highlights",
+                            Type = "Historical"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AverageRating = 0.0,
+                            Description = "Felucca ride on the Nile, Philae Temple, the High Dam and a home-cooked lunch in a Nubian village.",
+                            DurationDays = 3,
+                            EndDate = new DateTime(2027, 2, 7, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            GuideId = 3,
+                            ImageUrl = "/images/tours/aswan.jpg",
+                            IsActive = true,
+                            MaxGroupSize = 8,
+                            PricePerPerson = 210.00m,
+                            SlotsLeft = 8,
+                            StartDate = new DateTime(2027, 2, 5, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Aswan, Philae & Nubian Village Experience",
+                            Type = "Cruise"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AverageRating = 0.0,
+                            Description = "Stroll the Corniche, visit the Bibliotheca Alexandrina, Qaitbay Citadel and the Roman Amphitheatre, finishing with fresh seafood.",
+                            DurationDays = 1,
+                            EndDate = new DateTime(2027, 3, 6, 17, 0, 0, 0, DateTimeKind.Unspecified),
+                            GuideId = 4,
+                            ImageUrl = "/images/tours/alexandria.jpg",
+                            IsActive = true,
+                            MaxGroupSize = 15,
+                            PricePerPerson = 45.00m,
+                            SlotsLeft = 15,
+                            StartDate = new DateTime(2027, 3, 6, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Alexandria Coastal Heritage Walk",
+                            Type = "Walking"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AverageRating = 4.5,
+                            Description = "Coptic Cairo, Al-Muizz Street and the bazaar after sunset, with street-food tastings along the way.",
+                            DurationDays = 1,
+                            EndDate = new DateTime(2026, 9, 12, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            GuideId = 1,
+                            ImageUrl = "/images/tours/old-cairo.jpg",
+                            IsActive = false,
+                            MaxGroupSize = 10,
+                            PricePerPerson = 40.00m,
+                            SlotsLeft = 6,
+                            StartDate = new DateTime(2026, 9, 12, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Old Cairo & Khan el-Khalili Evening",
+                            Type = "Walking"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AverageRating = 5.0,
+                            Description = "Float over the Nile and the temples of Luxor at sunrise, followed by breakfast on the West Bank.",
+                            DurationDays = 1,
+                            EndDate = new DateTime(2026, 10, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            GuideId = 2,
+                            ImageUrl = "/images/tours/balloon.jpg",
+                            IsActive = false,
+                            MaxGroupSize = 6,
+                            PricePerPerson = 95.00m,
+                            SlotsLeft = 4,
+                            StartDate = new DateTime(2026, 10, 2, 5, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Luxor Sunrise Hot Air Balloon",
+                            Type = "Photography"
+                        });
                 });
 
             modelBuilder.Entity("TourGuide.DAL.Entities.Guide", b =>
@@ -542,6 +918,112 @@ namespace TourGuide.DAL.Migrations
                         .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("Guide");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "concurrency-user-0001",
+                            Country = "Egypt",
+                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "ahmed.hassan@tourguide.com",
+                            EmailConfirmed = true,
+                            FullName = "Ahmed Hassan",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "AHMED.HASSAN@TOURGUIDE.COM",
+                            NormalizedUserName = "AHMED.HASSAN@TOURGUIDE.COM",
+                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
+                            PhoneNumberConfirmed = false,
+                            ProfileImageUrl = "/images/guides/ahmed.jpg",
+                            Role = "Guide",
+                            SecurityStamp = "stamp-user-0001",
+                            TwoFactorEnabled = false,
+                            UserName = "ahmed.hassan@tourguide.com",
+                            AboutMe = "Licensed Egyptologist with over 10 years of experience guiding visitors through the Giza Plateau, Saqqara and Old Cairo.",
+                            IsVerified = true,
+                            PricePerHour = 25.00m,
+                            Title = "Egyptologist & Cairo/Giza Guide",
+                            ToursCompleted = 120
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "concurrency-user-0002",
+                            Country = "Egypt",
+                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "mariam.adel@tourguide.com",
+                            EmailConfirmed = true,
+                            FullName = "Mariam Adel",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "MARIAM.ADEL@TOURGUIDE.COM",
+                            NormalizedUserName = "MARIAM.ADEL@TOURGUIDE.COM",
+                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
+                            PhoneNumberConfirmed = false,
+                            ProfileImageUrl = "/images/guides/mariam.jpg",
+                            Role = "Guide",
+                            SecurityStamp = "stamp-user-0002",
+                            TwoFactorEnabled = false,
+                            UserName = "mariam.adel@tourguide.com",
+                            AboutMe = "Born and raised in Luxor. I love sharing the stories behind Karnak, Luxor Temple and the Valley of the Kings.",
+                            IsVerified = true,
+                            PricePerHour = 22.00m,
+                            Title = "Luxor & West Bank Specialist",
+                            ToursCompleted = 85
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "concurrency-user-0003",
+                            Country = "Egypt",
+                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "omar.khaled@tourguide.com",
+                            EmailConfirmed = true,
+                            FullName = "Omar Khaled",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "OMAR.KHALED@TOURGUIDE.COM",
+                            NormalizedUserName = "OMAR.KHALED@TOURGUIDE.COM",
+                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
+                            PhoneNumberConfirmed = false,
+                            ProfileImageUrl = "/images/guides/omar.jpg",
+                            Role = "Guide",
+                            SecurityStamp = "stamp-user-0003",
+                            TwoFactorEnabled = false,
+                            UserName = "omar.khaled@tourguide.com",
+                            AboutMe = "Nubian guide who knows every corner of Aswan, from Philae Temple to the colorful villages along the Nile.",
+                            IsVerified = true,
+                            PricePerHour = 20.00m,
+                            Title = "Aswan & Nubian Culture Expert",
+                            ToursCompleted = 60
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "concurrency-user-0004",
+                            Country = "Egypt",
+                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nour.salah@tourguide.com",
+                            EmailConfirmed = true,
+                            FullName = "Nour Salah",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "NOUR.SALAH@TOURGUIDE.COM",
+                            NormalizedUserName = "NOUR.SALAH@TOURGUIDE.COM",
+                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
+                            PhoneNumberConfirmed = false,
+                            ProfileImageUrl = "/images/guides/nour.jpg",
+                            Role = "Guide",
+                            SecurityStamp = "stamp-user-0004",
+                            TwoFactorEnabled = false,
+                            UserName = "nour.salah@tourguide.com",
+                            AboutMe = "History graduate who loves Alexandria's Greco-Roman past, seaside cafes and hidden local spots.",
+                            IsVerified = false,
+                            PricePerHour = 18.00m,
+                            Title = "Alexandria Heritage Guide",
+                            ToursCompleted = 40
+                        });
                 });
 
             modelBuilder.Entity("TourGuide.DAL.Entities.Tourist", b =>
@@ -549,6 +1031,88 @@ namespace TourGuide.DAL.Migrations
                     b.HasBaseType("TourGuide.DAL.Entities.ApplicationUser");
 
                     b.HasDiscriminator().HasValue("Tourist");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 5,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "concurrency-user-0005",
+                            Country = "United Kingdom",
+                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "emily.carter@example.com",
+                            EmailConfirmed = true,
+                            FullName = "Emily Carter",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "EMILY.CARTER@EXAMPLE.COM",
+                            NormalizedUserName = "EMILY.CARTER@EXAMPLE.COM",
+                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
+                            PhoneNumberConfirmed = false,
+                            Role = "Tourist",
+                            SecurityStamp = "stamp-user-0005",
+                            TwoFactorEnabled = false,
+                            UserName = "emily.carter@example.com"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "concurrency-user-0006",
+                            Country = "Germany",
+                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "lucas.meyer@example.com",
+                            EmailConfirmed = true,
+                            FullName = "Lucas Meyer",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "LUCAS.MEYER@EXAMPLE.COM",
+                            NormalizedUserName = "LUCAS.MEYER@EXAMPLE.COM",
+                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
+                            PhoneNumberConfirmed = false,
+                            Role = "Tourist",
+                            SecurityStamp = "stamp-user-0006",
+                            TwoFactorEnabled = false,
+                            UserName = "lucas.meyer@example.com"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "concurrency-user-0007",
+                            Country = "Italy",
+                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "sofia.rossi@example.com",
+                            EmailConfirmed = true,
+                            FullName = "Sofia Rossi",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "SOFIA.ROSSI@EXAMPLE.COM",
+                            NormalizedUserName = "SOFIA.ROSSI@EXAMPLE.COM",
+                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
+                            PhoneNumberConfirmed = false,
+                            Role = "Tourist",
+                            SecurityStamp = "stamp-user-0007",
+                            TwoFactorEnabled = false,
+                            UserName = "sofia.rossi@example.com"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "concurrency-user-0008",
+                            Country = "South Korea",
+                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "daniel.kim@example.com",
+                            EmailConfirmed = true,
+                            FullName = "Daniel Kim",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "DANIEL.KIM@EXAMPLE.COM",
+                            NormalizedUserName = "DANIEL.KIM@EXAMPLE.COM",
+                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
+                            PhoneNumberConfirmed = false,
+                            Role = "Tourist",
+                            SecurityStamp = "stamp-user-0008",
+                            TwoFactorEnabled = false,
+                            UserName = "daniel.kim@example.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
