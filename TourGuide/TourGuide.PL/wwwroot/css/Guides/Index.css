@@ -46,6 +46,8 @@
 
 .guide-card {
     background: #fff;
+    text-decoration: none;
+    color: inherit;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 16px rgba(0,0,0,.08);
@@ -121,4 +123,12 @@
     padding: 40px 0;
     text-align: center;
     color: #777;
+}
+.guide-card,
+.guide-card:hover,
+.guide-card:focus,
+.guide-card:visited,
+.guide-card:active {
+    text-decoration: none;
+    color: inherit;
 }
