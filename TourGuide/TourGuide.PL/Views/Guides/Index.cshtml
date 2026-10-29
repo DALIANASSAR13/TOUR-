@@ -4,6 +4,7 @@
 
 <section class="guides-page">
     <h1>Meet Your Expert Guides</h1>
+
     <p class="lead-text">
         Connect with passionate historians, master mountaineers, and cultural insiders
         who turn ordinary trips into legendary journeys.
@@ -23,7 +24,11 @@
     <div class="guides-grid">
         @foreach (var g in Model.Guides)
         {
-            <div class="guide-card">
+            <a asp-controller="Guides"
+               asp-action="Dashboard"
+               asp-route-id="@g.Id"
+               class="guide-card">
+
                 <div class="guide-photo"
                      style="background-image:url('@(g.ProfileImageUrl ?? "/images/default-guide.jpg")')">
                     <div class="guide-caption">
@@ -31,14 +36,19 @@
                         <h3>@g.FullName</h3>
                     </div>
                 </div>
+
                 <div class="guide-body">
                     <p class="about">@g.AboutMe</p>
+
                     <div class="guide-footer">
-                        <span class="price">$@g.PricePerHour.ToString("0")</span>
-                        <a class="book-btn" href="#">Book Guide</a>
+                        <span class="price">
+                            $@g.PricePerHour.ToString("0")
+                        </span>
+                        <span class="book-btn">Book</span>
                     </div>
                 </div>
-            </div>
-        }
+            </a>
+    }
     </div>
+
 </section>

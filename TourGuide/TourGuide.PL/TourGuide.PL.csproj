@@ -23,4 +23,8 @@
     <ProjectReference Include="..\TourGuide.DAL\TourGuide.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\" />
+  </ItemGroup>
+
 </Project>

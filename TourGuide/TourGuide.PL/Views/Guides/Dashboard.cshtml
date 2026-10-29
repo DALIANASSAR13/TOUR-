@@ -1,0 +1,126 @@
+﻿@using System.Globalization
+@model TourGuide.BLL.ViewModels.GuideDashboardViewModel
+@{
+    var inv = CultureInfo.InvariantCulture;
+}
+
+<link rel="stylesheet" href="~/css/Guides/Dashboard.css" />
+
+<div class="dashboard">
+
+    @* ===== Welcome banner ===== *@
+    <div class="welcome-card">
+        <div class="welcome-text">
+            <h1>Welcome back, @Model.Guide.FullName!</h1>
+            <p>
+                You have <span class="link-text">@Model.Guide.NewRequestsCount new booking requests</span>
+                and @Model.Guide.ToursTodayCount upcoming tours today.
+            </p>
+        </div>
+        <a class="primary-btn" href="#">+ Create Tour Package</a>
+    </div>
+
+    @* ===== Stat cards ===== *@
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div>
+                <small>Total Earnings</small>
+                <strong>$@Model.Guide.TotalEarnings.ToString("N0", inv)</strong>
+            </div>
+            <span class="stat-icon icon-blue">💵</span>
+        </div>
+
+        <div class="stat-card">
+            <div>
+                <small>Completed Tours</small>
+                <strong>@Model.Guide.CompletedTours Tours</strong>
+            </div>
+            <span class="stat-icon icon-blue">🚩</span>
+        </div>
+
+        <div class="stat-card">
+            <div>
+                <small>Guide Rating</small>
+                <strong>@Model.Guide.Rating.ToString("0.00", inv)</strong>
+            </div>
+            <span class="stat-icon icon-orange">⭐</span>
+        </div>
+
+        <div class="stat-card">
+            <div>
+                <small>Response Rate</small>
+                <strong>@Model.Guide.ResponseRate%</strong>
+            </div>
+            <span class="stat-icon icon-gray">⚡</span>
+        </div>
+    </div>
+
+    @* ===== Incoming booking requests ===== *@
+    <div class="requests-section">
+        <div class="section-head">
+            <h2>Incoming Booking Requests</h2>
+            <span class="new-badge">@Model.Guide.NewRequestsCount New</span>
+        </div>
+
+        @if (!Model.Requests.Any())
+        {
+            <p class="empty">No pending requests.</p>
+        }
+
+        @foreach (var r in Model.Requests)
+        {
+            var photo = string.IsNullOrEmpty(r.TouristImageUrl) ? "wwwroot/Images/default-guide.jpg" : r.TouristImageUrl;
+
+            <div class="request-card">
+                <img class="avatar" src="@photo" alt="@r.TouristName" />
+
+                <div class="request-info">
+                    <strong>@r.TouristName</strong>
+                    <div class="request-tour">@r.TourTitle</div>
+                    <small>
+                        📅 @r.StartDate.ToString("MMM dd", inv) - @r.EndDate.ToString("MMM dd", inv)
+                        &nbsp; 💵 $@r.TotalPrice.ToString("0", inv) Total
+                    </small>
+                </div>
+
+                <form method="post" asp-action="RespondToBooking" class="request-actions">
+                    <input type="hidden" name="bookingId" value="@r.BookingId" />
+                    <input type="hidden" name="guideId" value="@Model.Guide.Id" />
+                    <button type="submit" name="accept" value="false" class="decline-btn">Decline</button>
+                    <button type="submit" name="accept" value="true" class="primary-btn">Accept Request</button>
+                </form>
+            </div>
+        }
+    </div>
+
+    @* ===== Tour packages ===== *@
+    <div class="section-head packages-head">
+        <h2>Tour Packages &amp; Pricing</h2>
+        <a class="link-text" href="#">Manage All Packages →</a>
+    </div>
+
+    <div class="tours-grid">
+        @foreach (var t in Model.Tours)
+        {
+            var img = string.IsNullOrEmpty(t.ImageUrl) ? "/images/default-guide.jpg" : t.ImageUrl;
+
+            <div class="tour-card">
+                <div class="tour-photo" style="background-image:url('@img')">
+                    <span class="price-badge">$@t.PricePerPerson.ToString("0", inv) / person</span>
+                </div>
+
+                <div class="tour-body">
+                    <h3>@t.Title</h3>
+                    <p>@t.Description</p>
+
+                    <div class="tour-footer">
+                        <span class="status @(t.IsActive ? "" : "inactive")">
+                            @(t.IsActive ? "Active" : "Inactive") • @t.SlotsLeft Slots Left
+                        </span>
+                        <a class="edit-btn" href="#">Edit</a>
+                    </div>
+                </div>
+            </div>
+    }
+    </div>
+</div>
