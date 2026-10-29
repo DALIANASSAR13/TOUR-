@@ -1,0 +1,124 @@
+﻿.guides-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+
+.guides-page h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 8px 0;
+}
+
+.lead-text {
+    color: #555;
+    max-width: 560px;
+}
+
+/* search bar */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    padding: 12px;
+    border-radius: 14px;
+    margin: 24px 0 32px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+
+    .search-bar input {
+        flex: 1;
+        border: 0;
+        background: #f1f3f5;
+        padding: 10px 14px;
+        border-radius: 10px;
+        outline: none;
+    }
+
+/* grid */
+.guides-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 28px;
+}
+
+.guide-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+}
+
+/* photo + caption */
+.guide-photo {
+    height: 240px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    background-color: #ddd;
+}
+
+.guide-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 14px;
+    color: #fff;
+    background: linear-gradient(transparent, rgba(0,0,0,.65));
+}
+
+    .guide-caption h3 {
+        margin: 6px 0 0;
+        font-size: 1.2rem;
+    }
+
+.location-chip {
+    background: #0b6a8a;
+    font-size: .75rem;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+/* body */
+.guide-body {
+    padding: 16px;
+}
+
+.about {
+    color: #555;
+    font-size: .9rem;
+    margin: 0 0 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.guide-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price {
+    color: #0b6a8a;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.book-btn {
+    background: #0b6a8a;
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+.no-results {
+    padding: 40px 0;
+    text-align: center;
+    color: #777;
+}
