@@ -36,7 +36,7 @@ namespace TourGuide.PL.Controllers
 
             return LoginVM.Role switch
             {
-                UserRole.Guide => RedirectToAction("Dashboard", "Guides" , userId),
+                UserRole.Guide => RedirectToAction("Dashboard", "Guides" , new { id = userId }),
                 _ => RedirectToAction("Index", "Guides")
             };
 
