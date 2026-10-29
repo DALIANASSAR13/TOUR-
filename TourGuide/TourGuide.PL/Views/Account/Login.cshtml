@@ -1,0 +1,79 @@
+﻿@model TourGuide.BLL.BusinessLogic.LoginViewModel;
+@using TourGuide.DAL.Data.Enums;
+
+<link rel="stylesheet" href="~/css/Account/Login.css" />
+
+
+<div class="login-page">
+
+    @* ===== left side ===== *@
+    <div class="hero-text">
+        <h1>Begin Your Next <span>Great Adventure</span>.</h1>
+        <p>
+            Connect directly with verified local guides, book exclusive tailor-made
+            experiences, or manage your expert tour portfolio in one unified platform.
+        </p>
+    </div>
+
+    @* ===== right side: the card ===== *@
+    <div class="login-card">
+
+        <div class="tabs">
+            <span class="tab active">Sign In</span>
+            <a class="tab" href="#">Create Account</a>
+        </div>
+
+        <form method="post" asp-controller="Account" asp-action="Login">
+            <div asp-validation-summary="ModelOnly" class="error-box"></div>
+
+            <label class="field-label">I want to join as a:</label>
+            
+            <div class="role-picker">
+                <input type="radio" id="roleTourist" name="Role" value="@UserRole.Tourist"
+                       @(Model.Role == UserRole.Tourist ? "checked" : "") />
+                <label for="roleTourist">🧳 Tourist</label>
+
+                <input type="radio" id="roleGuide" name="Role" value="@UserRole.Guide"
+                       @(Model.Role == UserRole.Guide ? "checked" : "") />
+                <label for="roleGuide">🪪 Tour Guide</label>
+            </div>
+
+            <label class="field-label" for="email">Email Address</label>
+            <div class="input-box">
+                <span class="input-icon">✉️</span>
+                <input asp-for="Email" id="email" placeholder="alex@wanderlust.com" />
+            </div>
+            <span asp-validation-for="Email" class="field-error"></span>
+
+            <div class="label-row">
+                <label class="field-label" for="password">Password</label>
+                <a href="#" class="forgot">Forgot?</a>
+            </div>
+            <div class="input-box">
+                <span class="input-icon">🔒</span>
+                <input asp-for="Password" id="password" type="password" placeholder="••••••••" />
+                <button type="button" class="eye-btn" onclick="togglePassword()">👁</button>
+            </div>
+            <span asp-validation-for="Password" class="field-error"></span>
+
+            <label class="remember">
+                <input asp-for="RememberMe" type="checkbox" /> Remember this device
+            </label>
+
+            <button type="submit" class="signin-btn">Sign In →</button>
+
+            <div class="divider"><span>or continue with</span></div>
+
+            <button type="button" class="google-btn">
+                <b style="color:#4285f4">G</b> Continue with Google
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function togglePassword() {
+        var p = document.getElementById("password");
+        p.type = p.type === "password" ? "text" : "password";
+    }
+</script>
