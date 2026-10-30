@@ -31,6 +31,8 @@ namespace TourGuide.DAL.Configurations
                    .HasForeignKey(t => t.GuideId)
                    .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Property(t => t.Location)
+            .HasMaxLength(100);
             builder.HasData(SeedData.Tours);
         }
     }

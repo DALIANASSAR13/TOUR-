@@ -754,6 +754,11 @@ namespace TourGuide.DAL.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<int>("MaxGroupSize")
                         .HasColumnType("int");
 
@@ -799,6 +804,7 @@ namespace TourGuide.DAL.Migrations
                             GuideId = 1,
                             ImageUrl = "/images/tours/pyramids.jpg",
                             IsActive = true,
+                            Location = "Red Sea, Hurghada",
                             MaxGroupSize = 12,
                             PricePerPerson = 60.00m,
                             SlotsLeft = 7,
@@ -816,6 +822,7 @@ namespace TourGuide.DAL.Migrations
                             GuideId = 2,
                             ImageUrl = "/images/tours/luxor.jpg",
                             IsActive = true,
+                            Location = "Luxor & Aswan, Egypt",
                             MaxGroupSize = 10,
                             PricePerPerson = 140.00m,
                             SlotsLeft = 6,
@@ -833,6 +840,7 @@ namespace TourGuide.DAL.Migrations
                             GuideId = 3,
                             ImageUrl = "/images/tours/aswan.jpg",
                             IsActive = true,
+                            Location = "Giza, Egypt",
                             MaxGroupSize = 8,
                             PricePerPerson = 210.00m,
                             SlotsLeft = 8,
@@ -850,6 +858,7 @@ namespace TourGuide.DAL.Migrations
                             GuideId = 4,
                             ImageUrl = "/images/tours/alexandria.jpg",
                             IsActive = true,
+                            Location = "Alexandria, Egypt",
                             MaxGroupSize = 15,
                             PricePerPerson = 45.00m,
                             SlotsLeft = 15,
@@ -867,6 +876,7 @@ namespace TourGuide.DAL.Migrations
                             GuideId = 1,
                             ImageUrl = "/images/tours/old-cairo.jpg",
                             IsActive = false,
+                            Location = "",
                             MaxGroupSize = 10,
                             PricePerPerson = 40.00m,
                             SlotsLeft = 6,
@@ -884,6 +894,7 @@ namespace TourGuide.DAL.Migrations
                             GuideId = 2,
                             ImageUrl = "/images/tours/balloon.jpg",
                             IsActive = false,
+                            Location = "",
                             MaxGroupSize = 6,
                             PricePerPerson = 95.00m,
                             SlotsLeft = 4,

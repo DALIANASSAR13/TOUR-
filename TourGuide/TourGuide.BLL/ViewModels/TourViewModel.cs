@@ -1,7 +1,4 @@
-﻿// TourViewModel.cs: one tour card (lean, matches the new UI)
-
-
-namespace TourGuide.BLL.ViewModels
+﻿namespace TourGuide.BLL.ViewModels
 {
     public class TourViewModel
     {
@@ -12,6 +9,10 @@ namespace TourGuide.BLL.ViewModels
         public decimal PricePerPerson { get; set; }
         public bool IsActive { get; set; }
         public int SlotsLeft { get; set; }
-    }
+        public string Location { get; set; } = "";
+        public int DurationDays { get; set; }
+        public double AverageRating { get; set; }
+        public int ReviewCount { get; set; }
 
+    }
 }
