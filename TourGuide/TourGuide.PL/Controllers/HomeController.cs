@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using TourGuide.BLL.BusinessLogic;
 using TourGuide.PL.Models;
 
 namespace TourGuide.PL.Controllers
@@ -7,15 +8,18 @@ namespace TourGuide.PL.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ToursBL _toursBL;
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+            _toursBL = new ToursBL();
         }
 
         public IActionResult Index()
         {
-            return View();
+            var homeData = _toursBL.GetHomeData();
+            return View(homeData);
         }
 
         public IActionResult Privacy()
