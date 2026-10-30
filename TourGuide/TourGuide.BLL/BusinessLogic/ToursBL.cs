@@ -43,7 +43,7 @@ namespace TourGuide.BLL.BusinessLogic
                     return new HomeViewModel
                     {
                         FeaturedTours = dbTours,
-                        TotalToursCount = Math.Max(count, 24)
+                        TotalToursCount = count
                     };
                 }
             }
