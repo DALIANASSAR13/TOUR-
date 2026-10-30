@@ -26,6 +26,7 @@ namespace TourGuide.DAL.Entities
         public int GuideId { get; set; }
         public Guide Guide { get; set; } = null!;
 
+        public string Location { get; set; } = string.Empty;
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }

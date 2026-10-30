@@ -144,6 +144,7 @@ namespace TourGuide.DAL.Data.Seeding
             new()
             {
                 Id = 1, Title = "Pyramids of Giza & Sphinx Day Tour",
+                Location = "Red Sea, Hurghada",
                 Description = "Walk the Giza Plateau with an Egyptologist: the Great Pyramid, the Sphinx, the Valley Temple and the best panoramic viewpoint.",
                 DurationDays = 1, PricePerPerson = 60.00m, MaxGroupSize = 12, SlotsLeft = 7,
                 Type = TourType.Historical, AverageRating = 0, IsActive = true, ImageUrl = "/images/tours/pyramids.jpg",
@@ -152,6 +153,7 @@ namespace TourGuide.DAL.Data.Seeding
             new()
             {
                 Id = 2, Title = "Luxor East & West Bank Highlights",
+                Location = "Luxor & Aswan, Egypt",
                 Description = "Two days across Luxor: Karnak and Luxor Temples on the East Bank, then the Valley of the Kings and Hatshepsut Temple on the West Bank.",
                 DurationDays = 2, PricePerPerson = 140.00m, MaxGroupSize = 10, SlotsLeft = 6,
                 Type = TourType.Historical, AverageRating = 0, IsActive = true, ImageUrl = "/images/tours/luxor.jpg",
@@ -160,6 +162,7 @@ namespace TourGuide.DAL.Data.Seeding
             new()
             {
                 Id = 3, Title = "Aswan, Philae & Nubian Village Experience",
+                Location = "Giza, Egypt",
                 Description = "Felucca ride on the Nile, Philae Temple, the High Dam and a home-cooked lunch in a Nubian village.",
                 DurationDays = 3, PricePerPerson = 210.00m, MaxGroupSize = 8, SlotsLeft = 8,
                 Type = TourType.Cruise, AverageRating = 0, IsActive = true, ImageUrl = "/images/tours/aswan.jpg",
@@ -168,6 +171,7 @@ namespace TourGuide.DAL.Data.Seeding
             new()
             {
                 Id = 4, Title = "Alexandria Coastal Heritage Walk",
+                Location = "Alexandria, Egypt",
                 Description = "Stroll the Corniche, visit the Bibliotheca Alexandrina, Qaitbay Citadel and the Roman Amphitheatre, finishing with fresh seafood.",
                 DurationDays = 1, PricePerPerson = 45.00m, MaxGroupSize = 15, SlotsLeft = 15,
                 Type = TourType.Walking, AverageRating = 0, IsActive = true, ImageUrl = "/images/tours/alexandria.jpg",
