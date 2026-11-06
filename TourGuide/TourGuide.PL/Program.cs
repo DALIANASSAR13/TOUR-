@@ -1,23 +1,66 @@
-using Microsoft.EntityFrameworkCore;
-using TourGuide.DAL.Data.Contexts;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using TourGuide.BLL;
+using TourGuide.DAL;
+using TourGuide.DAL.Data;
+using TourGuide.DAL.Data.Seed;
+using TourGuide.DAL.Entities;
+using TourGuide.PL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+// Layers: DAL (DbContext, repositories, Unit of Work) and BLL (services, validators, options).
+builder.Services.AddDataAccess(builder.Configuration);
+builder.Services.AddBusinessLogic(builder.Configuration);
 
+// AutoMapper profiles from BLL (entity <-> DTO) and PL (DTO <-> ViewModel).
+builder.Services.AddAutoMapper(typeof(TourGuide.BLL.DependencyInjection).Assembly, typeof(Program).Assembly);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+// Identity: hashed passwords (NFR-03) and roles (NFR-01).
+builder.Services
+    .AddIdentity<ApplicationUser, IdentityRole>(options =>
+    {
+        options.User.RequireUniqueEmail = true;
+        options.SignIn.RequireConfirmedAccount = false;
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
+});
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+// Every POST must carry the anti-forgery token.
+builder.Services.AddControllersWithViews(options =>
+    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    // A missing or wrong mapping fails here, at startup.
+    app.Services.GetRequiredService<IMapper>().ConfigurationProvider.AssertConfigurationIsValid();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+
+// Admin account (roles, languages and specializations are seeded by the migration).
+try
+{
+    await AdminSeeder.SeedAsync(app.Services, app.Configuration, app.Logger);
+}
+catch (Exception ex)
+{
+    app.Logger.LogError(ex, "Seeding failed. Did you run 'dotnet ef database update'?");
 }
 
 app.UseHttpsRedirection();
@@ -25,7 +68,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

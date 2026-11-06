@@ -58,7 +58,7 @@ Foundation → FR-03 → FR-01 → FR-02 → FR-04/05/06 → FR-07
 6. Check: `dotnet build` passes; `dotnet ef database update` creates every table with the right keys and constraints
 
 **Cycle 1.0.b — App skeleton**
-1. Create `TourGuide.sln`, `TourGuide.BLL`, `TourGuide.Web`; add project references (Web → BLL → DAL)
+1. Create `TourGuide.sln`, `TourGuide.BLL`, `TourGuide.PL`; add project references (Web → BLL → DAL)
 2. BLL: `Result`, `Result<T>`, `ValidationError`, `ErrorCodes`, `BookingRules`, `FileStorageOptions`, `BookingJobOptions`, `AddBusinessLogic()` (validators + AutoMapper)
 3. PL: `Program.cs` (SQL Server, Identity, `AddDataAccess`, `AddBusinessLogic`, `AddAutoMapper`, global anti-forgery, error handler, `AssertConfigurationIsValid` in Development)
 4. PL: shared layout from the UI design, `_ValidationScriptsPartial`, `ICurrentUserService`, `ModelStateExtensions`, error page

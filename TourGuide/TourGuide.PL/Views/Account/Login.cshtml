@@ -1,5 +1,4 @@
-﻿@model TourGuide.BLL.BusinessLogic.LoginViewModel;
-@using TourGuide.DAL.Data.Enums;
+@model TourGuide.PL.ViewModels.LoginViewModel
 
 <link rel="stylesheet" href="~/css/Account/Login.css" />
 
@@ -25,18 +24,6 @@
 
         <form method="post" asp-controller="Account" asp-action="Login">
             <div asp-validation-summary="ModelOnly" class="error-box"></div>
-
-            <label class="field-label">I want to join as a:</label>
-            
-            <div class="role-picker">
-                <input type="radio" id="roleTourist" name="Role" value="@UserRole.Tourist"
-                       @(Model.Role == UserRole.Tourist ? "checked" : "") />
-                <label for="roleTourist">🧳 Tourist</label>
-
-                <input type="radio" id="roleGuide" name="Role" value="@UserRole.Guide"
-                       @(Model.Role == UserRole.Guide ? "checked" : "") />
-                <label for="roleGuide">🪪 Tour Guide</label>
-            </div>
 
             <label class="field-label" for="email">Email Address</label>
             <div class="input-box">

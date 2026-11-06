@@ -3,35 +3,29 @@
 The project's current state. Read it at the start of every work cycle and update it at the end (see `AGENTS.md` → "Work cycle").
 
 **Last updated:** 2026-11-06
-**Phase:** Week 1: project setup and data layer
+**Phase:** Phase 1 — Foundations (cycles 1.0.a – 1.0.c done)
+**Branch:** `cycle-1/foundation` (not merged to `main` yet)
 
 ## Done
 
-- [x] SRS written, with open questions settled as assumptions
-- [x] Class Specs approved (10 classes, 5 enums)
-- [x] `AGENTS.md` written
-- [x] Full class diagrams in `docs/class-diagram.md`, `.html` and `.pdf` (27 pages): layers, use cases, domain model in 3 parts, 2 state diagrams, 8 use-case class diagrams, layer reference, DTO/ViewModel/configuration catalog
-- [x] `src/TourGuide.DAL/TourGuide.DAL.csproj` created (.NET 8, EF Core SQL Server, Identity)
-- [x] Enums: `VerificationStatus`, `DocumentType`, `BookingType`, `BookingStatus`, `CancellationReason`
-- [x] `Constants/Roles.cs`
-- [x] `.config/dotnet-tools.json` (dotnet-ef 8.0.11)
-- [x] Project moved to `D:\TourGuide`
-- [x] Skills `manage-project` and `build` installed in `.claude/skills/` (packages kept in `skills/`)
-- [x] `docs/SRS.md` and `docs/CLASSES_SPECS.md` exported from the shared docs
-- [x] `docs/WORK_ORDER.md` (+ `.html`, `.pdf`): 4 phases, 15 features, 29 cycles (made with `manage-project`)
+- [x] SRS, Class Specs, class diagrams, `docs/WORK_ORDER.md`, `AGENTS.md`, skills (`manage-project`, `build`)
+- [x] **Cycle 1.0.a — Data model:** 10 entities, 5 enums, `Roles`, one configuration per entity (lengths, unique indexes, 9 check constraints, `RowVersion`, all deletes `Restrict`), `AppDbContext`, `IRepository<T>`/`Repository<T>`, 5 empty specific repositories (`partial`), `IUnitOfWork`/`UnitOfWork`, `PagedList<T>`, `AddDataAccess()`, migration `InitialCreate`
+- [x] **Cycle 1.0.b — App skeleton:** BLL `Result`, `Result<T>`, `ValidationError`, `ErrorCodes`, `BookingRules`, `FileStorageOptions`, `BookingJobOptions`, `AddBusinessLogic()`; PL `Program.cs` (DAL + BLL + AutoMapper + Identity + global anti-forgery + error handler + mapper check in Development), `ICurrentUserService`, `ModelStateExtensions`; ViewModels moved from BLL to `TourGuide.PL/ViewModels`
+- [x] **Cycle 1.0.c — Seed data:** 3 roles (migration), 9 languages and 5 specializations (migration), admin account at startup from `Seed:AdminEmail` + `Seed:AdminPassword` (user secrets)
+- [x] Checked on a throw-away database: all 17 tables, constraints and seed rows created; app starts; `/`, `/Account/Login`, `/Guides`, `/Guides/Dashboard`, `/Home/Privacy` return 200; admin created with a hashed password and the Admin role
 
 ## In progress
 
-- [ ] Cycle 1.0.a — Data model (`docs/WORK_ORDER.md`)
+- [ ] —
 
 ## Next
 
 Follow `docs/WORK_ORDER.md` in order. With the `build` skill: `plan <cycle>` → `build <cycle>` → `review <cycle>` → `done`.
 
-1. Cycle 1.0.a — Data model (entities, configurations, `AppDbContext`, repositories, Unit of Work, `InitialCreate`)
-2. Cycle 1.0.b — App skeleton (solution, BLL and Web projects, `Program.cs`, layout)
-3. Cycle 1.0.c — Seed data (blocked on the lists below)
-4. Cycle 1.1.a — Log in / log out (FR-03)
+1. Cycle 1.1.a — Log in / log out (FR-03): replace the placeholder `AccountController.Login` POST with `SignInManager`
+2. Cycle 1.1.b — Role access (areas, `[Authorize(Roles)]`, access-denied page)
+3. Cycle 1.2.a — Tourist sign-up (FR-01)
+4. Cycle 1.3.a — Guide sign-up with documents (FR-02)
 
 ## Decisions log
 
@@ -39,20 +33,24 @@ Newest first. Add the team's decisions here; the full documents hold the details
 
 | Date | Decision |
 | --- | --- |
+| 2026-11-06 | Code follows the SRS, not the earlier tour-package model: `Tour`, `Tourist`, `Guide` (TPH), `CustomTripRequest`, `Notification` and their migrations were removed. |
+| 2026-11-06 | Keep the team's project names and folder: `TourGuide/TourGuide.sln` with `TourGuide.PL` (= "Web" in the docs), `TourGuide.BLL`, `TourGuide.DAL`. EF Core and tools 8.0.32. |
+| 2026-11-06 | Identity uses the default `string` key (Class Specs), not `int`. |
+| 2026-11-06 | AutoMapper stays on 14.0.0 despite advisory GHSA-rvv3-g6hj-g44x (accepted risk; `NU1903` warning expected). |
+| 2026-11-06 | Roles, languages and specializations are seeded by the migration (`HasData`); the admin account at startup from configuration. |
 | 2026-11-06 | Class diagrams define method signatures, controllers per area, DTOs and ViewModels; `PagedList<T>` and `GuideSearchQuery` live in DAL; `Actor` enum (BLL, not stored) for the state machine. |
-| 2026-11-06 | Validation in 4 layers: client (jQuery Unobtrusive) → ViewModel DataAnnotations → FluentValidation in BLL → domain rules. AutoMapper 14.0.0 (not 15+, which is paid) replaces manual mapping. FluentValidation 11.11.0, called explicitly (no `FluentValidation.AspNetCore`). Full catalog of services, repositories, validators and profiles in `AGENTS.md`. |
-| 2026-11-06 | Patterns: generic + specific Repository, Unit of Work, constructor DI with one `Add...` extension per layer, service interfaces, Result pattern, Options pattern, `BookingStateMachine`, `TimeProvider`, swappable `IPaymentGateway` and `IFileStorage`, manual mapping (later replaced by AutoMapper). Replaces "no repositories". |
-| 2026-11-06 | N-Tier: Web → BLL → DAL. Services return DTOs. |
-| 2026-11-06 | .NET 8, SQL Server, no automated tests |
-| 2026-11-06 | Class Specs approved, including the 10 decisions in section 9 |
-| 2026-11-06 | SRS assumptions accepted (pricing, limits, 24 h deadlines, USD, ASP.NET Core MVC) |
+| 2026-11-06 | Validation in 4 layers: client (jQuery Unobtrusive) → ViewModel DataAnnotations → FluentValidation in BLL → domain rules. FluentValidation 11.11.0, called explicitly. |
+| 2026-11-06 | Patterns: generic + specific Repository, Unit of Work, constructor DI with one `Add...` extension per layer, service interfaces, Result pattern, Options pattern, `BookingStateMachine`, `TimeProvider`, swappable `IPaymentGateway` and `IFileStorage`, AutoMapper. |
+| 2026-11-06 | N-Tier: Web → BLL → DAL. Services return DTOs. .NET 8, SQL Server, no automated tests. |
+| 2026-11-06 | Class Specs approved, including the 10 decisions in section 9. SRS assumptions accepted. |
 
 ## Known issues
 
-- The seed lists of languages and specializations are not decided yet. The team needs to give them before the seed step.
-- The number and emails of admin accounts to seed are not decided yet.
+- **Existing local databases:** `TourGuideDb` on each machine still has the old tour schema. Drop it, then run `dotnet ef database update` (see `AGENTS.md` → Commands).
+- **Seed lists to confirm:** languages (English, Arabic, French, German, Spanish, Italian, Russian, Chinese, Japanese) and specializations (Historical, Camping, Cruise, Walking, Photography, from the old `TourType`). Change `Data/Seed/LookupSeed.cs` + add a migration if the team wants others.
+- **Admin email not decided:** the admin is created only when `Seed:AdminEmail` and `Seed:AdminPassword` are set (user secrets).
+- **Placeholder pages:** home (no tours/guides yet), `/Guides` and `/Guides/Dashboard` show empty data until cycles 2.4 and 2.7; Login POST shows "not connected yet" until 1.1.a. `TourViewModel` and the tour parts of the home and dashboard views are left for those cycles to replace.
 - .NET 8 support ends on 2026-11-10.
-- `TourGuide.DAL` has not been built yet.
 - The `build` skill reads `docs/STATE.md`, but this file is at the project root (`AGENTS.md` points here). One of them needs to change.
 - The skills mention tests per cycle; the team chose no automated tests, so `WORK_ORDER.md` uses manual checks instead.
 
@@ -62,10 +60,9 @@ Newest first. One row per work cycle.
 
 | Date | What changed | Build |
 | --- | --- | --- |
+| 2026-11-06 | Cycles 1.0.a – 1.0.c on `cycle-1/foundation`: new data model + `InitialCreate`, BLL/PL skeleton, seed; old tour model removed; ViewModels moved to PL; `AGENTS.md` paths fixed to `TourGuide/TourGuide.*` | Passes (only `NU1903` AutoMapper warning); migration applied to a test DB; 5 pages return 200 |
 | 2026-11-06 | Tried a 6-member version of `docs/WORK_ORDER.md`, then restored the cycles version on request; added `WORK_ORDER.html` and `.pdf`; `.build/make_html.py` now takes a doc name | PDF 11 pages |
 | 2026-11-06 | Installed `manage-project` and `build` skills; exported `docs/SRS.md`, `docs/CLASSES_SPECS.md`; wrote `docs/WORK_ORDER.md` | Not run (no code changed) |
-| 2026-11-06 | Expanded `docs/class-diagram.md` by use case and state; added `docs/class-diagram.html`, `docs/class-diagram.pdf`, `.build/make_html.py`; added `ReapplyValidator`, `PagedList<T>`, `GuideSearchQuery` to `AGENTS.md` | All 20 diagrams render; PDF 27 pages |
-| 2026-11-06 | Added `docs/class-diagram.md` (UML: domain model + Booking feature across layers), also in Class Specs section 10 | Diagrams render (Mermaid 11) |
-| 2026-11-06 | Added the 4-layer validation, AutoMapper, FluentValidation, packages table and full catalog to `AGENTS.md`; updated "Next" | Not run |
-| 2026-11-06 | Added Repository, Unit of Work, DI and other patterns to `AGENTS.md` → "Architecture"; updated "Next" | Not run |
+| 2026-11-06 | Expanded `docs/class-diagram.md` by use case and state; added `docs/class-diagram.html`, `docs/class-diagram.pdf`, `.build/make_html.py` | All 20 diagrams render; PDF 27 pages |
+| 2026-11-06 | Added validation, AutoMapper, FluentValidation, Repository, Unit of Work, DI and the catalog to `AGENTS.md` | Not run |
 | 2026-11-06 | Created DAL project, enums, `Roles`, EF tool manifest, `AGENTS.md`, `STATE.md` | Not run |

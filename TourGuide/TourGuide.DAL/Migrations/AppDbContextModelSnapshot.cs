@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TourGuide.DAL.Data.Contexts;
+using TourGuide.DAL.Data;
 
 #nullable disable
 
@@ -22,13 +22,10 @@ namespace TourGuide.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -54,21 +51,28 @@ namespace TourGuide.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            ConcurrencyStamp = "role-guide-0001",
+                            Id = "role-tourist",
+                            ConcurrencyStamp = "role-tourist-stamp",
+                            Name = "Tourist",
+                            NormalizedName = "TOURIST"
+                        },
+                        new
+                        {
+                            Id = "role-guide",
+                            ConcurrencyStamp = "role-guide-stamp",
                             Name = "Guide",
                             NormalizedName = "GUIDE"
                         },
                         new
                         {
-                            Id = 2,
-                            ConcurrencyStamp = "role-tourist-0002",
-                            Name = "Tourist",
-                            NormalizedName = "TOURIST"
+                            Id = "role-admin",
+                            ConcurrencyStamp = "role-admin-stamp",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
                         });
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -82,8 +86,9 @@ namespace TourGuide.DAL.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -92,7 +97,7 @@ namespace TourGuide.DAL.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -106,8 +111,9 @@ namespace TourGuide.DAL.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -116,7 +122,7 @@ namespace TourGuide.DAL.Migrations
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -127,8 +133,9 @@ namespace TourGuide.DAL.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -137,67 +144,25 @@ namespace TourGuide.DAL.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            UserId = 3,
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            UserId = 4,
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            UserId = 5,
-                            RoleId = 2
-                        },
-                        new
-                        {
-                            UserId = 6,
-                            RoleId = 2
-                        },
-                        new
-                        {
-                            UserId = 7,
-                            RoleId = 2
-                        },
-                        new
-                        {
-                            UserId = 8,
-                            RoleId = 2
-                        });
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -215,11 +180,8 @@ namespace TourGuide.DAL.Migrations
 
             modelBuilder.Entity("TourGuide.DAL.Entities.ApplicationUser", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -228,12 +190,13 @@ namespace TourGuide.DAL.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Country")
+                    b.Property<string>("CountryCode")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasMaxLength(2)
+                        .HasColumnType("nchar(2)")
+                        .IsFixedLength();
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -245,10 +208,6 @@ namespace TourGuide.DAL.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("GoogleId")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -275,15 +234,6 @@ namespace TourGuide.DAL.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ProfileImageUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -293,11 +243,6 @@ namespace TourGuide.DAL.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("UserType")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
 
                     b.HasKey("Id");
 
@@ -310,10 +255,6 @@ namespace TourGuide.DAL.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator<string>("UserType").HasValue("ApplicationUser");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("TourGuide.DAL.Entities.Booking", b =>
@@ -324,232 +265,305 @@ namespace TourGuide.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<int>("BillableHours")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookingType")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CancellationReason")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CancelledAtUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NumberOfPeople")
+                    b.Property<DateTime?>("CompletedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Days")
                         .HasColumnType("int");
 
-                    b.Property<string>("Status")
+                    b.Property<DateTime>("EndUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GuideProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Hours")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PaymentDeadlineUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("PricePerHourAtRequest")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime?>("RespondedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime>("StartUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TotalPrice")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
-                    b.Property<int>("TourId")
+                    b.Property<string>("TouristId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TouristId");
+
+                    b.HasIndex("GuideProfileId", "Status", "StartUtc");
+
+                    b.ToTable("Bookings", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Bookings_EndAfterStart", "[EndUtc] > [StartUtc]");
+
+                            t.HasCheckConstraint("CK_Bookings_HoursOrDays", "([BookingType] = 0 AND [Hours] BETWEEN 2 AND 10 AND [Days] IS NULL) OR ([BookingType] = 1 AND [Days] BETWEEN 2 AND 14 AND [Hours] IS NULL)");
+
+                            t.HasCheckConstraint("CK_Bookings_Prices", "[PricePerHourAtRequest] > 0 AND [TotalPrice] > 0");
+                        });
+                });
+
+            modelBuilder.Entity("TourGuide.DAL.Entities.GuideDocument", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("TouristId")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("DocumentType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GuideProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OriginalFileName")
+                        .IsRequired()
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("StoredFileName")
+                        .IsRequired()
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
+
+                    b.Property<DateTime>("UploadedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GuideProfileId", "DocumentType")
+                        .IsUnique();
+
+                    b.ToTable("GuideDocuments", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_GuideDocuments_SizeBytes", "[SizeBytes] > 0 AND [SizeBytes] <= 5242880");
+                        });
+                });
+
+            modelBuilder.Entity("TourGuide.DAL.Entities.GuideLanguage", b =>
+                {
+                    b.Property<int>("GuideProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GuideProfileId", "LanguageId");
+
+                    b.HasIndex("LanguageId");
+
+                    b.ToTable("GuideLanguages");
+                });
+
+            modelBuilder.Entity("TourGuide.DAL.Entities.GuideProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AverageRating")
+                        .HasPrecision(3, 2)
+                        .HasColumnType("decimal(3,2)");
+
+                    b.Property<string>("Bio")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CountryCode")
+                        .HasMaxLength(2)
+                        .HasColumnType("nchar(2)")
+                        .IsFixedLength();
+
+                    b.Property<string>("PhotoFileName")
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
+
+                    b.Property<decimal?>("PricePerHour")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("ReviewCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ReviewedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReviewedByAdminId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("SubmittedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TimeZoneId")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("VerificationStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("YearsOfExperience")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TourId");
+                    b.HasIndex("ReviewedByAdminId");
 
-                    b.HasIndex("TouristId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
-                    b.ToTable("Bookings");
+                    b.HasIndex("VerificationStatus", "CountryCode");
+
+                    b.ToTable("GuideProfiles", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_GuideProfiles_AverageRating", "[AverageRating] >= 0 AND [AverageRating] <= 5");
+
+                            t.HasCheckConstraint("CK_GuideProfiles_PricePerHour", "[PricePerHour] IS NULL OR ([PricePerHour] > 0 AND [PricePerHour] <= 1000)");
+
+                            t.HasCheckConstraint("CK_GuideProfiles_YearsOfExperience", "[YearsOfExperience] IS NULL OR ([YearsOfExperience] >= 0 AND [YearsOfExperience] <= 60)");
+                        });
+                });
+
+            modelBuilder.Entity("TourGuide.DAL.Entities.GuideSpecialization", b =>
+                {
+                    b.Property<int>("GuideProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpecializationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GuideProfileId", "SpecializationId");
+
+                    b.HasIndex("SpecializationId");
+
+                    b.ToTable("GuideSpecializations");
+                });
+
+            modelBuilder.Entity("TourGuide.DAL.Entities.Language", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Languages");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 10, 20, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            NumberOfPeople = 2,
-                            Status = "Confirmed",
-                            TotalPrice = 120.00m,
-                            TourId = 1,
-                            TouristId = 5
+                            Name = "English"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2026, 10, 25, 15, 30, 0, 0, DateTimeKind.Unspecified),
-                            NumberOfPeople = 3,
-                            Status = "Pending",
-                            TotalPrice = 180.00m,
-                            TourId = 1,
-                            TouristId = 8
+                            Name = "Arabic"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2026, 10, 22, 9, 15, 0, 0, DateTimeKind.Unspecified),
-                            NumberOfPeople = 4,
-                            Status = "Confirmed",
-                            TotalPrice = 560.00m,
-                            TourId = 2,
-                            TouristId = 6
+                            Name = "French"
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2026, 8, 30, 11, 0, 0, 0, DateTimeKind.Unspecified),
-                            NumberOfPeople = 2,
-                            Status = "Completed",
-                            TotalPrice = 80.00m,
-                            TourId = 5,
-                            TouristId = 5
+                            Name = "German"
                         },
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2026, 9, 1, 14, 0, 0, 0, DateTimeKind.Unspecified),
-                            NumberOfPeople = 2,
-                            Status = "Completed",
-                            TotalPrice = 80.00m,
-                            TourId = 5,
-                            TouristId = 6
+                            Name = "Spanish"
                         },
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2026, 9, 10, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            NumberOfPeople = 2,
-                            Status = "Completed",
-                            TotalPrice = 190.00m,
-                            TourId = 6,
-                            TouristId = 7
-                        });
-                });
-
-            modelBuilder.Entity("TourGuide.DAL.Entities.CustomTripRequest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Budget")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("GuideId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<int>("TouristId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GuideId");
-
-                    b.HasIndex("TouristId");
-
-                    b.ToTable("CustomTripRequests");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Budget = 1500.00m,
-                            CreatedAt = new DateTime(2026, 10, 26, 13, 0, 0, 0, DateTimeKind.Unspecified),
-                            EndDate = new DateTime(2027, 3, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            GuideId = 1,
-                            StartDate = new DateTime(2027, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Requested",
-                            TouristId = 7
+                            Name = "Italian"
                         },
                         new
                         {
-                            Id = 2,
-                            Budget = 1200.00m,
-                            CreatedAt = new DateTime(2026, 10, 18, 16, 0, 0, 0, DateTimeKind.Unspecified),
-                            EndDate = new DateTime(2027, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            GuideId = 3,
-                            StartDate = new DateTime(2027, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "InProgress",
-                            TouristId = 8
-                        });
-                });
-
-            modelBuilder.Entity("TourGuide.DAL.Entities.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("NotificationType")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Notifications");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(2026, 10, 20, 12, 1, 0, 0, DateTimeKind.Unspecified),
-                            IsRead = true,
-                            Message = "New booking request for Pyramids of Giza & Sphinx Day Tour (2 people).",
-                            NotificationType = "NewBookingRequest",
-                            UserId = 1
+                            Id = 7,
+                            Name = "Russian"
                         },
                         new
                         {
-                            Id = 2,
-                            CreatedAt = new DateTime(2026, 10, 25, 15, 31, 0, 0, DateTimeKind.Unspecified),
-                            IsRead = false,
-                            Message = "New booking request for Pyramids of Giza & Sphinx Day Tour (3 people).",
-                            NotificationType = "NewBookingRequest",
-                            UserId = 1
+                            Id = 8,
+                            Name = "Chinese"
                         },
                         new
                         {
-                            Id = 3,
-                            CreatedAt = new DateTime(2026, 10, 22, 9, 16, 0, 0, DateTimeKind.Unspecified),
-                            IsRead = false,
-                            Message = "New booking request for Luxor East & West Bank Highlights (4 people).",
-                            NotificationType = "NewBookingRequest",
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedAt = new DateTime(2026, 9, 10, 10, 1, 0, 0, DateTimeKind.Unspecified),
-                            IsRead = true,
-                            Message = "New booking request for Luxor Sunrise Hot Air Balloon (2 people).",
-                            NotificationType = "NewBookingRequest",
-                            UserId = 2
+                            Id = 9,
+                            Name = "Japanese"
                         });
                 });
 
@@ -561,96 +575,32 @@ namespace TourGuide.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("GuideFee")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Method")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime?>("PaidAt")
+                    b.Property<DateTime>("PaidAtUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("PlatformFee")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Status")
+                    b.Property<string>("TransactionReference")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BookingId")
                         .IsUnique();
 
-                    b.ToTable("Payments");
+                    b.HasIndex("TransactionReference")
+                        .IsUnique();
 
-                    b.HasData(
-                        new
+                    b.ToTable("Payments", null, t =>
                         {
-                            Id = 1,
-                            BookingId = 1,
-                            GuideFee = 108.00m,
-                            Method = "CreditCard",
-                            PaidAt = new DateTime(2026, 10, 20, 12, 5, 0, 0, DateTimeKind.Unspecified),
-                            PlatformFee = 12.00m,
-                            Status = "HeldInEscrow"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BookingId = 2,
-                            GuideFee = 162.00m,
-                            Method = "PayPal",
-                            PlatformFee = 18.00m,
-                            Status = "Pending"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            BookingId = 3,
-                            GuideFee = 504.00m,
-                            Method = "ApplePay",
-                            PaidAt = new DateTime(2026, 10, 22, 9, 20, 0, 0, DateTimeKind.Unspecified),
-                            PlatformFee = 56.00m,
-                            Status = "HeldInEscrow"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            BookingId = 4,
-                            GuideFee = 72.00m,
-                            Method = "CreditCard",
-                            PaidAt = new DateTime(2026, 8, 30, 11, 5, 0, 0, DateTimeKind.Unspecified),
-                            PlatformFee = 8.00m,
-                            Status = "Paid"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            BookingId = 5,
-                            GuideFee = 72.00m,
-                            Method = "PayPal",
-                            PaidAt = new DateTime(2026, 9, 1, 14, 5, 0, 0, DateTimeKind.Unspecified),
-                            PlatformFee = 8.00m,
-                            Status = "Paid"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            BookingId = 6,
-                            GuideFee = 171.00m,
-                            Method = "CreditCard",
-                            PaidAt = new DateTime(2026, 9, 10, 10, 5, 0, 0, DateTimeKind.Unspecified),
-                            PlatformFee = 19.00m,
-                            Status = "Paid"
+                            t.HasCheckConstraint("CK_Payments_Amount", "[Amount] > 0");
                         });
                 });
 
@@ -662,66 +612,42 @@ namespace TourGuide.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Rating")
-                        .HasColumnType("float");
-
-                    b.Property<int>("TourId")
+                    b.Property<int>("GuideProfileId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TouristId")
+                    b.Property<int>("Rating")
                         .HasColumnType("int");
+
+                    b.Property<string>("TouristId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TouristId");
-
-                    b.HasIndex("TourId", "TouristId")
+                    b.HasIndex("BookingId")
                         .IsUnique();
 
-                    b.ToTable("Reviews", t =>
-                        {
-                            t.HasCheckConstraint("CK_Review_Rating", "[Rating] >= 1 AND [Rating] <= 5");
-                        });
+                    b.HasIndex("GuideProfileId");
 
-                    b.HasData(
-                        new
+                    b.HasIndex("TouristId");
+
+                    b.ToTable("Reviews", null, t =>
                         {
-                            Id = 1,
-                            Comment = "Ahmed made Old Cairo come alive. The food stops were the highlight of our trip!",
-                            CreatedAt = new DateTime(2026, 9, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Rating = 5.0,
-                            TourId = 5,
-                            TouristId = 5
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Comment = "Great stories and a well-paced evening. It got a little crowded in the bazaar.",
-                            CreatedAt = new DateTime(2026, 9, 15, 18, 0, 0, 0, DateTimeKind.Unspecified),
-                            Rating = 4.0,
-                            TourId = 5,
-                            TouristId = 6
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Comment = "Unforgettable sunrise over Luxor. Mariam organized everything perfectly.",
-                            CreatedAt = new DateTime(2026, 10, 3, 9, 0, 0, 0, DateTimeKind.Unspecified),
-                            Rating = 5.0,
-                            TourId = 6,
-                            TouristId = 7
+                            t.HasCheckConstraint("CK_Reviews_Rating", "[Rating] >= 1 AND [Rating] <= 5");
                         });
                 });
 
-            modelBuilder.Entity("TourGuide.DAL.Entities.Tour", b =>
+            modelBuilder.Entity("TourGuide.DAL.Entities.Specialization", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -729,413 +655,56 @@ namespace TourGuide.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("AverageRating")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Description")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
-
-                    b.Property<int>("DurationDays")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("GuideId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("MaxGroupSize")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("PricePerPerson")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("SlotsLeft")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GuideId");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
-                    b.ToTable("Tours", t =>
-                        {
-                            t.HasCheckConstraint("CK_Tour_MaxGroupSize", "[MaxGroupSize] > 0");
-
-                            t.HasCheckConstraint("CK_Tour_SlotsLeft", "[SlotsLeft] >= 0");
-                        });
+                    b.ToTable("Specializations");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            AverageRating = 0.0,
-                            Description = "Walk the Giza Plateau with an Egyptologist: the Great Pyramid, the Sphinx, the Valley Temple and the best panoramic viewpoint.",
-                            DurationDays = 1,
-                            EndDate = new DateTime(2026, 12, 12, 16, 0, 0, 0, DateTimeKind.Unspecified),
-                            GuideId = 1,
-                            ImageUrl = "/images/tours/pyramids.jpg",
-                            IsActive = true,
-                            Location = "Red Sea, Hurghada",
-                            MaxGroupSize = 12,
-                            PricePerPerson = 60.00m,
-                            SlotsLeft = 7,
-                            StartDate = new DateTime(2026, 12, 12, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Pyramids of Giza & Sphinx Day Tour",
-                            Type = "Historical"
+                            Name = "Historical"
                         },
                         new
                         {
                             Id = 2,
-                            AverageRating = 0.0,
-                            Description = "Two days across Luxor: Karnak and Luxor Temples on the East Bank, then the Valley of the Kings and Hatshepsut Temple on the West Bank.",
-                            DurationDays = 2,
-                            EndDate = new DateTime(2027, 1, 16, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            GuideId = 2,
-                            ImageUrl = "/images/tours/luxor.jpg",
-                            IsActive = true,
-                            Location = "Luxor & Aswan, Egypt",
-                            MaxGroupSize = 10,
-                            PricePerPerson = 140.00m,
-                            SlotsLeft = 6,
-                            StartDate = new DateTime(2027, 1, 15, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Luxor East & West Bank Highlights",
-                            Type = "Historical"
+                            Name = "Camping"
                         },
                         new
                         {
                             Id = 3,
-                            AverageRating = 0.0,
-                            Description = "Felucca ride on the Nile, Philae Temple, the High Dam and a home-cooked lunch in a Nubian village.",
-                            DurationDays = 3,
-                            EndDate = new DateTime(2027, 2, 7, 18, 0, 0, 0, DateTimeKind.Unspecified),
-                            GuideId = 3,
-                            ImageUrl = "/images/tours/aswan.jpg",
-                            IsActive = true,
-                            Location = "Giza, Egypt",
-                            MaxGroupSize = 8,
-                            PricePerPerson = 210.00m,
-                            SlotsLeft = 8,
-                            StartDate = new DateTime(2027, 2, 5, 9, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Aswan, Philae & Nubian Village Experience",
-                            Type = "Cruise"
+                            Name = "Cruise"
                         },
                         new
                         {
                             Id = 4,
-                            AverageRating = 0.0,
-                            Description = "Stroll the Corniche, visit the Bibliotheca Alexandrina, Qaitbay Citadel and the Roman Amphitheatre, finishing with fresh seafood.",
-                            DurationDays = 1,
-                            EndDate = new DateTime(2027, 3, 6, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            GuideId = 4,
-                            ImageUrl = "/images/tours/alexandria.jpg",
-                            IsActive = true,
-                            Location = "Alexandria, Egypt",
-                            MaxGroupSize = 15,
-                            PricePerPerson = 45.00m,
-                            SlotsLeft = 15,
-                            StartDate = new DateTime(2027, 3, 6, 9, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Alexandria Coastal Heritage Walk",
-                            Type = "Walking"
+                            Name = "Walking"
                         },
                         new
                         {
                             Id = 5,
-                            AverageRating = 4.5,
-                            Description = "Coptic Cairo, Al-Muizz Street and the bazaar after sunset, with street-food tastings along the way.",
-                            DurationDays = 1,
-                            EndDate = new DateTime(2026, 9, 12, 22, 0, 0, 0, DateTimeKind.Unspecified),
-                            GuideId = 1,
-                            ImageUrl = "/images/tours/old-cairo.jpg",
-                            IsActive = false,
-                            Location = "",
-                            MaxGroupSize = 10,
-                            PricePerPerson = 40.00m,
-                            SlotsLeft = 6,
-                            StartDate = new DateTime(2026, 9, 12, 16, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Old Cairo & Khan el-Khalili Evening",
-                            Type = "Walking"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AverageRating = 5.0,
-                            Description = "Float over the Nile and the temples of Luxor at sunrise, followed by breakfast on the West Bank.",
-                            DurationDays = 1,
-                            EndDate = new DateTime(2026, 10, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            GuideId = 2,
-                            ImageUrl = "/images/tours/balloon.jpg",
-                            IsActive = false,
-                            Location = "",
-                            MaxGroupSize = 6,
-                            PricePerPerson = 95.00m,
-                            SlotsLeft = 4,
-                            StartDate = new DateTime(2026, 10, 2, 5, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Luxor Sunrise Hot Air Balloon",
-                            Type = "Photography"
+                            Name = "Photography"
                         });
                 });
 
-            modelBuilder.Entity("TourGuide.DAL.Entities.Guide", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasBaseType("TourGuide.DAL.Entities.ApplicationUser");
-
-                    b.Property<string>("AboutMe")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<bool>("IsVerified")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("PricePerHour")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("ToursCompleted")
-                        .HasColumnType("int");
-
-                    b.HasDiscriminator().HasValue("Guide");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "concurrency-user-0001",
-                            Country = "Egypt",
-                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "ahmed.hassan@tourguide.com",
-                            EmailConfirmed = true,
-                            FullName = "Ahmed Hassan",
-                            LockoutEnabled = true,
-                            NormalizedEmail = "AHMED.HASSAN@TOURGUIDE.COM",
-                            NormalizedUserName = "AHMED.HASSAN@TOURGUIDE.COM",
-                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
-                            PhoneNumberConfirmed = false,
-                            ProfileImageUrl = "/images/guides/ahmed.jpg",
-                            Role = "Guide",
-                            SecurityStamp = "stamp-user-0001",
-                            TwoFactorEnabled = false,
-                            UserName = "ahmed.hassan@tourguide.com",
-                            AboutMe = "Licensed Egyptologist with over 10 years of experience guiding visitors through the Giza Plateau, Saqqara and Old Cairo.",
-                            IsVerified = true,
-                            PricePerHour = 25.00m,
-                            Title = "Egyptologist & Cairo/Giza Guide",
-                            ToursCompleted = 120
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "concurrency-user-0002",
-                            Country = "Egypt",
-                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "mariam.adel@tourguide.com",
-                            EmailConfirmed = true,
-                            FullName = "Mariam Adel",
-                            LockoutEnabled = true,
-                            NormalizedEmail = "MARIAM.ADEL@TOURGUIDE.COM",
-                            NormalizedUserName = "MARIAM.ADEL@TOURGUIDE.COM",
-                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
-                            PhoneNumberConfirmed = false,
-                            ProfileImageUrl = "/images/guides/mariam.jpg",
-                            Role = "Guide",
-                            SecurityStamp = "stamp-user-0002",
-                            TwoFactorEnabled = false,
-                            UserName = "mariam.adel@tourguide.com",
-                            AboutMe = "Born and raised in Luxor. I love sharing the stories behind Karnak, Luxor Temple and the Valley of the Kings.",
-                            IsVerified = true,
-                            PricePerHour = 22.00m,
-                            Title = "Luxor & West Bank Specialist",
-                            ToursCompleted = 85
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "concurrency-user-0003",
-                            Country = "Egypt",
-                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "omar.khaled@tourguide.com",
-                            EmailConfirmed = true,
-                            FullName = "Omar Khaled",
-                            LockoutEnabled = true,
-                            NormalizedEmail = "OMAR.KHALED@TOURGUIDE.COM",
-                            NormalizedUserName = "OMAR.KHALED@TOURGUIDE.COM",
-                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
-                            PhoneNumberConfirmed = false,
-                            ProfileImageUrl = "/images/guides/omar.jpg",
-                            Role = "Guide",
-                            SecurityStamp = "stamp-user-0003",
-                            TwoFactorEnabled = false,
-                            UserName = "omar.khaled@tourguide.com",
-                            AboutMe = "Nubian guide who knows every corner of Aswan, from Philae Temple to the colorful villages along the Nile.",
-                            IsVerified = true,
-                            PricePerHour = 20.00m,
-                            Title = "Aswan & Nubian Culture Expert",
-                            ToursCompleted = 60
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "concurrency-user-0004",
-                            Country = "Egypt",
-                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "nour.salah@tourguide.com",
-                            EmailConfirmed = true,
-                            FullName = "Nour Salah",
-                            LockoutEnabled = true,
-                            NormalizedEmail = "NOUR.SALAH@TOURGUIDE.COM",
-                            NormalizedUserName = "NOUR.SALAH@TOURGUIDE.COM",
-                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
-                            PhoneNumberConfirmed = false,
-                            ProfileImageUrl = "/images/guides/nour.jpg",
-                            Role = "Guide",
-                            SecurityStamp = "stamp-user-0004",
-                            TwoFactorEnabled = false,
-                            UserName = "nour.salah@tourguide.com",
-                            AboutMe = "History graduate who loves Alexandria's Greco-Roman past, seaside cafes and hidden local spots.",
-                            IsVerified = false,
-                            PricePerHour = 18.00m,
-                            Title = "Alexandria Heritage Guide",
-                            ToursCompleted = 40
-                        });
-                });
-
-            modelBuilder.Entity("TourGuide.DAL.Entities.Tourist", b =>
-                {
-                    b.HasBaseType("TourGuide.DAL.Entities.ApplicationUser");
-
-                    b.HasDiscriminator().HasValue("Tourist");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 5,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "concurrency-user-0005",
-                            Country = "United Kingdom",
-                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "emily.carter@example.com",
-                            EmailConfirmed = true,
-                            FullName = "Emily Carter",
-                            LockoutEnabled = true,
-                            NormalizedEmail = "EMILY.CARTER@EXAMPLE.COM",
-                            NormalizedUserName = "EMILY.CARTER@EXAMPLE.COM",
-                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
-                            PhoneNumberConfirmed = false,
-                            Role = "Tourist",
-                            SecurityStamp = "stamp-user-0005",
-                            TwoFactorEnabled = false,
-                            UserName = "emily.carter@example.com"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "concurrency-user-0006",
-                            Country = "Germany",
-                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "lucas.meyer@example.com",
-                            EmailConfirmed = true,
-                            FullName = "Lucas Meyer",
-                            LockoutEnabled = true,
-                            NormalizedEmail = "LUCAS.MEYER@EXAMPLE.COM",
-                            NormalizedUserName = "LUCAS.MEYER@EXAMPLE.COM",
-                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
-                            PhoneNumberConfirmed = false,
-                            Role = "Tourist",
-                            SecurityStamp = "stamp-user-0006",
-                            TwoFactorEnabled = false,
-                            UserName = "lucas.meyer@example.com"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "concurrency-user-0007",
-                            Country = "Italy",
-                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "sofia.rossi@example.com",
-                            EmailConfirmed = true,
-                            FullName = "Sofia Rossi",
-                            LockoutEnabled = true,
-                            NormalizedEmail = "SOFIA.ROSSI@EXAMPLE.COM",
-                            NormalizedUserName = "SOFIA.ROSSI@EXAMPLE.COM",
-                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
-                            PhoneNumberConfirmed = false,
-                            Role = "Tourist",
-                            SecurityStamp = "stamp-user-0007",
-                            TwoFactorEnabled = false,
-                            UserName = "sofia.rossi@example.com"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "concurrency-user-0008",
-                            Country = "South Korea",
-                            CreatedAt = new DateTime(2026, 1, 15, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "daniel.kim@example.com",
-                            EmailConfirmed = true,
-                            FullName = "Daniel Kim",
-                            LockoutEnabled = true,
-                            NormalizedEmail = "DANIEL.KIM@EXAMPLE.COM",
-                            NormalizedUserName = "DANIEL.KIM@EXAMPLE.COM",
-                            PasswordHash = "PASTE_GENERATED_HASH_HERE",
-                            PhoneNumberConfirmed = false,
-                            Role = "Tourist",
-                            SecurityStamp = "stamp-user-0008",
-                            TwoFactorEnabled = false,
-                            UserName = "daniel.kim@example.com"
-                        });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.HasOne("TourGuide.DAL.Entities.ApplicationUser", null)
                         .WithMany()
@@ -1144,7 +713,7 @@ namespace TourGuide.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.HasOne("TourGuide.DAL.Entities.ApplicationUser", null)
                         .WithMany()
@@ -1153,9 +722,9 @@ namespace TourGuide.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1168,7 +737,7 @@ namespace TourGuide.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.HasOne("TourGuide.DAL.Entities.ApplicationUser", null)
                         .WithMany()
@@ -1179,51 +748,88 @@ namespace TourGuide.DAL.Migrations
 
             modelBuilder.Entity("TourGuide.DAL.Entities.Booking", b =>
                 {
-                    b.HasOne("TourGuide.DAL.Entities.Tour", "Tour")
+                    b.HasOne("TourGuide.DAL.Entities.GuideProfile", "GuideProfile")
                         .WithMany("Bookings")
-                        .HasForeignKey("TourId")
+                        .HasForeignKey("GuideProfileId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("TourGuide.DAL.Entities.Tourist", "Tourist")
-                        .WithMany("TripHistory")
+                    b.HasOne("TourGuide.DAL.Entities.ApplicationUser", "Tourist")
+                        .WithMany("Bookings")
                         .HasForeignKey("TouristId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Tour");
+                    b.Navigation("GuideProfile");
 
                     b.Navigation("Tourist");
                 });
 
-            modelBuilder.Entity("TourGuide.DAL.Entities.CustomTripRequest", b =>
+            modelBuilder.Entity("TourGuide.DAL.Entities.GuideDocument", b =>
                 {
-                    b.HasOne("TourGuide.DAL.Entities.Guide", "Guide")
-                        .WithMany("CustomTripRequests")
-                        .HasForeignKey("GuideId")
+                    b.HasOne("TourGuide.DAL.Entities.GuideProfile", "GuideProfile")
+                        .WithMany("Documents")
+                        .HasForeignKey("GuideProfileId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("TourGuide.DAL.Entities.Tourist", "Tourist")
+                    b.Navigation("GuideProfile");
+                });
+
+            modelBuilder.Entity("TourGuide.DAL.Entities.GuideLanguage", b =>
+                {
+                    b.HasOne("TourGuide.DAL.Entities.GuideProfile", "GuideProfile")
+                        .WithMany("Languages")
+                        .HasForeignKey("GuideProfileId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TourGuide.DAL.Entities.Language", "Language")
+                        .WithMany("Guides")
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("GuideProfile");
+
+                    b.Navigation("Language");
+                });
+
+            modelBuilder.Entity("TourGuide.DAL.Entities.GuideProfile", b =>
+                {
+                    b.HasOne("TourGuide.DAL.Entities.ApplicationUser", "ReviewedByAdmin")
                         .WithMany()
-                        .HasForeignKey("TouristId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ReviewedByAdminId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.Navigation("Guide");
-
-                    b.Navigation("Tourist");
-                });
-
-            modelBuilder.Entity("TourGuide.DAL.Entities.Notification", b =>
-                {
                     b.HasOne("TourGuide.DAL.Entities.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne("GuideProfile")
+                        .HasForeignKey("TourGuide.DAL.Entities.GuideProfile", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("ReviewedByAdmin");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TourGuide.DAL.Entities.GuideSpecialization", b =>
+                {
+                    b.HasOne("TourGuide.DAL.Entities.GuideProfile", "GuideProfile")
+                        .WithMany("Specializations")
+                        .HasForeignKey("GuideProfileId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TourGuide.DAL.Entities.Specialization", "Specialization")
+                        .WithMany("Guides")
+                        .HasForeignKey("SpecializationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("GuideProfile");
+
+                    b.Navigation("Specialization");
                 });
 
             modelBuilder.Entity("TourGuide.DAL.Entities.Payment", b =>
@@ -1239,58 +845,68 @@ namespace TourGuide.DAL.Migrations
 
             modelBuilder.Entity("TourGuide.DAL.Entities.Review", b =>
                 {
-                    b.HasOne("TourGuide.DAL.Entities.Tour", "Tour")
-                        .WithMany("Reviews")
-                        .HasForeignKey("TourId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("TourGuide.DAL.Entities.Booking", "Booking")
+                        .WithOne("Review")
+                        .HasForeignKey("TourGuide.DAL.Entities.Review", "BookingId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("TourGuide.DAL.Entities.Tourist", "Tourist")
+                    b.HasOne("TourGuide.DAL.Entities.GuideProfile", "GuideProfile")
+                        .WithMany("Reviews")
+                        .HasForeignKey("GuideProfileId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TourGuide.DAL.Entities.ApplicationUser", "Tourist")
                         .WithMany("Reviews")
                         .HasForeignKey("TouristId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Tour");
+                    b.Navigation("Booking");
+
+                    b.Navigation("GuideProfile");
 
                     b.Navigation("Tourist");
                 });
 
-            modelBuilder.Entity("TourGuide.DAL.Entities.Tour", b =>
+            modelBuilder.Entity("TourGuide.DAL.Entities.ApplicationUser", b =>
                 {
-                    b.HasOne("TourGuide.DAL.Entities.Guide", "Guide")
-                        .WithMany("Tours")
-                        .HasForeignKey("GuideId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("Bookings");
 
-                    b.Navigation("Guide");
+                    b.Navigation("GuideProfile");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("TourGuide.DAL.Entities.Booking", b =>
                 {
                     b.Navigation("Payment");
+
+                    b.Navigation("Review");
                 });
 
-            modelBuilder.Entity("TourGuide.DAL.Entities.Tour", b =>
+            modelBuilder.Entity("TourGuide.DAL.Entities.GuideProfile", b =>
                 {
                     b.Navigation("Bookings");
 
-                    b.Navigation("Reviews");
-                });
+                    b.Navigation("Documents");
 
-            modelBuilder.Entity("TourGuide.DAL.Entities.Guide", b =>
-                {
-                    b.Navigation("CustomTripRequests");
+                    b.Navigation("Languages");
 
-                    b.Navigation("Tours");
-                });
-
-            modelBuilder.Entity("TourGuide.DAL.Entities.Tourist", b =>
-                {
                     b.Navigation("Reviews");
 
-                    b.Navigation("TripHistory");
+                    b.Navigation("Specializations");
+                });
+
+            modelBuilder.Entity("TourGuide.DAL.Entities.Language", b =>
+                {
+                    b.Navigation("Guides");
+                });
+
+            modelBuilder.Entity("TourGuide.DAL.Entities.Specialization", b =>
+                {
+                    b.Navigation("Guides");
                 });
 #pragma warning restore 612, 618
         }

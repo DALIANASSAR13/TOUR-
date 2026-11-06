@@ -43,15 +43,17 @@ If the documents don't cover something, do not guess. Ask the team.
 
 | Project | Package | Version |
 | --- | --- | --- |
-| DAL | Microsoft.EntityFrameworkCore.SqlServer | 8.0.11 |
-| DAL | Microsoft.EntityFrameworkCore.Design | 8.0.11 |
-| DAL | Microsoft.AspNetCore.Identity.EntityFrameworkCore | 8.0.11 |
+| DAL | Microsoft.EntityFrameworkCore.SqlServer | 8.0.32 |
+| DAL | Microsoft.AspNetCore.Identity.EntityFrameworkCore | 8.0.32 |
 | BLL | AutoMapper | 14.0.0 |
 | BLL | FluentValidation | 11.11.0 |
 | BLL | FluentValidation.DependencyInjectionExtensions | 11.11.0 |
-| Web | jquery-validation + jquery-validation-unobtrusive | from the MVC template (`wwwroot/lib`) |
+| BLL | Microsoft.Extensions.Options.ConfigurationExtensions | 8.0.0 |
+| PL | Microsoft.EntityFrameworkCore.Design + Tools | 8.0.32 |
+| PL | jquery-validation + jquery-validation-unobtrusive | from the MVC template (`wwwroot/lib`) |
 
 - **Do not upgrade AutoMapper to 15 or later.** From version 15 it needs a paid commercial license. Version 14 is free (MIT).
+  AutoMapper 14.0.0 has a known DoS advisory (GHSA-rvv3-g6hj-g44x, deep recursion). The team accepted it; the `NU1903` build warning is expected. Never map self-referencing or very deep object graphs.
 - **Do not add `FluentValidation.AspNetCore`.** Its auto-validation is deprecated. Validators are called explicitly (see "Validation").
 
 ## Architecture
@@ -59,17 +61,19 @@ If the documents don't cover something, do not guess. Ask the team.
 N-Tier with 3 projects. Do **not** introduce microservices or Clean Architecture.
 
 ```
-TourGuide.sln
-src/
-  TourGuide.Web/   Presentation layer   (ASP.NET Core MVC)
+TourGuide/
+  TourGuide.sln
+  TourGuide.PL/    Presentation layer   (ASP.NET Core MVC; "Web" in the rest of this file)
   TourGuide.BLL/   Business logic layer (class library)
   TourGuide.DAL/   Data access layer    (class library, EF Core)
 ```
 
+Run `dotnet` commands from the `TourGuide/` folder (where `TourGuide.sln` is).
+
 ### Who calls whom
 
 ```
-TourGuide.Web  ──►  TourGuide.BLL  ──►  TourGuide.DAL  ──►  SQL Server
+TourGuide.PL  ──►  TourGuide.BLL  ──►  TourGuide.DAL  ──►  SQL Server
 ```
 
 - Web references BLL and DAL. It uses DAL **only** for DI registration (`AddDataAccess`) and Identity types (`ApplicationUser`, `SignInManager`, role names).
@@ -126,7 +130,7 @@ DependencyInjection.cs AddBusinessLogic(this IServiceCollection, IConfiguration)
 - Services take the current user's id as a parameter, and take and return DTOs, never entities.
 - **Forbidden:** `AppDbContext`, `HttpContext`, `SignInManager`, ViewModels, MVC types, or any reference to Web.
 
-### TourGuide.Web — presentation
+### TourGuide.PL — presentation
 
 ```
 Areas/Admin  Areas/Guide  Areas/Tourist
@@ -265,12 +269,21 @@ Name AutoMapper profiles with a `MappingProfile` or `ViewModelProfile` suffix, s
 
 No automated tests in this project. EF Core tools come from the local tool manifest (`.config/dotnet-tools.json`).
 
+From the repo root:
+
 ```bash
 dotnet tool restore
-dotnet build
-dotnet run --project src/TourGuide.Web
-dotnet ef migrations add <Name> --project src/TourGuide.DAL --startup-project src/TourGuide.Web
-dotnet ef database update --project src/TourGuide.DAL --startup-project src/TourGuide.Web
+dotnet build TourGuide/TourGuide.sln
+dotnet run --project TourGuide/TourGuide.PL
+dotnet ef migrations add <Name> --project TourGuide/TourGuide.DAL --startup-project TourGuide/TourGuide.PL --output-dir Migrations
+dotnet ef database update --project TourGuide/TourGuide.DAL --startup-project TourGuide/TourGuide.PL
+```
+
+Admin seed: the admin account is created at startup from `Seed:AdminEmail` + `Seed:AdminPassword`. Keep the password out of Git:
+
+```bash
+dotnet user-secrets set "Seed:AdminEmail" "<email>" --project TourGuide/TourGuide.PL
+dotnet user-secrets set "Seed:AdminPassword" "<password>" --project TourGuide/TourGuide.PL
 ```
 
 After editing `docs/class-diagram.md`, regenerate the HTML and PDF:
