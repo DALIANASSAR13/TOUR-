@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace TourGuide.DAL.Entities;
 
-namespace TourGuide.DAL.Entities
+// A tourist's rating of a guide for one completed booking.
+public class Review
 {
-    public class Review
-    {
-        public int Id { get; set; }
-        public double Rating { get; set; }
-        public string Comment { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public int Id { get; set; }
+    public int BookingId { get; set; }
+    public string TouristId { get; set; } = string.Empty;
+    public int GuideProfileId { get; set; }
+    public int Rating { get; set; }
+    public string? Comment { get; set; }
+    public DateTime CreatedAtUtc { get; set; }
 
-        public int TourId { get; set; }
-        public Tour Tour { get; set; } = null!;
-
-        public int TouristId { get; set; }
-        public Tourist Tourist { get; set; } = null!;
-    }
+    public Booking Booking { get; set; } = null!;
+    public ApplicationUser Tourist { get; set; } = null!;
+    public GuideProfile GuideProfile { get; set; } = null!;
 }

@@ -103,3 +103,5 @@ appsettings.Local.json
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+## ---------- Uploaded files (guide documents, photos) ----------
+App_Data/

@@ -7,11 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TourGuide.DAL\TourGuide.DAL.csproj" />
+    <!-- Keep AutoMapper on 14.x: version 15+ needs a paid license. -->
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\TourGuide.DAL\TourGuide.DAL.csproj" />
   </ItemGroup>
 
 </Project>

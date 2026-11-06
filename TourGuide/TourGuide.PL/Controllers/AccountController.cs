@@ -1,48 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TourGuide.BLL.BusinessLogic;
-using TourGuide.DAL.Data.Enums;
+using TourGuide.PL.ViewModels;
 
 namespace TourGuide.PL.Controllers
 {
     public class AccountController : Controller
     {
-
-        private readonly AccountBL _accountBL  = new AccountBL();
-        public AccountController()
-        {
-            _accountBL = new AccountBL();
-        }
-
         [HttpGet]
         public IActionResult Login()
         {
             return View(new LoginViewModel());
         }
 
-
+        // Real sign-in with SignInManager comes in WORK_ORDER cycle 1.1.a.
         [HttpPost]
-        public IActionResult Login(LoginViewModel LoginVM)
+        public IActionResult Login(LoginViewModel model)
         {
-            if (!ModelState.IsValid)
-                return View(LoginVM);
+            if (ModelState.IsValid)
+                ModelState.AddModelError(string.Empty, "Sign-in is not connected yet (cycle 1.1.a).");
 
-            var userId = _accountBL.FindUserId(LoginVM.Email, LoginVM.Role);
-
-            if (userId == null)
-            {
-                ModelState.AddModelError("", "No account found with this email for the selected role.");
-                return View(LoginVM);
-            }
-
-            return LoginVM.Role switch
-            {
-                UserRole.Guide => RedirectToAction("Dashboard", "Guides" , new { id = userId }),
-                _ => RedirectToAction("Index", "Home")
-            };
-
+            return View(model);
         }
-
-
-
     }
 }

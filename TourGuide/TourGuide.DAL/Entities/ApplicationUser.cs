@@ -1,22 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TourGuide.DAL.Data.Enums;
+using Microsoft.AspNetCore.Identity;
 
-namespace TourGuide.DAL.Entities
+namespace TourGuide.DAL.Entities;
+
+// One account class for Tourist, Guide and Admin. The role is an Identity role (Constants/Roles).
+public class ApplicationUser : IdentityUser
 {
+    public string FullName { get; set; } = string.Empty;
+    public string CountryCode { get; set; } = string.Empty;
+    public DateTime CreatedAtUtc { get; set; }
 
-    public class ApplicationUser : IdentityUser<int>
-    {
-        public string FullName { get; set; } = string.Empty;
-        public UserRole Role { get; set; }
-        public string? ProfileImageUrl { get; set; }
-        public string? GoogleId { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public string Country { get; set; } = string.Empty;
-    }
-
+    public GuideProfile? GuideProfile { get; set; }
+    public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    public ICollection<Review> Reviews { get; set; } = new List<Review>();
 }

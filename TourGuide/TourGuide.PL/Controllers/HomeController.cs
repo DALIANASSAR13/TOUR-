@@ -1,25 +1,17 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using TourGuide.BLL.BusinessLogic;
 using TourGuide.PL.Models;
+using TourGuide.PL.ViewModels;
 
 namespace TourGuide.PL.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly ToursBL _toursBL;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-            _toursBL = new ToursBL();
-        }
-
+        // Tours were removed (out of scope in the SRS). The home page shows top-rated guides
+        // once search is built (WORK_ORDER 2.4); until then the list is empty.
         public IActionResult Index()
         {
-            var homeData = _toursBL.GetHomeData();
-            return View(homeData);
+            return View(new HomeViewModel());
         }
 
         public IActionResult Privacy()

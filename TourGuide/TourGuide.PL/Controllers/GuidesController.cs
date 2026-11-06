@@ -1,30 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TourGuide.DAL.Entities;
-using TourGuide.BLL.BusinessLogic;
+using TourGuide.PL.ViewModels;
 
 namespace TourGuide.PL.Controllers
 {
+    // Placeholder pages until their cycles: guide search (WORK_ORDER 2.4) and the guide dashboard (2.7).
     public class GuidesController : Controller
     {
-        private readonly GuidesBL _guideBL = new GuidesBL();
-
         public IActionResult Index(string? search)
         {
-            var GuidesList = _guideBL.GetGuidesList(search);
-            return View(GuidesList);
+            return View(new GuideListViewModel { Search = search });
         }
 
-
-        public IActionResult Dashboard(int id)
+        public IActionResult Dashboard()
         {
-            var guideDashboard = _guideBL.GetDashboard(id);
-
-            if (guideDashboard == null)
-                return NotFound();
-
-            return View(guideDashboard);
+            return View(new GuideDashboardViewModel());
         }
-
-
     }
 }

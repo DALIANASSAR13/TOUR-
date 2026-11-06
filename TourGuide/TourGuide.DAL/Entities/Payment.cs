@@ -1,22 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TourGuide.DAL.Data.Enums;
+namespace TourGuide.DAL.Entities;
 
-namespace TourGuide.DAL.Entities
+// A simulated payment. Holds no card data (NFR-04).
+public class Payment
 {
-    public class Payment
-    {
-        public int Id { get; set; }
-        public PaymentMethod Method { get; set; }
-        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
-        public decimal GuideFee { get; set; }
-        public decimal PlatformFee { get; set; }
-        public DateTime? PaidAt { get; set; }
+    public int Id { get; set; }
+    public int BookingId { get; set; }
+    public decimal Amount { get; set; }
+    public string TransactionReference { get; set; } = string.Empty;
+    public DateTime PaidAtUtc { get; set; }
 
-        public int BookingId { get; set; }
-        public Booking Booking { get; set; } = null!;
-    }
+    public Booking Booking { get; set; } = null!;
 }
