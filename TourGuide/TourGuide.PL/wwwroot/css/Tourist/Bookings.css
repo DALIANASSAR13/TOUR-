@@ -1,0 +1,144 @@
+/* My Bookings — UI screen 6 */
+.mb-page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 48px 16px 64px;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: #1f2933;
+}
+
+.mb-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.mb-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: 2.6rem;
+    margin: 0;
+}
+
+.mb-subtitle { color: #5b6670; margin: 4px 0 0; }
+
+/* Buttons */
+.mb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 600;
+    font-size: .95rem;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.mb-btn:disabled { cursor: not-allowed; opacity: .75; }
+.mb-btn-primary { background: #0b6a8a; color: #fff; }
+.mb-btn-primary:hover:not(:disabled) { background: #095a75; color: #fff; }
+.mb-btn-danger { background: #fde2e2; color: #b42318; }
+.mb-btn-light { background: #e8eaed; color: #1f2933; }
+.mb-btn-light:hover { background: #dadde1; color: #1f2933; }
+
+/* Chips */
+.mb-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.mb-chip {
+    border: 1px solid #d6dbe0;
+    background: #fff;
+    color: #1f2933;
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: .92rem;
+    cursor: pointer;
+}
+.mb-chip.is-active { background: #0b6a8a; border-color: #0b6a8a; color: #fff; }
+
+/* Cards */
+.mb-list { display: flex; flex-direction: column; gap: 16px; }
+
+.mb-card {
+    display: flex;
+    background: #fff;
+    border: 1px solid #e3e6ea;
+    border-radius: 14px;
+    overflow: hidden;
+}
+.mb-card[hidden] { display: none; }
+
+.mb-photo {
+    flex: 0 0 180px;
+    background: #dde6ea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5b6670;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2rem;
+}
+
+.mb-body { flex: 1; padding: 18px 22px; min-width: 0; }
+
+.mb-top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.mb-ref { color: #5b6670; font-size: .88rem; }
+
+.mb-badge { border-radius: 999px; padding: 3px 12px; font-size: .82rem; font-weight: 600; }
+.mb-badge-pending   { background: #fef3c7; color: #92600a; }
+.mb-badge-accepted  { background: #dbeef5; color: #0b6a8a; }
+.mb-badge-confirmed { background: #dcf3e5; color: #1d7a46; }
+.mb-badge-completed { background: #e8eaed; color: #3e4a54; }
+.mb-badge-rejected  { background: #fde2e2; color: #b42318; }
+.mb-badge-cancelled { background: #ede9f6; color: #5b4b8a; }
+
+.mb-guide {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.45rem;
+    font-weight: 600;
+    margin: 12px 0 4px;
+}
+.mb-location { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 1rem; font-weight: 400; color: #5b6670; }
+
+.mb-when { margin: 0 0 4px; color: #3e4a54; }
+.mb-note { margin: 0; color: #5b6670; font-size: .95rem; }
+.mb-note.is-warning { color: #92600a; }
+
+.mb-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    border-top: 1px solid #eceef1;
+    margin-top: 14px;
+    padding-top: 14px;
+}
+.mb-price strong { font-size: 1.3rem; }
+.mb-price span { color: #5b6670; font-size: .92rem; }
+
+.mb-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mb-rating { color: #1f2933; font-size: .95rem; margin-right: 6px; }
+
+/* Empty states */
+.mb-empty {
+    background: #fff;
+    border: 1px dashed #d6dbe0;
+    border-radius: 14px;
+    padding: 48px 16px;
+    text-align: center;
+}
+.mb-empty h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.5rem; }
+.mb-empty p { color: #5b6670; }
+.mb-empty-filter { color: #5b6670; text-align: center; margin-top: 24px; }
+
+/* Phone (nice-to-have, NFR) */
+@media (max-width: 640px) {
+    .mb-title { font-size: 2rem; }
+    .mb-card { flex-direction: column; }
+    .mb-photo { flex-basis: 96px; }
+    .mb-foot { flex-direction: column; align-items: flex-start; }
+}

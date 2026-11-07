@@ -31,7 +31,8 @@ builder.Services
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Account/Login";
+    // TEMPORARY: until Cycle 1.1.a, Development sends sign-in to the one-click /DevLogin page.
+    options.LoginPath = builder.Environment.IsDevelopment() ? "/DevLogin" : "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 

@@ -4,7 +4,7 @@ The project's current state. Read it at the start of every work cycle and update
 
 **Last updated:** 2026-11-07
 **Phase:** Phase 1 — Foundations (cycles 1.0.a – 1.0.c done) · Phase 2 cycle 2.8.a planned
-**Branch:** `List-Booking` (Cycle 2.8.a; demo seed added here)
+**Branch:** `List-Bookings` (Cycle 2.8.a; demo seed added here)
 
 ## Done
 
@@ -37,7 +37,7 @@ Newest first. Add the team's decisions here; the full documents hold the details
 | Date | Decision |
 | --- | --- |
 | 2026-11-07 | Demo data is seeded at startup by code (needs `UserManager` for hashed passwords), not by migration; Development only, runs once when no guide profile exists. Limits come from `BookingRules` via `DemoSeedSettings`. |
-| 2026-11-07 | Branch per feature, e.g. `List-Booking` for Cycle 2.8.a (NFR-08). |
+| 2026-11-07 | Branch per feature, e.g. `List-Bookings` for Cycle 2.8.a (NFR-08). |
 | 2026-11-06 | Code follows the SRS, not the earlier tour-package model: `Tour`, `Tourist`, `Guide` (TPH), `CustomTripRequest`, `Notification` and their migrations were removed. |
 | 2026-11-06 | Keep the team's project names and folder: `TourGuide/TourGuide.sln` with `TourGuide.PL` (= "Web" in the docs), `TourGuide.BLL`, `TourGuide.DAL`. EF Core and tools 8.0.32. |
 | 2026-11-06 | Identity uses the default `string` key (Class Specs), not `int`. |
@@ -52,6 +52,7 @@ Newest first. Add the team's decisions here; the full documents hold the details
 ## Known issues
 
 - **Demo password in Git:** `Seed:DemoPassword` is in `appsettings.json` for local use; never enable `Seed:DemoData` outside Development. To reseed: `dotnet ef database drop --force` then `database update`.
+- **TEMPORARY dev login (2026-11-07):** `Controllers/DevLoginController.cs`, `Views/DevLogin/Index.cshtml`, `ViewModels/DevLoginUserViewModel.cs`, the red "Dev login" link in `_Layout.cshtml`, and `LoginPath = /DevLogin` in Development (`Program.cs`). Lets testers sign in as a demo user; 404 outside Development. **Remove all of it in Cycle 1.1.a.**
 - **Package Manager Console:** `dotnet ef database drop` hangs on the y/N prompt; add `--force`.
 - **Open questions (2.8.a):** booking ref format `TG-0000` (`Id:D4`)?; "auto-cancels within X h" computed from `CreatedAtUtc` + `BookingRules.PendingExpiryHours`?
 - **Existing local databases:** `TourGuideDb` on each machine still has the old tour schema. Drop it, then run `dotnet ef database update` (see `AGENTS.md` → Commands).

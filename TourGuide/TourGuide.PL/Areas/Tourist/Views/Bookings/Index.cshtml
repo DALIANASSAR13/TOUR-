@@ -1,0 +1,108 @@
+@model MyBookingsViewModel
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<link rel="stylesheet" href="~/css/Tourist/Bookings.css" asp-append-version="true" />
+
+<section class="mb-page">
+    <div class="mb-head">
+        <div>
+            <h1 class="mb-title">My Bookings</h1>
+            <p class="mb-subtitle">Your requests, payments and past trips in one place.</p>
+        </div>
+        <a asp-area="" asp-controller="Search" asp-action="Index" class="mb-btn mb-btn-primary">Find a guide</a>
+    </div>
+
+    @if (!Model.Bookings.Any())
+    {
+        <div class="mb-empty">
+            <h2>You have no bookings yet.</h2>
+            <p>Find a verified local guide and send your first request.</p>
+            <a asp-area="" asp-controller="Search" asp-action="Index" class="mb-btn mb-btn-primary">Find a guide</a>
+        </div>
+    }
+    else
+    {
+        <div class="mb-chips" role="tablist" aria-label="Filter by status">
+            <button type="button" class="mb-chip is-active" role="tab" aria-selected="true" data-filter="all">All (@Model.Bookings.Count)</button>
+            @foreach (var status in MyBookingsViewModel.ChipOrder)
+            {
+                <button type="button" class="mb-chip" role="tab" aria-selected="false" data-filter="@status.ToString().ToLowerInvariant()">@status (@Model.CountOf(status))</button>
+            }
+        </div>
+
+        <div class="mb-list">
+            @foreach (var b in Model.Bookings)
+            {
+                <article class="mb-card" data-status="@b.StatusCss">
+                    <div class="mb-photo" aria-hidden="true"><span>@b.Initials</span></div>
+
+                    <div class="mb-body">
+                        <div class="mb-top">
+                            <span class="mb-badge mb-badge-@b.StatusCss">@b.Status</span>
+                            <span class="mb-ref">Ref #@b.Reference · @b.SentText</span>
+                        </div>
+
+                        <h2 class="mb-guide">@b.GuideName <span class="mb-location">· @b.Location</span></h2>
+                        <p class="mb-when">@b.WhenText</p>
+                        <p class="mb-note @(b.IsWarningNote ? "is-warning" : "")">@b.StatusNote(Model.NowUtc)</p>
+
+                        <div class="mb-foot">
+                            <div class="mb-price">
+                                <strong>@b.TotalText</strong> <span>@b.PriceDetail</span>
+                            </div>
+                            <div class="mb-actions">
+                                @* Buttons follow the status (BR-07). Their actions arrive in 2.9 (pay), 2.8.b (withdraw), 3.2 (review). *@
+                                @if (b.CanPay)
+                                {
+                                    <button type="button" class="mb-btn mb-btn-primary" disabled title="Not available yet">Pay now</button>
+                                }
+                                @if (b.CanWithdraw)
+                                {
+                                    <button type="button" class="mb-btn mb-btn-danger" disabled title="Not available yet">Withdraw request</button>
+                                }
+                                @if (b.CanReview)
+                                {
+                                    <button type="button" class="mb-btn mb-btn-primary" disabled title="Not available yet">Write a review</button>
+                                }
+                                @if (b.ReviewRating is not null)
+                                {
+                                    <span class="mb-rating">Your rating <span aria-label="@b.ReviewRating of 5 stars">@b.Stars</span></span>
+                                }
+                                <a asp-area="" asp-controller="GuideProfile" asp-action="Details" asp-route-id="@b.GuideProfileId" class="mb-btn mb-btn-light">Guide profile</a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+
+        <p class="mb-empty-filter" hidden>No bookings with this status.</p>
+    }
+</section>
+
+@section Scripts {
+    <script>
+        // Status chips filter the cards in the page (no reload).
+        (function () {
+            const chips = document.querySelectorAll('.mb-chip');
+            const cards = document.querySelectorAll('.mb-card');
+            const none = document.querySelector('.mb-empty-filter');
+            chips.forEach(chip => chip.addEventListener('click', () => {
+                const filter = chip.dataset.filter;
+                chips.forEach(c => {
+                    c.classList.toggle('is-active', c === chip);
+                    c.setAttribute('aria-selected', c === chip ? 'true' : 'false');
+                });
+                let shown = 0;
+                cards.forEach(card => {
+                    const show = filter === 'all' || card.dataset.status === filter;
+                    card.hidden = !show;
+                    if (show) shown++;
+                });
+                if (none) none.hidden = shown > 0;
+            }));
+        })();
+    </script>
+}
