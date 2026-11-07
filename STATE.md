@@ -2,9 +2,9 @@
 
 The project's current state. Read it at the start of every work cycle and update it at the end (see `AGENTS.md` → "Work cycle").
 
-**Last updated:** 2026-11-06
-**Phase:** Phase 1 — Foundations (cycles 1.0.a – 1.0.c done)
-**Branch:** `cycle-1/foundation` (not merged to `main` yet)
+**Last updated:** 2026-11-07
+**Phase:** Phase 1 — Foundations (cycles 1.0.a – 1.0.c done) · Phase 2 cycle 2.8.a planned
+**Branch:** `List-Booking` (Cycle 2.8.a; demo seed added here)
 
 ## Done
 
@@ -14,14 +14,17 @@ The project's current state. Read it at the start of every work cycle and update
 - [x] **Cycle 1.0.c — Seed data:** 3 roles (migration), 9 languages and 5 specializations (migration), admin account at startup from `Seed:AdminEmail` + `Seed:AdminPassword` (user secrets)
 - [x] Checked on a throw-away database: all 17 tables, constraints and seed rows created; app starts; `/`, `/Account/Login`, `/Guides`, `/Guides/Dashboard`, `/Home/Privacy` return 200; admin created with a hashed password and the Admin role
 
+- [x] **Demo seed (all tables):** `DAL/Data/Seed/DemoDataSeeder.cs`, called from `Program.cs` in Development when `Seed:DemoData` is true. 14 users (admin, 3 tourists, 10 guides), 10 guide profiles (7 approved + complete, 1 approved incomplete, 1 pending, 1 rejected), 30 documents (placeholder PDFs in `App_Data/uploads`), language/specialization links, 15 bookings in all 6 statuses, 9 payments, 4 reviews. Logins: `<first>.<last>@tourguide.local` / `Seed:DemoPassword`. Emma Schmidt's bookings match UI screen 6.
+
 ## In progress
 
-- [ ] —
+- [ ] **Cycle 2.8.a — List my bookings (FR-15):** planned in `tasks/FR-15-2.8.a.md`; not built yet
 
 ## Next
 
 Follow `docs/WORK_ORDER.md` in order. With the `build` skill: `plan <cycle>` → `build <cycle>` → `review <cycle>` → `done`.
 
+0. Decide: build Cycle 1.1.a (login) before 2.8.a, or 2.8.a first (it cannot be tested without login) — see open questions in `tasks/FR-15-2.8.a.md`
 1. Cycle 1.1.a — Log in / log out (FR-03): replace the placeholder `AccountController.Login` POST with `SignInManager`
 2. Cycle 1.1.b — Role access (areas, `[Authorize(Roles)]`, access-denied page)
 3. Cycle 1.2.a — Tourist sign-up (FR-01)
@@ -33,6 +36,8 @@ Newest first. Add the team's decisions here; the full documents hold the details
 
 | Date | Decision |
 | --- | --- |
+| 2026-11-07 | Demo data is seeded at startup by code (needs `UserManager` for hashed passwords), not by migration; Development only, runs once when no guide profile exists. Limits come from `BookingRules` via `DemoSeedSettings`. |
+| 2026-11-07 | Branch per feature, e.g. `List-Booking` for Cycle 2.8.a (NFR-08). |
 | 2026-11-06 | Code follows the SRS, not the earlier tour-package model: `Tour`, `Tourist`, `Guide` (TPH), `CustomTripRequest`, `Notification` and their migrations were removed. |
 | 2026-11-06 | Keep the team's project names and folder: `TourGuide/TourGuide.sln` with `TourGuide.PL` (= "Web" in the docs), `TourGuide.BLL`, `TourGuide.DAL`. EF Core and tools 8.0.32. |
 | 2026-11-06 | Identity uses the default `string` key (Class Specs), not `int`. |
@@ -46,6 +51,9 @@ Newest first. Add the team's decisions here; the full documents hold the details
 
 ## Known issues
 
+- **Demo password in Git:** `Seed:DemoPassword` is in `appsettings.json` for local use; never enable `Seed:DemoData` outside Development. To reseed: `dotnet ef database drop --force` then `database update`.
+- **Package Manager Console:** `dotnet ef database drop` hangs on the y/N prompt; add `--force`.
+- **Open questions (2.8.a):** booking ref format `TG-0000` (`Id:D4`)?; "auto-cancels within X h" computed from `CreatedAtUtc` + `BookingRules.PendingExpiryHours`?
 - **Existing local databases:** `TourGuideDb` on each machine still has the old tour schema. Drop it, then run `dotnet ef database update` (see `AGENTS.md` → Commands).
 - **Seed lists to confirm:** languages (English, Arabic, French, German, Spanish, Italian, Russian, Chinese, Japanese) and specializations (Historical, Camping, Cruise, Walking, Photography, from the old `TourType`). Change `Data/Seed/LookupSeed.cs` + add a migration if the team wants others.
 - **Admin email not decided:** the admin is created only when `Seed:AdminEmail` and `Seed:AdminPassword` are set (user secrets).
@@ -60,6 +68,7 @@ Newest first. One row per work cycle.
 
 | Date | What changed | Build |
 | --- | --- | --- |
+| 2026-11-07 | Planned Cycle 2.8.a (`tasks/FR-15-2.8.a.md`); added `DemoDataSeeder` for all tables + `Seed:DemoData`/`DemoPassword` settings | Build passed on the team's machine; DB dropped, updated and seeded |
 | 2026-11-06 | Cycles 1.0.a – 1.0.c on `cycle-1/foundation`: new data model + `InitialCreate`, BLL/PL skeleton, seed; old tour model removed; ViewModels moved to PL; `AGENTS.md` paths fixed to `TourGuide/TourGuide.*` | Passes (only `NU1903` AutoMapper warning); migration applied to a test DB; 5 pages return 200 |
 | 2026-11-06 | Tried a 6-member version of `docs/WORK_ORDER.md`, then restored the cycles version on request; added `WORK_ORDER.html` and `.pdf`; `.build/make_html.py` now takes a doc name | PDF 11 pages |
 | 2026-11-06 | Installed `manage-project` and `build` skills; exported `docs/SRS.md`, `docs/CLASSES_SPECS.md`; wrote `docs/WORK_ORDER.md` | Not run (no code changed) |
