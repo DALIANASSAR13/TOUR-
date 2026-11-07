@@ -57,7 +57,8 @@ Newest first. Add the team's decisions here; the full documents hold the details
 - **Existing local databases:** `TourGuideDb` on each machine still has the old tour schema. Drop it, then run `dotnet ef database update` (see `AGENTS.md` → Commands).
 - **Seed lists to confirm:** languages (English, Arabic, French, German, Spanish, Italian, Russian, Chinese, Japanese) and specializations (Historical, Camping, Cruise, Walking, Photography, from the old `TourType`). Change `Data/Seed/LookupSeed.cs` + add a migration if the team wants others.
 - **Admin email not decided:** the admin is created only when `Seed:AdminEmail` and `Seed:AdminPassword` are set (user secrets).
-- **Placeholder pages:** home (no tours/guides yet), `/Guides` and `/Guides/Dashboard` show empty data until cycles 2.4 and 2.7; Login POST shows "not connected yet" until 1.1.a. `TourViewModel` and the tour parts of the home and dashboard views are left for those cycles to replace.
+- **Old tour UI removed (2026-11-07):** `GuidesController`, `Views/Guides`, tour/guide placeholder ViewModels, `css/Guides`, `Images/tours` and the home "Featured Tours" section. "Find Guides" links point to `Search/Index` (404 until cycle 2.4). Kept: home hero + features, `Login` view, layout, error page.
+- **(old) Placeholder pages:** home (no tours/guides yet), `/Guides` and `/Guides/Dashboard` show empty data until cycles 2.4 and 2.7; Login POST shows "not connected yet" until 1.1.a. `TourViewModel` and the tour parts of the home and dashboard views are left for those cycles to replace.
 - .NET 8 support ends on 2026-11-10.
 - The `build` skill reads `docs/STATE.md`, but this file is at the project root (`AGENTS.md` points here). One of them needs to change.
 - The skills mention tests per cycle; the team chose no automated tests, so `WORK_ORDER.md` uses manual checks instead.

@@ -1,17 +1,15 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using TourGuide.PL.Models;
-using TourGuide.PL.ViewModels;
 
 namespace TourGuide.PL.Controllers
 {
     public class HomeController : Controller
     {
-        // Tours were removed (out of scope in the SRS). The home page shows top-rated guides
-        // once search is built (WORK_ORDER 2.4); until then the list is empty.
+        // Static landing page (UI screen 1). Top-rated guides are added with search (WORK_ORDER 2.4).
         public IActionResult Index()
         {
-            return View(new HomeViewModel());
+            return View();
         }
 
         public IActionResult Privacy()
