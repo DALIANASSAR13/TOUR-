@@ -399,7 +399,7 @@ namespace TourGuide.DAL.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("GuideLanguages");
+                    b.ToTable("GuideLanguages", (string)null);
                 });
 
             modelBuilder.Entity("TourGuide.DAL.Entities.GuideProfile", b =>
@@ -496,7 +496,7 @@ namespace TourGuide.DAL.Migrations
 
                     b.HasIndex("SpecializationId");
 
-                    b.ToTable("GuideSpecializations");
+                    b.ToTable("GuideSpecializations", (string)null);
                 });
 
             modelBuilder.Entity("TourGuide.DAL.Entities.Language", b =>
@@ -517,7 +517,7 @@ namespace TourGuide.DAL.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Languages");
+                    b.ToTable("Languages", (string)null);
 
                     b.HasData(
                         new
@@ -665,7 +665,7 @@ namespace TourGuide.DAL.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Specializations");
+                    b.ToTable("Specializations", (string)null);
 
                     b.HasData(
                         new

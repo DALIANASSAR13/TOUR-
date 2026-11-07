@@ -2,6 +2,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TourGuide.BLL;
+using TourGuide.BLL.Domain;
+using TourGuide.BLL.Options;
 using TourGuide.DAL;
 using TourGuide.DAL.Data;
 using TourGuide.DAL.Data.Seed;
@@ -57,6 +59,19 @@ else
 try
 {
     await AdminSeeder.SeedAsync(app.Services, app.Configuration, app.Logger);
+
+    // Demo data for every table, Development only and only when Seed:DemoData is true.
+    if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("Seed:DemoData"))
+    {
+        var storage = app.Configuration.GetSection(FileStorageOptions.SectionName).Get<FileStorageOptions>() ?? new FileStorageOptions();
+        await DemoDataSeeder.SeedAsync(app.Services, new DemoSeedSettings(
+            Password: app.Configuration["Seed:DemoPassword"]
+                      ?? throw new InvalidOperationException("Set Seed:DemoPassword to seed demo data."),
+            UploadsRootPath: Path.Combine(app.Environment.ContentRootPath, storage.RootPath),
+            HoursPerDay: BookingRules.HoursPerDay,
+            PendingExpiryHours: BookingRules.PendingExpiryHours,
+            PaymentWindowHours: BookingRules.PaymentWindowHours), app.Logger);
+    }
 }
 catch (Exception ex)
 {
