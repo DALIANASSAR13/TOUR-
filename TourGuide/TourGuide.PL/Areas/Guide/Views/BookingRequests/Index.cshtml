@@ -72,7 +72,8 @@
                                 <strong>@b.TotalText</strong> <span>@b.PriceDetail</span>
                             </div>
                             <div class="mb-actions">
-                                @* Buttons follow the status (BR-06). Reject arrives in 2.7.c. *@
+                                @* Buttons follow the status (BR-06): Accept and Reject only on Pending.
+                                   Reject is final, so it opens an inline confirm first (no browser dialog, no JS). *@
                                 @if (b.CanAccept)
                                 {
                                     <form method="post" asp-action="Accept" asp-route-id="@b.Id" class="d-inline">
@@ -81,7 +82,15 @@
                                 }
                                 @if (b.CanReject)
                                 {
-                                    <button type="button" class="mb-btn mb-btn-danger" disabled title="Not available yet">Reject</button>
+                                    <details class="mb-confirm">
+                                        <summary class="mb-btn mb-btn-danger">Reject</summary>
+                                        <div class="mb-confirm-panel" role="group" aria-label="Confirm reject">
+                                            <span>Reject #@(b.Reference)? This cannot be undone.</span>
+                                            <form method="post" asp-action="Reject" asp-route-id="@b.Id" class="d-inline">
+                                                <button type="submit" class="mb-btn mb-btn-danger">Yes, reject</button>
+                                            </form>
+                                        </div>
+                                    </details>
                                 }
                                 @if (b.ReviewRating is not null)
                                 {

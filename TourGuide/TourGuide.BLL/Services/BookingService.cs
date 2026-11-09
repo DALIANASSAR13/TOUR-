@@ -133,10 +133,20 @@ public class BookingService : IBookingService
         return Result<List<BookingDto>>.Ok(dtos);
     }
 
-    // FR-13: Pending -> Accepted by the owner guide. BR-01 approved guide, NFR-01 owner only,
-    // BR-06 not expired, BR-09 no overlap, BR-08 deadline (set by the state machine), RowVersion on save.
-    public async Task<Result> AcceptAsync(string guideUserId, int bookingId, CancellationToken ct = default)
+    // FR-13: Pending -> Accepted by the owner guide. BR-09 no overlap, BR-08 deadline (set by the state machine).
+    public Task<Result> AcceptAsync(string guideUserId, int bookingId, CancellationToken ct = default) =>
+        RespondAsync(guideUserId, bookingId, BookingStatus.Accepted, ct);
+
+    // FR-13: Pending -> Rejected by the owner guide. BR-06: only Pending; Rejected is final.
+    public Task<Result> RejectAsync(string guideUserId, int bookingId, CancellationToken ct = default) =>
+        RespondAsync(guideUserId, bookingId, BookingStatus.Rejected, ct);
+
+    // The guide's answer to a request. BR-01 approved guide, NFR-01 owner only, BR-05 state machine,
+    // BR-06 not expired, RowVersion on save.
+    private async Task<Result> RespondAsync(string guideUserId, int bookingId, BookingStatus to, CancellationToken ct)
     {
+        var verb = to == BookingStatus.Accepted ? "accepted" : "rejected";
+
         var guide = await _uow.GuideProfiles.GetByUserIdAsync(guideUserId, ct);
         if (guide is null || guide.VerificationStatus != VerificationStatus.Approved)
             return Result.Fail(ErrorCodes.GuideNotApproved, "Your account is not approved yet.");
@@ -145,20 +155,21 @@ public class BookingService : IBookingService
         if (booking is null || booking.GuideProfileId != guide.Id)
             return Result.Fail(ErrorCodes.NotFound, "This request was not found.");
 
-        if (!_stateMachine.CanChange(booking.Status, BookingStatus.Accepted, Actor.Guide))
+        if (!_stateMachine.CanChange(booking.Status, to, Actor.Guide))
             return Result.Fail(ErrorCodes.InvalidStatusChange,
-                $"This request is already {booking.Status.ToString().ToLowerInvariant()} and cannot be accepted.");
+                $"This request is already {booking.Status.ToString().ToLowerInvariant()} and cannot be {verb}.");
 
         var now = _time.GetUtcNow().UtcDateTime;
         if (booking.CreatedAtUtc.AddHours(BookingRules.PendingExpiryHours) <= now)             // BR-06
             return Result.Fail(ErrorCodes.InvalidStatusChange,
                 $"This request has expired. Requests must be answered within {BookingRules.PendingExpiryHours} hours.");
 
-        if (await _uow.Bookings.HasOverlapAsync(guide.Id, booking.StartUtc, booking.EndUtc, booking.Id, ct)) // BR-09
+        if (to == BookingStatus.Accepted
+            && await _uow.Bookings.HasOverlapAsync(guide.Id, booking.StartUtc, booking.EndUtc, booking.Id, ct)) // BR-09
             return Result.Fail(ErrorCodes.Overlap,
                 "This request overlaps another booking you have accepted or confirmed.");
 
-        var change = _stateMachine.Apply(booking, BookingStatus.Accepted, Actor.Guide, now);  // BR-05, BR-08
+        var change = _stateMachine.Apply(booking, to, Actor.Guide, now);                     // BR-05, BR-08
         if (!change.Succeeded)
             return change;
 

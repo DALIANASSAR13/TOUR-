@@ -57,4 +57,20 @@ public class BookingRequestsController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    // POST /Guide/BookingRequests/Reject/5 — FR-13. PRG back to the list with a message.
+    [HttpPost]
+    public async Task<IActionResult> Reject(int id, CancellationToken ct)
+    {
+        if (_currentUser.UserId is not { } userId)
+            return Challenge();
+
+        var result = await _bookings.RejectAsync(userId, id, ct);
+        if (result.Succeeded)
+            TempData["BookingMessage"] = $"Request #{BookingItemViewModel.RefOf(id)} rejected.";
+        else
+            TempData["BookingError"] = result.Message;
+
+        return RedirectToAction(nameof(Index));
+    }
 }
