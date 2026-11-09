@@ -5,6 +5,8 @@ using TourGuide.BLL.Domain;
 using TourGuide.BLL.Domain.Interfaces;
 using TourGuide.BLL.DTOs.Booking;
 using TourGuide.BLL.Services.Interfaces;
+using TourGuide.BLL.Validators;
+using TourGuide.DAL.Entities;
 using TourGuide.DAL.Enums;
 using TourGuide.DAL.UnitOfWork;
 
@@ -16,14 +18,55 @@ public class BookingService : IBookingService
     private readonly IMapper _mapper;
     private readonly IPriceCalculator _price;
     private readonly IValidator<CreateBookingRequest> _createValidator;
+    private readonly TimeProvider _time;
 
     public BookingService(IUnitOfWork uow, IMapper mapper, IPriceCalculator price,
-        IValidator<CreateBookingRequest> createValidator)
+        IValidator<CreateBookingRequest> createValidator, TimeProvider time)
     {
         _uow = uow;
         _mapper = mapper;
         _price = price;
         _createValidator = createValidator;
+        _time = time;
+    }
+
+    // FR-11: BR-04 (validator, "Create" rule set), BR-02 (bookable guide), BR-11 (price copied now).
+    // The guide-local start is stored in UTC (Class Specs §5). New requests start as Pending.
+    public async Task<Result<BookingDto>> CreateAsync(string touristId, CreateBookingRequest request, CancellationToken ct = default)
+    {
+        var validation = await _createValidator.ValidateAsync(request,
+            o => o.IncludeRulesNotInRuleSet().IncludeRuleSets(CreateBookingValidator.CreateRuleSet), ct);
+        if (!validation.IsValid)
+            return Result<BookingDto>.Invalid(validation.Errors
+                .Select(e => new ValidationError(e.PropertyName, e.ErrorMessage)).ToList());
+
+        var guide = await _uow.GuideProfiles.GetWithDetailsAsync(request.GuideProfileId, ct);
+        if (guide is null || !GuideRules.IsBookable(guide))
+            return Result<BookingDto>.Fail(ErrorCodes.GuideNotBookable, "This guide cannot be booked right now.");
+
+        var times = BookingTimes.Resolve(request, BookingTimes.FindZone(guide.TimeZoneId!));
+        if (times is not { } span)
+            return Result<BookingDto>.Invalid(new List<ValidationError>
+            {
+                new(nameof(CreateBookingRequest.StartTime), "Choose a valid start time."),
+            });
+
+        var booking = _mapper.Map<Booking>(request);
+        booking.TouristId = touristId;
+        booking.StartUtc = span.StartUtc;
+        booking.EndUtc = span.EndUtc;
+        booking.BillableHours = _price.BillableHours(request.BookingType, request.Hours, request.Days);
+        booking.PricePerHourAtRequest = guide.PricePerHour!.Value;
+        booking.TotalPrice = _price.Total(booking.BillableHours, booking.PricePerHourAtRequest);
+        booking.Status = BookingStatus.Pending;
+        booking.CreatedAtUtc = _time.GetUtcNow().UtcDateTime;
+
+        await _uow.Bookings.AddAsync(booking, ct);
+        await _uow.SaveChangesAsync(ct);
+
+        var dto = _mapper.Map<BookingDto>(booking);
+        SetAllowedActions(dto);
+        return Result<BookingDto>.Ok(dto);
     }
 
     // FR-12, BR-11: price before sending. BR-02: only a bookable guide. Read-only (NFR-05).

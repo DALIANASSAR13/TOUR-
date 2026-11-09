@@ -142,3 +142,6 @@
     .mb-photo { flex-basis: 96px; }
     .mb-foot { flex-direction: column; align-items: flex-start; }
 }
+
+/* Success message after sending a request (FR-11) */
+.mb-flash { background: #e6f4ea; color: #1e6b3a; border: 1px solid #b7dfc3; border-radius: 10px; padding: 12px 16px; margin-bottom: 20px; font-weight: 500; }

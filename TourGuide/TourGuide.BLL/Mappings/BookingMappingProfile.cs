@@ -22,5 +22,11 @@ public class BookingMappingProfile : Profile
             .ForMember(d => d.CanPay, o => o.Ignore())
             .ForMember(d => d.CanWithdraw, o => o.Ignore())
             .ForMember(d => d.CanReview, o => o.Ignore());
+
+        // FR-11: copies GuideProfileId, BookingType, Hours, Days only. Price, status, dates and the tourist
+        // are set by BookingService with PriceCalculator / TimeProvider (validated by source members).
+        CreateMap<CreateBookingRequest, Booking>(MemberList.Source)
+            .ForSourceMember(s => s.StartDate, o => o.DoNotValidate())
+            .ForSourceMember(s => s.StartTime, o => o.DoNotValidate());
     }
 }

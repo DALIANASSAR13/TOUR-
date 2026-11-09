@@ -18,6 +18,7 @@ public static class DependencyInjection
 
         services.AddSingleton(TimeProvider.System);
         services.AddSingleton<IPriceCalculator, PriceCalculator>();
+        services.AddSingleton<IBookingStateMachine, BookingStateMachine>();
 
         // Every AbstractValidator<T> in this assembly is registered automatically.
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjection));

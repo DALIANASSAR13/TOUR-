@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using TourGuide.BLL.Domain;
 using TourGuide.DAL.Enums;
+using TourGuide.PL.Validation;
 
 namespace TourGuide.PL.ViewModels;
 
@@ -8,13 +9,14 @@ namespace TourGuide.PL.ViewModels;
 // Hours/Days are required per type by CreateBookingValidator (BLL); here only the range is checked.
 public class CreateBookingViewModel
 {
-    [Required]
     public int GuideProfileId { get; set; }
 
-    [Required(ErrorMessage = "Choose hourly or multi-day.")]
     [Display(Name = "Trip type")]
     public BookingType BookingType { get; set; }
 
+    // Required for sending (FR-11), not for the price preview (PreviewPrice drops these errors).
+    [Required(ErrorMessage = "Choose a start date.")]
+    [FutureDate(BookingRules.MinAdvanceHours)]
     [DataType(DataType.Date)]
     [Display(Name = "Start date")]
     public DateOnly? StartDate { get; set; }
@@ -29,7 +31,7 @@ public class CreateBookingViewModel
     [Range(BookingRules.MinDays, BookingRules.MaxDays, ErrorMessage = "Choose {1} to {2} days.")]
     public int? Days { get; set; }
 
-    // Display only, filled from the first quote on GET.
+    // Display only: filled from the quote; posted back in a hidden field to redraw the form after errors.
     public string GuideName { get; set; } = string.Empty;
     public PriceQuoteViewModel? Quote { get; set; }
 }

@@ -28,7 +28,11 @@
 
     function preview() {
         const $amount = $form.find('input[name="Hours"]:enabled, input[name="Days"]:enabled');
-        if (!$amount.val() || ($.fn.valid && !$amount.valid())) {
+        if (!$amount.val()) {
+            showError($amount.attr('name') === 'Days' ? 'Enter the number of days.' : 'Enter the number of hours.');
+            return;
+        }
+        if ($.fn.valid && !$amount.valid()) {
             showError('');
             return;
         }
@@ -54,13 +58,9 @@
         timer = setTimeout(preview, 250);
     }
 
-    // Whole positive numbers only: block "-", "+", "e" and decimals; strip them from pasted text.
+    // Whole positive numbers only: block "-", "+", "e" and decimals (min/max on the inputs do the rest).
     $form.on('keydown', 'input[name="Hours"], input[name="Days"]', function (e) {
         if (['-', '+', 'e', 'E', '.', ','].includes(e.key)) e.preventDefault();
-    });
-    $form.on('input', 'input[name="Hours"], input[name="Days"]', function () {
-        const digits = this.value.replace(/[^0-9]/g, '');
-        if (digits !== this.value) this.value = digits;
     });
 
     $form.on('change', 'input[name="BookingType"]', function () { applyType(); schedule(); });

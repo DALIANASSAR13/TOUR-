@@ -9,12 +9,14 @@
 <section class="bk-page">
     <h1 class="bk-title">Book @Model.GuideName</h1>
     <p class="bk-subtitle">Choose your trip. The price updates as you go, before you send anything.</p>
+    <p class="bk-subtitle">The guide has @BookingRules.PendingExpiryHours hours to accept or reject your request.</p>
 
     <div class="bk-grid">
         <form id="booking-form" class="bk-form" asp-area="Tourist" asp-controller="Bookings" asp-action="Create" method="post"
               data-preview-url="@Url.Action("PreviewPrice", "Bookings", new { area = "Tourist" })">
             <div asp-validation-summary="ModelOnly" class="bk-summary"></div>
             <input type="hidden" asp-for="GuideProfileId" />
+            <input type="hidden" asp-for="GuideName" />
 
             <fieldset class="bk-field">
                 <legend>Trip type</legend>
@@ -54,8 +56,9 @@
                 </div>
             </div>
 
-            @* Sending the request is Cycle 2.6.b (FR-11). *@
-            <button type="submit" class="bk-btn" disabled title="Coming in the next step">Send request</button>
+            <p class="bk-note">Start date and time are in the guide's local time.
+                The trip must start at least @BookingRules.MinAdvanceHours hours from now.</p>
+            <button type="submit" class="bk-btn">Send request</button>
         </form>
 
         <aside class="bk-price" id="price-box" aria-live="polite">
