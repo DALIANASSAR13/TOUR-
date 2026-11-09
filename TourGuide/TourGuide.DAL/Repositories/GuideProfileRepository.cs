@@ -13,4 +13,7 @@ public partial class GuideProfileRepository
             .Include(g => g.Specializations)
             .AsSplitQuery()
             .FirstOrDefaultAsync(g => g.Id == id, ct);
+
+    public Task<GuideProfile?> GetByUserIdAsync(string userId, CancellationToken ct = default) =>
+        Set.AsNoTracking().FirstOrDefaultAsync(g => g.UserId == userId, ct);
 }

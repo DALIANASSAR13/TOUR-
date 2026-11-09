@@ -36,6 +36,12 @@
                                 <a class="nav-link fw-medium text-dark px-3" asp-area="Tourist" asp-controller="Bookings" asp-action="Index">My Bookings</a>
                             </li>
                         }
+                        @if (User.IsInRole(TourGuide.DAL.Constants.Roles.Guide))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link fw-medium text-dark px-3" asp-area="Guide" asp-controller="BookingRequests" asp-action="Index">Requests</a>
+                            </li>
+                        }
                     </ul>
                     <div class="d-flex align-items-center gap-3">
                         @* TEMPORARY dev login link (Development only) — remove with DevLoginController after Cycle 1.1.a *@

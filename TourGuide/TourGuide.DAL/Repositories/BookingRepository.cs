@@ -14,4 +14,14 @@ public partial class BookingRepository
             .Include(b => b.Review)
             .OrderByDescending(b => b.CreatedAtUtc)
             .ToListAsync(ct);
+
+    public Task<List<Booking>> GetForGuideAsync(int guideId, CancellationToken ct = default) =>
+        Set.AsNoTracking()
+            .Where(b => b.GuideProfileId == guideId)
+            .Include(b => b.Tourist)
+            .Include(b => b.GuideProfile)
+            .Include(b => b.Payment)
+            .Include(b => b.Review)
+            .OrderByDescending(b => b.CreatedAtUtc)
+            .ToListAsync(ct);
 }

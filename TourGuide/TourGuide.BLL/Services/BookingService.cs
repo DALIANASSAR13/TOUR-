@@ -106,7 +106,24 @@ public class BookingService : IBookingService
         return dtos;
     }
 
-    // Which actions the tourist may start. The services of 2.8.b / 2.9 / 3.2 check these again.
+    // FR-16, NFR-01: only bookings made to this guide's profile. BR-01: an unapproved guide gets none.
+    // Read-only: no status changes here (NFR-05).
+    public async Task<Result<List<BookingDto>>> GetForGuideAsync(string guideUserId, CancellationToken ct = default)
+    {
+        var guide = await _uow.GuideProfiles.GetByUserIdAsync(guideUserId, ct);
+        if (guide is null)
+            return Result<List<BookingDto>>.Fail(ErrorCodes.NotFound, "No guide profile was found for this account.");
+        if (guide.VerificationStatus != VerificationStatus.Approved)
+            return Result<List<BookingDto>>.Fail(ErrorCodes.GuideNotApproved,
+                "Your account is not approved yet. Requests will appear here after an admin approves you.");
+
+        var bookings = await _uow.Bookings.GetForGuideAsync(guide.Id, ct);
+        var dtos = _mapper.Map<List<BookingDto>>(bookings);
+        dtos.ForEach(SetAllowedActions);
+        return Result<List<BookingDto>>.Ok(dtos);
+    }
+
+    // Which actions the tourist or guide may start. The services of 2.7.b/c, 2.8.b, 2.9, 3.2 check these again.
     private static void SetAllowedActions(BookingDto b)
     {
         b.AutoCancelAtUtc = b.Status == BookingStatus.Pending
@@ -115,5 +132,7 @@ public class BookingService : IBookingService
         b.CanPay = b.Status == BookingStatus.Accepted;                          // BR-07
         b.CanWithdraw = b.Status is BookingStatus.Pending or BookingStatus.Accepted; // BR-07
         b.CanReview = b.Status == BookingStatus.Completed && b.ReviewRating is null; // BR-13, BR-15
+        b.CanAccept = b.Status == BookingStatus.Pending;                        // BR-06
+        b.CanReject = b.Status == BookingStatus.Pending;                        // BR-06
     }
 }

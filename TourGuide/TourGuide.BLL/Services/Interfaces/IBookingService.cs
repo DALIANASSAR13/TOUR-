@@ -13,4 +13,7 @@ public interface IBookingService
     Task<Result<BookingDto>> CreateAsync(string touristId, CreateBookingRequest request, CancellationToken ct = default);
 
     Task<List<BookingDto>> GetForTouristAsync(string touristId, CancellationToken ct = default);
+
+    // FR-16: requests and bookings made to the logged-in guide. Fails when the guide is not Approved (BR-01).
+    Task<Result<List<BookingDto>>> GetForGuideAsync(string guideUserId, CancellationToken ct = default);
 }
