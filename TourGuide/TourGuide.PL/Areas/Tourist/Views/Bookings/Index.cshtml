@@ -69,15 +69,14 @@
                                 }
                                 @if (b.CanWithdraw)
                                 {
-                                    <details class="mb-confirm">
-                                        <summary class="mb-btn mb-btn-danger">Withdraw</summary>
-                                        <div class="mb-confirm-panel" role="group" aria-label="Confirm withdraw">
-                                            <span>Withdraw #@(b.Reference)? This cannot be undone.</span>
-                                            <form method="post" asp-action="Withdraw" asp-route-id="@b.Id" class="d-inline">
-                                                <button type="submit" class="mb-btn mb-btn-danger">Yes, withdraw</button>
-                                            </form>
-                                        </div>
-                                    </details>
+                                    @* Withdraw is final, so the shared confirm dialog asks first (confirm-dialog.js). *@
+                                    <form method="post" asp-action="Withdraw" asp-route-id="@b.Id" class="d-inline"
+                                          data-confirm-title="Withdraw this booking?"
+                                          data-confirm-text="Booking #@(b.Reference) with @b.GuideName will be cancelled. This cannot be undone."
+                                          data-confirm-ok="Yes, withdraw"
+                                          data-confirm-cancel="Keep booking">
+                                        <button type="submit" class="mb-btn mb-btn-danger">Withdraw</button>
+                                    </form>
                                 }
                                 @if (b.CanReview)
                                 {
@@ -99,7 +98,10 @@
     }
 </section>
 
+<partial name="_ConfirmDialog" />
+
 @section Scripts {
+    <script src="~/js/confirm-dialog.js" asp-append-version="true"></script>
     <script>
         // Status chips filter the cards in the page (no reload).
         (function () {
