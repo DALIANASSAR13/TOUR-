@@ -10,5 +10,9 @@ public class TouristViewModelProfile : Profile
     public TouristViewModelProfile()
     {
         CreateMap<BookingDto, BookingItemViewModel>();
+
+        // FR-12 price preview
+        CreateMap<CreateBookingViewModel, CreateBookingRequest>();
+        CreateMap<PriceQuoteDto, PriceQuoteViewModel>();
     }
 }

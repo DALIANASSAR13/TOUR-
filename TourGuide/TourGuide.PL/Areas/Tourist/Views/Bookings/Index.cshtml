@@ -14,6 +14,11 @@
         <a asp-area="" asp-controller="Search" asp-action="Index" class="mb-btn mb-btn-primary">Find a guide</a>
     </div>
 
+    @if (TempData["BookingMessage"] is string bookingMessage)
+    {
+        <div class="mb-flash" role="status">@bookingMessage</div>
+    }
+
     @if (!Model.Bookings.Any())
     {
         <div class="mb-empty">

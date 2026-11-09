@@ -1,0 +1,19 @@
+/* Booking request form with price box (FR-11, FR-12) */
+.bk-page { max-width: 1000px; margin: 0 auto; padding: 48px 16px 64px; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #1f2933; }
+.bk-title { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 2.4rem; margin: 0; }
+.bk-subtitle { color: #5b6670; margin: 4px 0 24px; }
+.bk-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; }
+.bk-form, .bk-price { background: #fff; border: 1px solid #e3e7eb; border-radius: 14px; padding: 24px; }
+.bk-field { margin-bottom: 16px; border: 0; padding: 0; }
+.bk-field legend, .bk-field label { font-weight: 600; font-size: .95rem; margin-bottom: 6px; display: block; }
+.bk-radio { display: flex !important; gap: 8px; align-items: center; font-weight: 500 !important; }
+.bk-input { width: 100%; border: 1px solid #d6dbe0; border-radius: 8px; padding: 10px 12px; font-size: 1rem; }
+.bk-error, .bk-summary { color: #b42318; font-size: .88rem; }
+.bk-btn { border: 0; border-radius: 8px; padding: 12px 20px; font-weight: 600; background: #0b6a8a; color: #fff; }
+.bk-btn:disabled { opacity: .6; cursor: not-allowed; }
+.bk-price { position: sticky; top: 24px; }
+.bk-price h2 { font-size: 1rem; color: #5b6670; margin: 0 0 8px; font-weight: 600; }
+.bk-total { font-size: 2.2rem; font-weight: 700; margin: 0; color: #0b6a8a; }
+.bk-breakdown { color: #3e4a54; margin: 4px 0 12px; }
+.bk-note { color: #5b6670; font-size: .85rem; margin: 12px 0 0; }
+@media (max-width: 760px) { .bk-grid { grid-template-columns: 1fr; } .bk-price { position: static; } }

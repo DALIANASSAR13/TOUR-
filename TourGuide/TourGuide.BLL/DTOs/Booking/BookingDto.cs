@@ -15,6 +15,10 @@ public class BookingDto
     public string? GuidePhotoFileName { get; set; }
     public string? GuideTimeZoneId { get; set; }
 
+    // Tourist (FR-16: name and country only)
+    public string TouristName { get; set; } = string.Empty;
+    public string? TouristCountryCode { get; set; }
+
     // Trip and price (copied from the booking, never recalculated)
     public BookingType BookingType { get; set; }
     public DateTime StartUtc { get; set; }
@@ -42,4 +46,9 @@ public class BookingDto
     public bool CanPay { get; set; }
     public bool CanWithdraw { get; set; }
     public bool CanReview { get; set; }
+    public bool CanAccept { get; set; }
+    public bool CanReject { get; set; }
+
+    // FR-16 + BR-09: Pending only — id of an Accepted/Confirmed booking of the same guide that overlaps it.
+    public int? OverlapsWithBookingId { get; set; }
 }

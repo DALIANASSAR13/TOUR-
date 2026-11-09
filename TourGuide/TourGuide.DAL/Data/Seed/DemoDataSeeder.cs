@@ -114,6 +114,8 @@ public static class DemoDataSeeder
         bookings.Add(sophieYasmin);
         bookings.Add(b.Confirmed(b.Accepted(b.MultiDay(sophie, mona, 15, 2, now.AddDays(-3)), now.AddDays(-2)), now.AddDays(-2).AddHours(1)));
         bookings.Add(b.Accepted(b.Hourly(sophie, kenji, 8, 13, 3, now.AddHours(-20)), now.AddHours(-1)));
+        // Overlaps Emma's Accepted Omar booking (day +6, 10:00–16:00): accepting it must be refused (BR-09).
+        bookings.Add(b.Pending(b.Hourly(sophie, omar, 6, 12, 3, now.AddHours(-4))));
 
         db.Set<Booking>().AddRange(bookings);
         await db.SaveChangesAsync();

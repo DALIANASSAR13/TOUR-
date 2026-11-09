@@ -1,0 +1,133 @@
+@model GuideDashboardViewModel
+@{
+    ViewData["Title"] = "Requests & Bookings";
+}
+
+@* Same card layout as My Bookings (screen 6), so the same stylesheet. *@
+<link rel="stylesheet" href="~/css/Tourist/Bookings.css" asp-append-version="true" />
+
+<section class="mb-page">
+    <div class="mb-head">
+        <div>
+            <h1 class="mb-title">Requests &amp; Bookings</h1>
+            <p class="mb-subtitle">New requests from tourists and your upcoming and past trips.</p>
+        </div>
+    </div>
+
+    @if (TempData["BookingMessage"] is string bookingMessage)
+    {
+        <div class="mb-flash" role="status">@bookingMessage</div>
+    }
+    @if (TempData["BookingError"] is string bookingError)
+    {
+        <div class="mb-flash is-error" role="alert">@bookingError</div>
+    }
+
+    @if (Model.Notice is not null)
+    {
+        <div class="mb-empty">
+            <h2>Not available yet</h2>
+            <p>@Model.Notice</p>
+        </div>
+    }
+    else if (!Model.Bookings.Any())
+    {
+        <div class="mb-empty">
+            <h2>You have no requests yet.</h2>
+            <p>Requests from tourists will appear here. Keep your profile complete so tourists can find you.</p>
+        </div>
+    }
+    else
+    {
+        <div class="mb-chips" role="tablist" aria-label="Filter by status">
+            <button type="button" class="mb-chip is-active" role="tab" aria-selected="true" data-filter="all">All (@Model.Bookings.Count)</button>
+            @foreach (var status in GuideDashboardViewModel.ChipOrder)
+            {
+                <button type="button" class="mb-chip" role="tab" aria-selected="false" data-filter="@status.ToString().ToLowerInvariant()">@status (@Model.CountOf(status))</button>
+            }
+        </div>
+
+        <div class="mb-list">
+            @foreach (var b in Model.Bookings)
+            {
+                <article class="mb-card" data-status="@b.StatusCss">
+                    <div class="mb-photo" aria-hidden="true"><span>@b.TouristInitials</span></div>
+
+                    <div class="mb-body">
+                        <div class="mb-top">
+                            <span class="mb-badge mb-badge-@b.StatusCss">@b.Status</span>
+                            <span class="mb-ref">Ref #@b.Reference · @b.SentText</span>
+                        </div>
+
+                        <h2 class="mb-guide">@b.TouristName @if (b.TouristCountry is not null) {<span class="mb-location">· @b.TouristCountry</span>}</h2>
+                        <p class="mb-when">@b.WhenText</p>
+                        <p class="mb-note @(b.IsWarningNote ? "is-warning" : "")">@b.StatusNote(Model.NowUtc)</p>
+                        @if (b.OverlapWarning is not null)
+                        {
+                            <p class="mb-note mb-overlap" role="note">@b.OverlapWarning</p>
+                        }
+
+                        <div class="mb-foot">
+                            <div class="mb-price">
+                                <strong>@b.TotalText</strong> <span>@b.PriceDetail</span>
+                            </div>
+                            <div class="mb-actions">
+                                @* Buttons follow the status (BR-06): Accept and Reject only on Pending.
+                                   Reject is final, so it opens an inline confirm first (no browser dialog, no JS). *@
+                                @if (b.CanAccept)
+                                {
+                                    <form method="post" asp-action="Accept" asp-route-id="@b.Id" class="d-inline">
+                                        <button type="submit" class="mb-btn mb-btn-primary">Accept</button>
+                                    </form>
+                                }
+                                @if (b.CanReject)
+                                {
+                                    <details class="mb-confirm">
+                                        <summary class="mb-btn mb-btn-danger">Reject</summary>
+                                        <div class="mb-confirm-panel" role="group" aria-label="Confirm reject">
+                                            <span>Reject #@(b.Reference)? This cannot be undone.</span>
+                                            <form method="post" asp-action="Reject" asp-route-id="@b.Id" class="d-inline">
+                                                <button type="submit" class="mb-btn mb-btn-danger">Yes, reject</button>
+                                            </form>
+                                        </div>
+                                    </details>
+                                }
+                                @if (b.ReviewRating is not null)
+                                {
+                                    <span class="mb-rating">Rating <span aria-label="@b.ReviewRating of 5 stars">@b.Stars</span></span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+
+        <p class="mb-empty-filter" hidden>No bookings with this status.</p>
+    }
+</section>
+
+@section Scripts {
+    <script>
+        // Status chips filter the cards in the page (no reload).
+        (function () {
+            const chips = document.querySelectorAll('.mb-chip');
+            const cards = document.querySelectorAll('.mb-card');
+            const none = document.querySelector('.mb-empty-filter');
+            chips.forEach(chip => chip.addEventListener('click', () => {
+                const filter = chip.dataset.filter;
+                chips.forEach(c => {
+                    c.classList.toggle('is-active', c === chip);
+                    c.setAttribute('aria-selected', c === chip ? 'true' : 'false');
+                });
+                let shown = 0;
+                cards.forEach(card => {
+                    const show = filter === 'all' || card.dataset.status === filter;
+                    card.hidden = !show;
+                    if (show) shown++;
+                });
+                if (none) none.hidden = shown > 0;
+            }));
+        })();
+    </script>
+}

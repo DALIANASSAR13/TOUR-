@@ -5,11 +5,12 @@ using TourGuide.PL.Extensions;
 
 namespace TourGuide.PL.ViewModels;
 
-// One card on "My Bookings" (UI screen 6). Settable fields come from BookingDto by AutoMapper;
+// One card on "My Bookings" (UI screen 6); the guide's list (screen 3) extends it.
+// Settable fields come from BookingDto by AutoMapper;
 // the get-only properties only format them for display (English, guide's time zone).
 public class BookingItemViewModel
 {
-    private static readonly CultureInfo En = CultureInfo.InvariantCulture;
+    protected static readonly CultureInfo En = CultureInfo.InvariantCulture;
 
     public int Id { get; set; }
     public int GuideProfileId { get; set; }
@@ -38,9 +39,12 @@ public class BookingItemViewModel
     public bool CanReview { get; set; }
 
     private TimeZoneInfo? _zone;
-    private TimeZoneInfo Zone => _zone ??= TimeZoneHelper.Find(GuideTimeZoneId);
+    protected TimeZoneInfo Zone => _zone ??= TimeZoneHelper.Find(GuideTimeZoneId);
 
-    public string Reference => $"TG-{Id:D4}";
+    public string Reference => RefOf(Id);
+
+    // "TG-0042" — one format for every booking reference on screen.
+    public static string RefOf(int id) => $"TG-{id:D4}";
 
     public string SentText => "sent " + TimeZoneHelper.ToLocal(CreatedAtUtc, Zone).ToString("MMM d", En);
 
@@ -88,7 +92,7 @@ public class BookingItemViewModel
     public bool IsWarningNote => Status is BookingStatus.Pending or BookingStatus.Accepted;
 
     // The line under the date, by status (UI screen 6).
-    public string StatusNote(DateTime nowUtc) => Status switch
+    public virtual string StatusNote(DateTime nowUtc) => Status switch
     {
         BookingStatus.Pending => $"Waiting for the guide. Auto-cancels if not answered within {HoursLeft(AutoCancelAtUtc, nowUtc)} h.",
         BookingStatus.Accepted => $"Guide accepted. Pay before {DeadlineText} or the booking is cancelled.",
@@ -109,7 +113,7 @@ public class BookingItemViewModel
 
     public string Stars => ReviewRating is int r ? new string('★', r) + new string('☆', BookingRules.MaxRating - r) : string.Empty;
 
-    private string DeadlineText
+    protected string DeadlineText
     {
         get
         {
@@ -120,7 +124,7 @@ public class BookingItemViewModel
         }
     }
 
-    private string StartsIn(DateTime nowUtc)
+    protected string StartsIn(DateTime nowUtc)
     {
         var today = DateOnly.FromDateTime(TimeZoneHelper.ToLocal(nowUtc, Zone));
         var startDay = DateOnly.FromDateTime(TimeZoneHelper.ToLocal(StartUtc, Zone));
@@ -133,14 +137,14 @@ public class BookingItemViewModel
         };
     }
 
-    private static int HoursLeft(DateTime? untilUtc, DateTime nowUtc) =>
+    protected static int HoursLeft(DateTime? untilUtc, DateTime nowUtc) =>
         untilUtc is DateTime until ? Math.Max(0, (int)Math.Ceiling((until - nowUtc).TotalHours)) : 0;
 
     // One money format for the page: "$1,250.00" for totals, "$25" / "$22.50" for rates. USD only.
-    private static string Money(decimal value, bool alwaysCents = false) =>
+    protected static string Money(decimal value, bool alwaysCents = false) =>
         "$" + value.ToString(alwaysCents || value % 1 != 0 ? "#,0.00" : "#,0", En);
 
-    private static string? CountryName(string? code)
+    protected static string? CountryName(string? code)
     {
         if (string.IsNullOrWhiteSpace(code))
             return null;

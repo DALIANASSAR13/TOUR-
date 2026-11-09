@@ -1,6 +1,8 @@
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TourGuide.BLL.Domain;
+using TourGuide.BLL.Domain.Interfaces;
 using TourGuide.BLL.Options;
 using TourGuide.BLL.Services;
 using TourGuide.BLL.Services.Interfaces;
@@ -15,6 +17,8 @@ public static class DependencyInjection
         services.Configure<BookingJobOptions>(config.GetSection(BookingJobOptions.SectionName));
 
         services.AddSingleton(TimeProvider.System);
+        services.AddSingleton<IPriceCalculator, PriceCalculator>();
+        services.AddSingleton<IBookingStateMachine, BookingStateMachine>();
 
         // Every AbstractValidator<T> in this assembly is registered automatically.
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjection));

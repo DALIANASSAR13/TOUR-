@@ -15,12 +15,23 @@ public class BookingMappingProfile : Profile
             .ForMember(d => d.GuideCountryCode, o => o.MapFrom(s => s.GuideProfile.CountryCode))
             .ForMember(d => d.GuidePhotoFileName, o => o.MapFrom(s => s.GuideProfile.PhotoFileName))
             .ForMember(d => d.GuideTimeZoneId, o => o.MapFrom(s => s.GuideProfile.TimeZoneId))
+            .ForMember(d => d.TouristName, o => o.MapFrom(s => s.Tourist.FullName))
+            .ForMember(d => d.TouristCountryCode, o => o.MapFrom(s => s.Tourist.CountryCode))
             .ForMember(d => d.IsPaid, o => o.MapFrom(s => s.Payment != null))
             .ForMember(d => d.ReviewRating, o => o.MapFrom(s => s.Review != null ? s.Review.Rating : (int?)null))
             .ForMember(d => d.ReviewComment, o => o.MapFrom(s => s.Review != null ? s.Review.Comment : null))
             .ForMember(d => d.AutoCancelAtUtc, o => o.Ignore())
             .ForMember(d => d.CanPay, o => o.Ignore())
             .ForMember(d => d.CanWithdraw, o => o.Ignore())
-            .ForMember(d => d.CanReview, o => o.Ignore());
+            .ForMember(d => d.CanReview, o => o.Ignore())
+            .ForMember(d => d.CanAccept, o => o.Ignore())
+            .ForMember(d => d.CanReject, o => o.Ignore())
+            .ForMember(d => d.OverlapsWithBookingId, o => o.Ignore());
+
+        // FR-11: copies GuideProfileId, BookingType, Hours, Days only. Price, status, dates and the tourist
+        // are set by BookingService with PriceCalculator / TimeProvider (validated by source members).
+        CreateMap<CreateBookingRequest, Booking>(MemberList.Source)
+            .ForSourceMember(s => s.StartDate, o => o.DoNotValidate())
+            .ForSourceMember(s => s.StartTime, o => o.DoNotValidate());
     }
 }
