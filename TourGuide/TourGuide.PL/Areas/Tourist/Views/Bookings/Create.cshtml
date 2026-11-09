@@ -1,0 +1,74 @@
+@model CreateBookingViewModel
+@using TourGuide.BLL.Domain
+@{
+    ViewData["Title"] = "Book " + Model.GuideName;
+}
+
+<link rel="stylesheet" href="~/css/Tourist/BookingCreate.css" asp-append-version="true" />
+
+<section class="bk-page">
+    <h1 class="bk-title">Book @Model.GuideName</h1>
+    <p class="bk-subtitle">Choose your trip. The price updates as you go, before you send anything.</p>
+
+    <div class="bk-grid">
+        <form id="booking-form" class="bk-form" asp-area="Tourist" asp-controller="Bookings" asp-action="Create" method="post"
+              data-preview-url="@Url.Action("PreviewPrice", "Bookings", new { area = "Tourist" })">
+            <div asp-validation-summary="ModelOnly" class="bk-summary"></div>
+            <input type="hidden" asp-for="GuideProfileId" />
+
+            <fieldset class="bk-field">
+                <legend>Trip type</legend>
+                <label class="bk-radio">
+                    <input type="radio" asp-for="BookingType" value="@BookingType.Hourly" /> Some hours on one day
+                </label>
+                <label class="bk-radio">
+                    <input type="radio" asp-for="BookingType" value="@BookingType.MultiDay" /> Several full days
+                </label>
+                <span asp-validation-for="BookingType" class="bk-error"></span>
+            </fieldset>
+
+            <div class="bk-field">
+                <label asp-for="StartDate"></label>
+                <input asp-for="StartDate" class="bk-input" />
+                <span asp-validation-for="StartDate" class="bk-error"></span>
+            </div>
+
+            <div class="bk-group" data-type="@BookingType.Hourly">
+                <div class="bk-field">
+                    <label asp-for="StartTime"></label>
+                    <input asp-for="StartTime" class="bk-input" />
+                    <span asp-validation-for="StartTime" class="bk-error"></span>
+                </div>
+                <div class="bk-field">
+                    <label asp-for="Hours"></label>
+                    <input asp-for="Hours" type="number" class="bk-input" min="@BookingRules.MinHours" max="@BookingRules.MaxHours" step="1" inputmode="numeric" />
+                    <span asp-validation-for="Hours" class="bk-error"></span>
+                </div>
+            </div>
+
+            <div class="bk-group" data-type="@BookingType.MultiDay">
+                <div class="bk-field">
+                    <label asp-for="Days"></label>
+                    <input asp-for="Days" type="number" class="bk-input" min="@BookingRules.MinDays" max="@BookingRules.MaxDays" step="1" inputmode="numeric" />
+                    <span asp-validation-for="Days" class="bk-error"></span>
+                </div>
+            </div>
+
+            @* Sending the request is Cycle 2.6.b (FR-11). *@
+            <button type="submit" class="bk-btn" disabled title="Coming in the next step">Send request</button>
+        </form>
+
+        <aside class="bk-price" id="price-box" aria-live="polite">
+            <h2>Total price</h2>
+            <p class="bk-total" data-total>@Model.Quote?.TotalText</p>
+            <p class="bk-breakdown" data-breakdown>@Model.Quote?.Breakdown</p>
+            <p class="bk-error" data-error></p>
+            <p class="bk-note">A full day counts as @BookingRules.HoursPerDay hours. The price is fixed when you send the request.</p>
+        </aside>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/booking-price.js" asp-append-version="true"></script>
+}

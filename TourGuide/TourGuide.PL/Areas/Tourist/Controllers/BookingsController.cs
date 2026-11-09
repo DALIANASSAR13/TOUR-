@@ -1,8 +1,13 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TourGuide.BLL.Common;
+using TourGuide.BLL.Domain;
+using TourGuide.BLL.DTOs.Booking;
 using TourGuide.BLL.Services.Interfaces;
 using TourGuide.DAL.Constants;
+using TourGuide.DAL.Enums;
+using TourGuide.PL.Extensions;
 using TourGuide.PL.Services;
 using TourGuide.PL.ViewModels;
 
@@ -39,5 +44,44 @@ public class BookingsController : Controller
             Bookings = _mapper.Map<List<BookingItemViewModel>>(bookings),
             NowUtc = _time.GetUtcNow().UtcDateTime,
         });
+    }
+
+    // GET /Tourist/Bookings/Create?guideProfileId=5 — FR-11 form with the FR-12 price box.
+    // The first quote also checks the guide is bookable (BR-02). Sending the request comes in 2.6.b.
+    [HttpGet]
+    public async Task<IActionResult> Create(int guideProfileId, CancellationToken ct)
+    {
+        var model = new CreateBookingViewModel
+        {
+            GuideProfileId = guideProfileId,
+            BookingType = BookingType.Hourly,
+            Hours = BookingRules.MinHours,
+        };
+
+        var result = await _bookings.PreviewPriceAsync(_mapper.Map<CreateBookingRequest>(model), ct);
+        if (!result.Succeeded)
+            return NotFound();
+
+        model.GuideName = result.Value!.GuideName;
+        model.Quote = _mapper.Map<PriceQuoteViewModel>(result.Value);
+        return View(model);
+    }
+
+    // POST /Tourist/Bookings/PreviewPrice (AJAX) — FR-12. Saves nothing (NFR-05).
+    [HttpPost]
+    public async Task<IActionResult> PreviewPrice(CreateBookingViewModel model, CancellationToken ct)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(new { errors = ModelState.ToErrorDictionary() });
+
+        var result = await _bookings.PreviewPriceAsync(_mapper.Map<CreateBookingRequest>(model), ct);
+        if (!result.Succeeded)
+        {
+            ModelState.AddResultErrors(result);
+            var body = new { message = result.Message, errors = ModelState.ToErrorDictionary() };
+            return result.ErrorCode == ErrorCodes.Validation ? BadRequest(body) : NotFound(body);
+        }
+
+        return Json(_mapper.Map<PriceQuoteViewModel>(result.Value));
     }
 }

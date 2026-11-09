@@ -5,7 +5,11 @@ namespace TourGuide.DAL.Repositories.Interfaces;
 // Specific repositories. Each later cycle adds its own query methods here
 // (signatures in docs/class-diagram.md, section 6.1).
 
-public interface IGuideProfileRepository : IRepository<GuideProfile> { }
+public interface IGuideProfileRepository : IRepository<GuideProfile>
+{
+    // Guide with user, languages and specializations (BR-02 completeness check). Read-only.
+    Task<GuideProfile?> GetWithDetailsAsync(int id, CancellationToken ct = default);
+}
 
 public interface IGuideDocumentRepository : IRepository<GuideDocument> { }
 

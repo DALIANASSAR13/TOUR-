@@ -14,4 +14,10 @@ public static class ModelStateExtensions
         if (result.Errors.Count == 0 && !string.IsNullOrEmpty(result.Message))
             modelState.AddModelError(string.Empty, result.Message);
     }
+
+    // Field -> messages, for AJAX actions that answer with JSON.
+    public static Dictionary<string, string[]> ToErrorDictionary(this ModelStateDictionary modelState) =>
+        modelState
+            .Where(e => e.Value is { Errors.Count: > 0 })
+            .ToDictionary(e => e.Key, e => e.Value!.Errors.Select(x => x.ErrorMessage).ToArray());
 }

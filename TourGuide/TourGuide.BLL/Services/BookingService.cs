@@ -1,5 +1,8 @@
 using AutoMapper;
+using FluentValidation;
+using TourGuide.BLL.Common;
 using TourGuide.BLL.Domain;
+using TourGuide.BLL.Domain.Interfaces;
 using TourGuide.BLL.DTOs.Booking;
 using TourGuide.BLL.Services.Interfaces;
 using TourGuide.DAL.Enums;
@@ -11,11 +14,44 @@ public class BookingService : IBookingService
 {
     private readonly IUnitOfWork _uow;
     private readonly IMapper _mapper;
+    private readonly IPriceCalculator _price;
+    private readonly IValidator<CreateBookingRequest> _createValidator;
 
-    public BookingService(IUnitOfWork uow, IMapper mapper)
+    public BookingService(IUnitOfWork uow, IMapper mapper, IPriceCalculator price,
+        IValidator<CreateBookingRequest> createValidator)
     {
         _uow = uow;
         _mapper = mapper;
+        _price = price;
+        _createValidator = createValidator;
+    }
+
+    // FR-12, BR-11: price before sending. BR-02: only a bookable guide. Read-only (NFR-05).
+    public async Task<Result<PriceQuoteDto>> PreviewPriceAsync(CreateBookingRequest request, CancellationToken ct = default)
+    {
+        var validation = await _createValidator.ValidateAsync(request, ct);
+        if (!validation.IsValid)
+            return Result<PriceQuoteDto>.Invalid(validation.Errors
+                .Select(e => new ValidationError(e.PropertyName, e.ErrorMessage)).ToList());
+
+        var guide = await _uow.GuideProfiles.GetWithDetailsAsync(request.GuideProfileId, ct);
+        if (guide is null || !GuideRules.IsBookable(guide))
+            return Result<PriceQuoteDto>.Fail(ErrorCodes.GuideNotBookable, "This guide cannot be booked right now.");
+
+        var pricePerHour = guide.PricePerHour!.Value;
+        var billable = _price.BillableHours(request.BookingType, request.Hours, request.Days);
+
+        return Result<PriceQuoteDto>.Ok(new PriceQuoteDto
+        {
+            GuideProfileId = guide.Id,
+            GuideName = guide.User.FullName,
+            BookingType = request.BookingType,
+            Hours = request.Hours,
+            Days = request.Days,
+            BillableHours = billable,
+            PricePerHour = pricePerHour,
+            TotalPrice = _price.Total(billable, pricePerHour),
+        });
     }
 
     // FR-15, NFR-01: only this tourist's bookings. Read-only: no status changes here (NFR-05).
