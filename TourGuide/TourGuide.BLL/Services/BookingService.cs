@@ -225,9 +225,10 @@ public class BookingService : IBookingService
         b.AutoCancelAtUtc = b.Status == BookingStatus.Pending
             ? b.CreatedAtUtc.AddHours(BookingRules.PendingExpiryHours)          // BR-06
             : null;
-        b.CanPay = b.Status == BookingStatus.Accepted;                          // BR-07
+        var expired = BookingExpiry.IsExpired(b.Status, b.CreatedAtUtc, b.PaymentDeadlineUtc, nowUtc);
+        b.CanPay = b.Status == BookingStatus.Accepted && !expired;              // BR-07, BR-08
         b.CanWithdraw = b.Status is BookingStatus.Pending or BookingStatus.Accepted // BR-07
-            && !BookingExpiry.IsExpired(b.Status, b.CreatedAtUtc, b.PaymentDeadlineUtc, nowUtc);
+            && !expired;
         b.CanReview = b.Status == BookingStatus.Completed && b.ReviewRating is null; // BR-13, BR-15
         b.CanAccept = b.Status == BookingStatus.Pending;                        // BR-06
         b.CanReject = b.Status == BookingStatus.Pending;                        // BR-06

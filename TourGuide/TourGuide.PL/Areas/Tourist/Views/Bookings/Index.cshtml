@@ -62,10 +62,10 @@
                                 <strong>@b.TotalText</strong> <span>@b.PriceDetail</span>
                             </div>
                             <div class="mb-actions">
-                                @* Buttons follow the status (BR-07). Pay arrives in 2.9, review in 3.2. *@
+                                @* Buttons follow the status (BR-07). Review arrives in 3.2. *@
                                 @if (b.CanPay)
                                 {
-                                    <button type="button" class="mb-btn mb-btn-primary" disabled title="Not available yet">Pay now</button>
+                                    <a asp-area="Tourist" asp-controller="Payments" asp-action="Checkout" asp-route-id="@b.Id" class="mb-btn mb-btn-primary">Pay now</a>
                                 }
                                 @if (b.CanWithdraw)
                                 {

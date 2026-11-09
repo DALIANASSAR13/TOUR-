@@ -36,9 +36,16 @@ public interface IBookingRepository : IRepository<Booking>
 
     // BR-09: does [startUtc, endUtc) overlap one of the guide's Accepted or Confirmed bookings (other than excludeId)?
     Task<bool> HasOverlapAsync(int guideId, DateTime startUtc, DateTime endUtc, int? excludeId, CancellationToken ct = default);
+
+    // FR-14 checkout: one booking with its guide (+ user). Read-only.
+    Task<Booking?> GetWithGuideAsync(int id, CancellationToken ct = default);
 }
 
-public interface IPaymentRepository : IRepository<Payment> { }
+public interface IPaymentRepository : IRepository<Payment>
+{
+    // FR-14: the booking's payment, or null when it is not paid (one payment per booking). Read-only.
+    Task<Payment?> GetByBookingAsync(int bookingId, CancellationToken ct = default);
+}
 
 public interface IReviewRepository : IRepository<Review>
 {
