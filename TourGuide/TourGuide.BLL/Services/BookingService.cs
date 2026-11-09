@@ -68,7 +68,7 @@ public class BookingService : IBookingService
         await _uow.SaveChangesAsync(ct);
 
         var dto = _mapper.Map<BookingDto>(booking);
-        SetAllowedActions(dto);
+        SetAllowedActions(dto, booking.CreatedAtUtc);
         return Result<BookingDto>.Ok(dto);
     }
 
@@ -105,7 +105,8 @@ public class BookingService : IBookingService
     {
         var bookings = await _uow.Bookings.GetForTouristAsync(touristId, ct);
         var dtos = _mapper.Map<List<BookingDto>>(bookings);
-        dtos.ForEach(SetAllowedActions);
+        var now = _time.GetUtcNow().UtcDateTime;
+        dtos.ForEach(d => SetAllowedActions(d, now));
         return dtos;
     }
 
@@ -122,7 +123,8 @@ public class BookingService : IBookingService
 
         var bookings = await _uow.Bookings.GetForGuideAsync(guide.Id, ct);
         var dtos = _mapper.Map<List<BookingDto>>(bookings);
-        dtos.ForEach(SetAllowedActions);
+        var now = _time.GetUtcNow().UtcDateTime;
+        dtos.ForEach(d => SetAllowedActions(d, now));
 
         // BR-09 shown early: warn on Pending rows that clash with a blocking booking (same list, no extra query).
         foreach (var pending in dtos.Where(d => d.Status == BookingStatus.Pending))
@@ -160,7 +162,7 @@ public class BookingService : IBookingService
                 $"This request is already {booking.Status.ToString().ToLowerInvariant()} and cannot be {verb}.");
 
         var now = _time.GetUtcNow().UtcDateTime;
-        if (booking.CreatedAtUtc.AddHours(BookingRules.PendingExpiryHours) <= now)             // BR-06
+        if (BookingExpiry.IsExpired(booking.Status, booking.CreatedAtUtc, booking.PaymentDeadlineUtc, now)) // BR-06
             return Result.Fail(ErrorCodes.InvalidStatusChange,
                 $"This request has expired. Requests must be answered within {BookingRules.PendingExpiryHours} hours.");
 
@@ -173,6 +175,37 @@ public class BookingService : IBookingService
         if (!change.Succeeded)
             return change;
 
+        return await SaveStatusChangeAsync(ct);
+    }
+
+    // FR-15: Pending/Accepted -> Cancelled by the owner tourist. BR-07 before payment only (Confirmed refused
+    // by the state machine), NFR-01 owner only, expired bookings left to the job (FR-17), RowVersion on save.
+    public async Task<Result> WithdrawAsync(string touristId, int bookingId, CancellationToken ct = default)
+    {
+        var booking = await _uow.Bookings.GetByIdAsync(bookingId, ct);
+        if (booking is null || booking.TouristId != touristId)
+            return Result.Fail(ErrorCodes.NotFound, "This booking was not found.");
+
+        if (!_stateMachine.CanChange(booking.Status, BookingStatus.Cancelled, Actor.Tourist))
+            return Result.Fail(ErrorCodes.InvalidStatusChange,
+                $"This booking is already {booking.Status.ToString().ToLowerInvariant()} and cannot be withdrawn.");
+
+        var now = _time.GetUtcNow().UtcDateTime;
+        if (BookingExpiry.IsExpired(booking.Status, booking.CreatedAtUtc, booking.PaymentDeadlineUtc, now))
+            return Result.Fail(ErrorCodes.InvalidStatusChange,
+                "This booking has expired and will be cancelled automatically.");
+
+        var change = _stateMachine.Apply(booking, BookingStatus.Cancelled, Actor.Tourist, now,
+            CancellationReason.WithdrawnByTourist);                                               // BR-05
+        if (!change.Succeeded)
+            return change;
+
+        return await SaveStatusChangeAsync(ct);
+    }
+
+    // One save for every status change: a RowVersion conflict becomes a friendly message, never an overwrite.
+    private async Task<Result> SaveStatusChangeAsync(CancellationToken ct)
+    {
         try
         {
             await _uow.SaveChangesAsync(ct);
@@ -187,13 +220,14 @@ public class BookingService : IBookingService
     }
 
     // Which actions the tourist or guide may start. The services of 2.7.b/c, 2.8.b, 2.9, 3.2 check these again.
-    private static void SetAllowedActions(BookingDto b)
+    private static void SetAllowedActions(BookingDto b, DateTime nowUtc)
     {
         b.AutoCancelAtUtc = b.Status == BookingStatus.Pending
             ? b.CreatedAtUtc.AddHours(BookingRules.PendingExpiryHours)          // BR-06
             : null;
         b.CanPay = b.Status == BookingStatus.Accepted;                          // BR-07
-        b.CanWithdraw = b.Status is BookingStatus.Pending or BookingStatus.Accepted; // BR-07
+        b.CanWithdraw = b.Status is BookingStatus.Pending or BookingStatus.Accepted // BR-07
+            && !BookingExpiry.IsExpired(b.Status, b.CreatedAtUtc, b.PaymentDeadlineUtc, nowUtc);
         b.CanReview = b.Status == BookingStatus.Completed && b.ReviewRating is null; // BR-13, BR-15
         b.CanAccept = b.Status == BookingStatus.Pending;                        // BR-06
         b.CanReject = b.Status == BookingStatus.Pending;                        // BR-06

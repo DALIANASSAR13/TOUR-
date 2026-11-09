@@ -18,6 +18,10 @@
     {
         <div class="mb-flash" role="status">@bookingMessage</div>
     }
+    @if (TempData["BookingError"] is string bookingError)
+    {
+        <div class="mb-flash is-error" role="alert">@bookingError</div>
+    }
 
     @if (!Model.Bookings.Any())
     {
@@ -58,14 +62,22 @@
                                 <strong>@b.TotalText</strong> <span>@b.PriceDetail</span>
                             </div>
                             <div class="mb-actions">
-                                @* Buttons follow the status (BR-07). Their actions arrive in 2.9 (pay), 2.8.b (withdraw), 3.2 (review). *@
+                                @* Buttons follow the status (BR-07). Pay arrives in 2.9, review in 3.2. *@
                                 @if (b.CanPay)
                                 {
                                     <button type="button" class="mb-btn mb-btn-primary" disabled title="Not available yet">Pay now</button>
                                 }
                                 @if (b.CanWithdraw)
                                 {
-                                    <button type="button" class="mb-btn mb-btn-danger" disabled title="Not available yet">Withdraw request</button>
+                                    <details class="mb-confirm">
+                                        <summary class="mb-btn mb-btn-danger">Withdraw</summary>
+                                        <div class="mb-confirm-panel" role="group" aria-label="Confirm withdraw">
+                                            <span>Withdraw #@(b.Reference)? This cannot be undone.</span>
+                                            <form method="post" asp-action="Withdraw" asp-route-id="@b.Id" class="d-inline">
+                                                <button type="submit" class="mb-btn mb-btn-danger">Yes, withdraw</button>
+                                            </form>
+                                        </div>
+                                    </details>
                                 }
                                 @if (b.CanReview)
                                 {

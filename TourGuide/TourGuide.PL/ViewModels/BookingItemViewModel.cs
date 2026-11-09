@@ -103,7 +103,7 @@ public class BookingItemViewModel
         BookingStatus.Rejected => "The guide declined this request.",
         BookingStatus.Cancelled => CancellationReason switch
         {
-            DAL.Enums.CancellationReason.WithdrawnByTourist => "You withdrew this request.",
+            DAL.Enums.CancellationReason.WithdrawnByTourist => "You withdrew this booking.",
             DAL.Enums.CancellationReason.NoGuideResponse => "The guide did not answer in time.",
             DAL.Enums.CancellationReason.NotPaid => "Not paid before the payment deadline.",
             _ => "Cancelled.",
