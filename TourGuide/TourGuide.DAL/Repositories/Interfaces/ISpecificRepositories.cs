@@ -1,4 +1,6 @@
+using TourGuide.DAL.Common;
 using TourGuide.DAL.Entities;
+using TourGuide.DAL.Queries;
 
 namespace TourGuide.DAL.Repositories.Interfaces;
 
@@ -12,6 +14,13 @@ public interface IGuideProfileRepository : IRepository<GuideProfile>
 
     // The logged-in guide's own profile (FR-16). Read-only.
     Task<GuideProfile?> GetByUserIdAsync(string userId, CancellationToken ct = default);
+
+    // FR-10: one page of searchable guides (always Approved + profile complete, BR-02), with user,
+    // languages and specializations. Best rated first. Read-only.
+    Task<PagedList<GuideProfile>> SearchAsync(GuideSearchQuery query, CancellationToken ct = default);
+
+    // FR-10 country filter: the distinct country codes of searchable guides (BR-02). Read-only.
+    Task<List<string>> GetSearchableCountryCodesAsync(CancellationToken ct = default);
 }
 
 public interface IGuideDocumentRepository : IRepository<GuideDocument> { }
