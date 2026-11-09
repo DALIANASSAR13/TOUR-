@@ -10,5 +10,6 @@ public static class ErrorCodes
     public const string PaymentDeadlinePassed = "payment_deadline_passed";
     public const string GuideNotBookable = "guide_not_bookable";
     public const string GuideNotApproved = "guide_not_approved";
+    public const string Concurrency = "concurrency";
     public const string AlreadyReviewed = "already_reviewed";
 }

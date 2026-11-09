@@ -24,6 +24,9 @@ public interface IBookingRepository : IRepository<Booking>
     // FR-16: requests and bookings made to this guide, newest first, with tourist, guide (time zone),
     // payment and review. Read-only.
     Task<List<Booking>> GetForGuideAsync(int guideId, CancellationToken ct = default);
+
+    // BR-09: does [startUtc, endUtc) overlap one of the guide's Accepted or Confirmed bookings (other than excludeId)?
+    Task<bool> HasOverlapAsync(int guideId, DateTime startUtc, DateTime endUtc, int? excludeId, CancellationToken ct = default);
 }
 
 public interface IPaymentRepository : IRepository<Payment> { }

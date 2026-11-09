@@ -11,6 +11,12 @@ public class GuideBookingItemViewModel : BookingItemViewModel
     public string? TouristCountryCode { get; set; }
     public bool CanAccept { get; set; }
     public bool CanReject { get; set; }
+    public int? OverlapsWithBookingId { get; set; }
+
+    // BR-09 warning on Pending cards.
+    public string? OverlapWarning => OverlapsWithBookingId is int id
+        ? $"Overlaps booking #{RefOf(id)} — accepting will be refused."
+        : null;
 
     public string TouristInitials =>
         string.Concat(TouristName.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(p => p[0]));

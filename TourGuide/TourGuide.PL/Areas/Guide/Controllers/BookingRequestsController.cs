@@ -41,4 +41,20 @@ public class BookingRequestsController : Controller
             NowUtc = _time.GetUtcNow().UtcDateTime,
         });
     }
+
+    // POST /Guide/BookingRequests/Accept/5 — FR-13. PRG back to the list with a message.
+    [HttpPost]
+    public async Task<IActionResult> Accept(int id, CancellationToken ct)
+    {
+        if (_currentUser.UserId is not { } userId)
+            return Challenge();
+
+        var result = await _bookings.AcceptAsync(userId, id, ct);
+        if (result.Succeeded)
+            TempData["BookingMessage"] = $"Request #{BookingItemViewModel.RefOf(id)} accepted. The tourist must pay before the deadline shown on the card.";
+        else
+            TempData["BookingError"] = result.Message;
+
+        return RedirectToAction(nameof(Index));
+    }
 }

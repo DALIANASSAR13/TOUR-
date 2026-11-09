@@ -48,4 +48,7 @@ public class BookingDto
     public bool CanReview { get; set; }
     public bool CanAccept { get; set; }
     public bool CanReject { get; set; }
+
+    // FR-16 + BR-09: Pending only — id of an Accepted/Confirmed booking of the same guide that overlaps it.
+    public int? OverlapsWithBookingId { get; set; }
 }

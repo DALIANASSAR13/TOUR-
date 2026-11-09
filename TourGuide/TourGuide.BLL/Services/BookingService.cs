@@ -8,6 +8,7 @@ using TourGuide.BLL.Services.Interfaces;
 using TourGuide.BLL.Validators;
 using TourGuide.DAL.Entities;
 using TourGuide.DAL.Enums;
+using TourGuide.DAL.Exceptions;
 using TourGuide.DAL.UnitOfWork;
 
 namespace TourGuide.BLL.Services;
@@ -18,15 +19,17 @@ public class BookingService : IBookingService
     private readonly IMapper _mapper;
     private readonly IPriceCalculator _price;
     private readonly IValidator<CreateBookingRequest> _createValidator;
+    private readonly IBookingStateMachine _stateMachine;
     private readonly TimeProvider _time;
 
     public BookingService(IUnitOfWork uow, IMapper mapper, IPriceCalculator price,
-        IValidator<CreateBookingRequest> createValidator, TimeProvider time)
+        IValidator<CreateBookingRequest> createValidator, IBookingStateMachine stateMachine, TimeProvider time)
     {
         _uow = uow;
         _mapper = mapper;
         _price = price;
         _createValidator = createValidator;
+        _stateMachine = stateMachine;
         _time = time;
     }
 
@@ -120,7 +123,56 @@ public class BookingService : IBookingService
         var bookings = await _uow.Bookings.GetForGuideAsync(guide.Id, ct);
         var dtos = _mapper.Map<List<BookingDto>>(bookings);
         dtos.ForEach(SetAllowedActions);
+
+        // BR-09 shown early: warn on Pending rows that clash with a blocking booking (same list, no extra query).
+        foreach (var pending in dtos.Where(d => d.Status == BookingStatus.Pending))
+            pending.OverlapsWithBookingId = dtos.FirstOrDefault(o => o.Id != pending.Id
+                && BookingOverlap.Blocks(o.Status)
+                && BookingOverlap.Overlaps(pending.StartUtc, pending.EndUtc, o.StartUtc, o.EndUtc))?.Id;
+
         return Result<List<BookingDto>>.Ok(dtos);
+    }
+
+    // FR-13: Pending -> Accepted by the owner guide. BR-01 approved guide, NFR-01 owner only,
+    // BR-06 not expired, BR-09 no overlap, BR-08 deadline (set by the state machine), RowVersion on save.
+    public async Task<Result> AcceptAsync(string guideUserId, int bookingId, CancellationToken ct = default)
+    {
+        var guide = await _uow.GuideProfiles.GetByUserIdAsync(guideUserId, ct);
+        if (guide is null || guide.VerificationStatus != VerificationStatus.Approved)
+            return Result.Fail(ErrorCodes.GuideNotApproved, "Your account is not approved yet.");
+
+        var booking = await _uow.Bookings.GetByIdAsync(bookingId, ct);
+        if (booking is null || booking.GuideProfileId != guide.Id)
+            return Result.Fail(ErrorCodes.NotFound, "This request was not found.");
+
+        if (!_stateMachine.CanChange(booking.Status, BookingStatus.Accepted, Actor.Guide))
+            return Result.Fail(ErrorCodes.InvalidStatusChange,
+                $"This request is already {booking.Status.ToString().ToLowerInvariant()} and cannot be accepted.");
+
+        var now = _time.GetUtcNow().UtcDateTime;
+        if (booking.CreatedAtUtc.AddHours(BookingRules.PendingExpiryHours) <= now)             // BR-06
+            return Result.Fail(ErrorCodes.InvalidStatusChange,
+                $"This request has expired. Requests must be answered within {BookingRules.PendingExpiryHours} hours.");
+
+        if (await _uow.Bookings.HasOverlapAsync(guide.Id, booking.StartUtc, booking.EndUtc, booking.Id, ct)) // BR-09
+            return Result.Fail(ErrorCodes.Overlap,
+                "This request overlaps another booking you have accepted or confirmed.");
+
+        var change = _stateMachine.Apply(booking, BookingStatus.Accepted, Actor.Guide, now);  // BR-05, BR-08
+        if (!change.Succeeded)
+            return change;
+
+        try
+        {
+            await _uow.SaveChangesAsync(ct);
+        }
+        catch (ConcurrencyException)
+        {
+            return Result.Fail(ErrorCodes.Concurrency,
+                "This booking was changed by someone else. Refresh the page and try again.");
+        }
+
+        return Result.Ok();
     }
 
     // Which actions the tourist or guide may start. The services of 2.7.b/c, 2.8.b, 2.9, 3.2 check these again.

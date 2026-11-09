@@ -41,7 +41,10 @@ public class BookingItemViewModel
     private TimeZoneInfo? _zone;
     protected TimeZoneInfo Zone => _zone ??= TimeZoneHelper.Find(GuideTimeZoneId);
 
-    public string Reference => $"TG-{Id:D4}";
+    public string Reference => RefOf(Id);
+
+    // "TG-0042" — one format for every booking reference on screen.
+    public static string RefOf(int id) => $"TG-{id:D4}";
 
     public string SentText => "sent " + TimeZoneHelper.ToLocal(CreatedAtUtc, Zone).ToString("MMM d", En);
 

@@ -145,3 +145,7 @@
 
 /* Success message after sending a request (FR-11) */
 .mb-flash { background: #e6f4ea; color: #1e6b3a; border: 1px solid #b7dfc3; border-radius: 10px; padding: 12px 16px; margin-bottom: 20px; font-weight: 500; }
+
+/* Guide list (2.7.b): error flash and overlap warning */
+.mb-flash.is-error { background: #fde2e2; color: #b42318; border-color: #f5b5b5; }
+.mb-note.mb-overlap { color: #b42318; font-weight: 600; }

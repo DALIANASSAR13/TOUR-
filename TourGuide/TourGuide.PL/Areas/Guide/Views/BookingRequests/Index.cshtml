@@ -14,6 +14,15 @@
         </div>
     </div>
 
+    @if (TempData["BookingMessage"] is string bookingMessage)
+    {
+        <div class="mb-flash" role="status">@bookingMessage</div>
+    }
+    @if (TempData["BookingError"] is string bookingError)
+    {
+        <div class="mb-flash is-error" role="alert">@bookingError</div>
+    }
+
     @if (Model.Notice is not null)
     {
         <div class="mb-empty">
@@ -53,16 +62,22 @@
                         <h2 class="mb-guide">@b.TouristName @if (b.TouristCountry is not null) {<span class="mb-location">· @b.TouristCountry</span>}</h2>
                         <p class="mb-when">@b.WhenText</p>
                         <p class="mb-note @(b.IsWarningNote ? "is-warning" : "")">@b.StatusNote(Model.NowUtc)</p>
+                        @if (b.OverlapWarning is not null)
+                        {
+                            <p class="mb-note mb-overlap" role="note">@b.OverlapWarning</p>
+                        }
 
                         <div class="mb-foot">
                             <div class="mb-price">
                                 <strong>@b.TotalText</strong> <span>@b.PriceDetail</span>
                             </div>
                             <div class="mb-actions">
-                                @* Buttons follow the status (BR-06). Their actions arrive in 2.7.b (accept) and 2.7.c (reject). *@
+                                @* Buttons follow the status (BR-06). Reject arrives in 2.7.c. *@
                                 @if (b.CanAccept)
                                 {
-                                    <button type="button" class="mb-btn mb-btn-primary" disabled title="Not available yet">Accept</button>
+                                    <form method="post" asp-action="Accept" asp-route-id="@b.Id" class="d-inline">
+                                        <button type="submit" class="mb-btn mb-btn-primary">Accept</button>
+                                    </form>
                                 }
                                 @if (b.CanReject)
                                 {

@@ -1,6 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using TourGuide.DAL.Data;
 using TourGuide.DAL.Entities;
+using TourGuide.DAL.Exceptions;
 using TourGuide.DAL.Repositories.Interfaces;
 
 namespace TourGuide.DAL.UnitOfWork;
@@ -37,7 +39,18 @@ public class UnitOfWork : IUnitOfWork
     public IRepository<Language> Languages { get; }
     public IRepository<Specialization> Specializations { get; }
 
-    public Task<int> SaveChangesAsync(CancellationToken ct = default) => _context.SaveChangesAsync(ct);
+    // A failed RowVersion check becomes a ConcurrencyException, so BLL never sees EF Core types.
+    public async Task<int> SaveChangesAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            return await _context.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            throw new ConcurrencyException(ex);
+        }
+    }
 
     public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken ct = default) =>
         _context.Database.BeginTransactionAsync(ct);

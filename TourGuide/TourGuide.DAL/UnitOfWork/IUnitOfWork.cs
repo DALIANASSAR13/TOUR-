@@ -15,6 +15,7 @@ public interface IUnitOfWork
     IRepository<Language> Languages { get; }
     IRepository<Specialization> Specializations { get; }
 
+    // Throws Exceptions.ConcurrencyException when a RowVersion check fails.
     Task<int> SaveChangesAsync(CancellationToken ct = default);
     Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken ct = default);
 }
