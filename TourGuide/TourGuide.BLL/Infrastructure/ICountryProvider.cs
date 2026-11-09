@@ -7,4 +7,7 @@ public interface ICountryProvider
 {
     List<CountryDto> GetAll();
     bool Exists(string code);
+
+    // English name for a code, or the code itself when unknown (display only).
+    string? GetName(string? code);
 }

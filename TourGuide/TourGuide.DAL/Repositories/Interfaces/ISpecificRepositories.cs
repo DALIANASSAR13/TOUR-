@@ -9,7 +9,7 @@ namespace TourGuide.DAL.Repositories.Interfaces;
 
 public interface IGuideProfileRepository : IRepository<GuideProfile>
 {
-    // Guide with user, languages and specializations (BR-02 completeness check). Read-only.
+    // Guide with user, languages and specializations (+ names) for BR-02 and the public profile (FR-09). Read-only.
     Task<GuideProfile?> GetWithDetailsAsync(int id, CancellationToken ct = default);
 
     // The logged-in guide's own profile (FR-16). Read-only.
@@ -40,4 +40,8 @@ public interface IBookingRepository : IRepository<Booking>
 
 public interface IPaymentRepository : IRepository<Payment> { }
 
-public interface IReviewRepository : IRepository<Review> { }
+public interface IReviewRepository : IRepository<Review>
+{
+    // FR-09: one page of a guide's reviews, newest first, with the tourist (name, country). Read-only.
+    Task<PagedList<Review>> GetForGuideAsync(int guideId, int page, int pageSize, CancellationToken ct = default);
+}

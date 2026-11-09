@@ -28,6 +28,7 @@ public static class DependencyInjection
         // Services are added here by later cycles, each as: services.AddScoped<IXService, XService>();
         services.AddScoped<IBookingService, BookingService>();
         services.AddScoped<ISearchService, SearchService>();
+        services.AddScoped<IGuideProfileService, GuideProfileService>();
 
         return services;
     }

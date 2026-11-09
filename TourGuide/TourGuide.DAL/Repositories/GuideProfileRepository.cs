@@ -24,8 +24,8 @@ public partial class GuideProfileRepository
     public Task<GuideProfile?> GetWithDetailsAsync(int id, CancellationToken ct = default) =>
         Set.AsNoTracking()
             .Include(g => g.User)
-            .Include(g => g.Languages)
-            .Include(g => g.Specializations)
+            .Include(g => g.Languages).ThenInclude(l => l.Language)
+            .Include(g => g.Specializations).ThenInclude(s => s.Specialization)
             .AsSplitQuery()
             .FirstOrDefaultAsync(g => g.Id == id, ct);
 

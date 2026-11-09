@@ -39,10 +39,9 @@ public class SearchService : ISearchService
 
         var page = await _uow.GuideProfiles.SearchAsync(query, ct);
 
-        var names = CountryNames();
         var cards = _mapper.Map<List<GuideCardDto>>(page.Items);
         foreach (var card in cards)
-            card.CountryName = card.CountryCode is { } code && names.TryGetValue(code, out var name) ? name : card.CountryCode;
+            card.CountryName = _countries.GetName(card.CountryCode);
 
         return Result<PagedList<GuideCardDto>>.Ok(new PagedList<GuideCardDto>(cards, page.Page, page.PageSize, page.TotalCount));
     }
@@ -60,7 +59,4 @@ public class SearchService : ISearchService
             Specializations = _mapper.Map<List<LookupDto>>(specializations.OrderBy(s => s.Name)),
         };
     }
-
-    private Dictionary<string, string> CountryNames() =>
-        _countries.GetAll().ToDictionary(c => c.Code, c => c.Name, StringComparer.OrdinalIgnoreCase);
 }
