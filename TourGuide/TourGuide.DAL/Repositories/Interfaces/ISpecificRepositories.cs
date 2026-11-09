@@ -9,7 +9,11 @@ public interface IGuideProfileRepository : IRepository<GuideProfile> { }
 
 public interface IGuideDocumentRepository : IRepository<GuideDocument> { }
 
-public interface IBookingRepository : IRepository<Booking> { }
+public interface IBookingRepository : IRepository<Booking>
+{
+    // FR-15: the tourist's own bookings, newest first, with guide (+ user), payment and review. Read-only.
+    Task<List<Booking>> GetForTouristAsync(string touristId, CancellationToken ct = default);
+}
 
 public interface IPaymentRepository : IRepository<Payment> { }
 

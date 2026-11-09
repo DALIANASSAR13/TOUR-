@@ -1,3 +1,4 @@
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostEnv
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +16,7 @@
     <header class="site-header">
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom py-3">
             <div class="container">
-                <a class="navbar-brand fw-bold fs-4 d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                <a class="navbar-brand fw-bold fs-4 d-flex align-items-center gap-2" asp-area="" asp-controller="Home" asp-action="Index">
                     <span style="color: #0b6a8a; font-family: 'Playfair Display', Georgia, serif; font-size: 1.6rem;">TourGuide</span>
                 </a>
                 <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,15 +25,28 @@
                 <div class="collapse navbar-collapse" id="navbarMain">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-lg-1">
                         <li class="nav-item">
-                            <a class="nav-link fw-medium text-dark px-3" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link fw-medium text-dark px-3" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link fw-medium text-dark px-3" asp-controller="Search" asp-action="Index">Find Guides</a>
+                            <a class="nav-link fw-medium text-dark px-3" asp-area="" asp-controller="Search" asp-action="Index">Find Guides</a>
                         </li>
+                        @if (User.IsInRole(TourGuide.DAL.Constants.Roles.Tourist))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link fw-medium text-dark px-3" asp-area="Tourist" asp-controller="Bookings" asp-action="Index">My Bookings</a>
+                            </li>
+                        }
                     </ul>
                     <div class="d-flex align-items-center gap-3">
-                        <a class="nav-link fw-medium text-dark px-2" asp-controller="Account" asp-action="Login">Sign In</a>
-                        <a class="btn text-white fw-semibold px-4 py-2" style="background-color: #0b6a8a; border-radius: 8px;" asp-controller="Account" asp-action="Login">
+                        @* TEMPORARY dev login link (Development only) — remove with DevLoginController after Cycle 1.1.a *@
+                        @if (HostEnv.EnvironmentName == "Development")
+                        {
+                            <a class="nav-link fw-medium px-2" style="color:#b42318;" asp-area="" asp-controller="DevLogin" asp-action="Index">
+                                Dev login@(User.Identity?.IsAuthenticated == true ? $" ({User.Identity.Name})" : "")
+                            </a>
+                        }
+                        <a class="nav-link fw-medium text-dark px-2" asp-area="" asp-controller="Account" asp-action="Login">Sign In</a>
+                        <a class="btn text-white fw-semibold px-4 py-2" style="background-color: #0b6a8a; border-radius: 8px;" asp-area="" asp-controller="Account" asp-action="Login">
                             Guide Portal
                         </a>
                     </div>
@@ -52,9 +66,9 @@
                     <span class="fw-semibold text-dark">TourGuide</span> &copy; 2026. Handcrafted travel experiences across Egypt.
                 </div>
                 <div class="d-flex gap-4">
-                    <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted">Home</a>
-                    <a asp-controller="Search" asp-action="Index" class="text-decoration-none text-muted">Guides</a>
-                    <a asp-controller="Home" asp-action="Privacy" class="text-decoration-none text-muted">Privacy Policy</a>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted">Home</a>
+                    <a asp-area="" asp-controller="Search" asp-action="Index" class="text-decoration-none text-muted">Guides</a>
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-decoration-none text-muted">Privacy Policy</a>
                 </div>
             </div>
         </div>

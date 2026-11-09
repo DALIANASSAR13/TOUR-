@@ -2,6 +2,8 @@ using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TourGuide.BLL.Options;
+using TourGuide.BLL.Services;
+using TourGuide.BLL.Services.Interfaces;
 
 namespace TourGuide.BLL;
 
@@ -18,6 +20,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjection));
 
         // Services are added here by later cycles, each as: services.AddScoped<IXService, XService>();
+        services.AddScoped<IBookingService, BookingService>();
 
         return services;
     }
