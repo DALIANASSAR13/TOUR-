@@ -6,6 +6,8 @@ using TourGuide.BLL.Domain.Interfaces;
 using TourGuide.BLL.Options;
 using TourGuide.BLL.Services;
 using TourGuide.BLL.Services.Interfaces;
+using TourGuide.BLL.Services.Account;
+using TourGuide.BLL.Validators;
 
 namespace TourGuide.BLL;
 
@@ -24,8 +26,9 @@ public static class DependencyInjection
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjection));
 
         // Services are added here by later cycles, each as: services.AddScoped<IXService, XService>();
-        services.AddScoped<IBookingService, BookingService>();
-
+        services.AddSingleton<ICountryProvider, CountryProvider>();
+        services.AddScoped<IFileStorage, LocalFileStorage>();
+        services.AddScoped<IAccountService, AccountService>();
         return services;
     }
 }

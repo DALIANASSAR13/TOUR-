@@ -7,6 +7,7 @@ using TourGuide.BLL.DTOs.Booking;
 using TourGuide.BLL.Services.Interfaces;
 using TourGuide.DAL.Constants;
 using TourGuide.DAL.Enums;
+using TourGuide.PL.Controllers.Base;
 using TourGuide.PL.Extensions;
 using TourGuide.PL.Services;
 using TourGuide.PL.ViewModels;
@@ -15,7 +16,7 @@ namespace TourGuide.PL.Areas.Tourist.Controllers;
 
 [Area("Tourist")]
 [Authorize(Roles = Roles.Tourist)] // NFR-01
-public class BookingsController : Controller
+public class BookingsController : TouristBaseController
 {
     private readonly IBookingService _bookings;
     private readonly ICurrentUserService _currentUser;
