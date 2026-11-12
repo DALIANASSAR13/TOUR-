@@ -80,32 +80,19 @@
 
                             @if (User.IsInRole(TourGuide.DAL.Constants.Roles.Guide))
                             {
-                                <a asp-area="Guide"
-                                   asp-controller="BookingRequests"
-                                   asp-action="Index">
-                                    Booking Requests
+                           
+                                <a class="btn text-white fw-semibold px-4 py-2" style="background-color: #0b6a8a; border-radius: 6px;" asp-area="Guide" asp-controller="BookingRequests" asp-action="Index">
+                                    View Booking Requests
                                 </a>
                             }
 
                             @if (User.IsInRole(TourGuide.DAL.Constants.Roles.Tourist))
                             {
-                                <a asp-area="Tourist"
-                                   asp-controller="Bookings"
-                                   asp-action="Index">
-                                    My Bookings
+                                
+							<a class="btn text-white fw-semibold px-4 py-2" style="background-color: #0b6a8a; border-radius: 6px;" asp-area="Tourist" asp-controller="Bookings" asp-action="Index">
+								My Bookings
                                 </a>
                             }
-
-                            <form asp-controller="Account"
-                                  asp-action="Logout"
-                                  method="post">
-
-                                @Html.AntiForgeryToken()
-
-                                <button type="submit" class="btn btn-link">
-                                    Logout
-                                </button>
-                            </form>
                         }
                         
                     </div>

@@ -179,14 +179,13 @@ public class AccountService : IAccountService
 
     // "ProofOfResidence.SizeBytes" -> "ProofOfResidence", so the message shows under the right input.
     private static List<ValidationError> ToErrors(ValidationResult validation) =>
-        validation.Errors
+        [.. validation.Errors
             .Select(e => new ValidationError(e.PropertyName.Split('.')[0], e.ErrorMessage))
-            .DistinctBy(e => (e.Field, e.Message))
-            .ToList();
+            .DistinctBy(e => (e.Field, e.Message))];
 
     // Identity's own rules (password strength, duplicate email) become field errors.
     private static List<ValidationError> FromIdentity(IEnumerable<IdentityError> errors) =>
-        errors
+        [.. errors
             .Select(e => e.Code switch
             {
                 var code when code.StartsWith("Password", StringComparison.Ordinal)
@@ -197,6 +196,5 @@ public class AccountService : IAccountService
                     => new ValidationError("Email", "Enter a valid email."),
                 _ => new ValidationError(string.Empty, e.Description),
             })
-            .DistinctBy(e => (e.Field, e.Message))
-            .ToList();
+            .DistinctBy(e => (e.Field, e.Message))];
 }
