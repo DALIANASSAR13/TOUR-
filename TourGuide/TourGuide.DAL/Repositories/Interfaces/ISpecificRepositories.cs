@@ -1,4 +1,5 @@
 using TourGuide.DAL.Entities;
+using TourGuide.DAL.Enums;
 
 namespace TourGuide.DAL.Repositories.Interfaces;
 
@@ -16,7 +17,10 @@ public interface IGuideProfileRepository : IRepository<GuideProfile>
     Task<GuideProfile?> GetByUserIdForUpdateAsync(string userId, CancellationToken ct = default);
 }
 
-public interface IGuideDocumentRepository : IRepository<GuideDocument> { }
+public interface IGuideDocumentRepository : IRepository<GuideDocument>
+{
+    Task<GuideDocument?> GetByTypeAsync(int guideId, DocumentType type, CancellationToken ct = default);
+}
 
 public interface IBookingRepository : IRepository<Booking>
 {
