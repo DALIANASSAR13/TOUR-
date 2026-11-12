@@ -5,6 +5,8 @@ using Microsoft.Extensions.Options;
 using TourGuide.BLL;
 using TourGuide.BLL.Domain;
 using TourGuide.BLL.Options;
+using TourGuide.BLL.Services.Account;
+using TourGuide.BLL.Services.Interfaces;
 using TourGuide.DAL;
 using TourGuide.DAL.Data;
 using TourGuide.DAL.Data.Seed;
@@ -16,6 +18,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Layers: DAL (DbContext, repositories, Unit of Work) and BLL (services, validators, options).
 builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddBusinessLogic(builder.Configuration);
+// Uploaded files live outside wwwroot (NFR-02). A relative RootPath is placed under the content root.
+builder.Services.PostConfigure<FileStorageOptions>(options =>
+    options.RootPath = Path.Combine(builder.Environment.ContentRootPath, options.RootPath));
 
 // AutoMapper profiles from BLL (entity <-> DTO) and PL (DTO <-> ViewModel).
 builder.Services.AddAutoMapper(typeof(TourGuide.BLL.DependencyInjection).Assembly, typeof(Program).Assembly);
@@ -29,12 +34,14 @@ builder.Services
     })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
-
+// // 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    // TEMPORARY: until Cycle 1.1.a, Development sends sign-in to the one-click /DevLogin page.
-    options.LoginPath = builder.Environment.IsDevelopment() ? "/DevLogin" : "/Account/Login";
+    options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
+
+    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+    options.SlidingExpiration = true;
 });
 
 builder.Services.AddHttpContextAccessor();

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TourGuide.BLL.Services.Interfaces;
 using TourGuide.DAL.Constants;
+using TourGuide.PL.Controllers.Base;
 using TourGuide.PL.Services;
 using TourGuide.PL.ViewModels;
 
@@ -10,7 +11,7 @@ namespace TourGuide.PL.Areas.Guide.Controllers;
 
 [Area("Guide")]
 [Authorize(Roles = Roles.Guide)] // NFR-01
-public class BookingRequestsController : Controller
+public class BookingRequestsController : GuideBaseController
 {
     private readonly IBookingService _bookings;
     private readonly ICurrentUserService _currentUser;

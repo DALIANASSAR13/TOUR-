@@ -27,9 +27,12 @@
                         <li class="nav-item">
                             <a class="nav-link fw-medium text-dark px-3" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link fw-medium text-dark px-3" asp-area="" asp-controller="Search" asp-action="Index">Find Guides</a>
-                        </li>
+                        @if (User.Identity?.IsAuthenticated != true || User.IsInRole(TourGuide.DAL.Constants.Roles.Tourist))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link fw-medium text-dark px-3" asp-area="" asp-controller="Search" asp-action="Index">Find Guides</a>
+                            </li>
+                        }
                         @if (User.IsInRole(TourGuide.DAL.Constants.Roles.Tourist))
                         {
                             <li class="nav-item">
@@ -48,19 +51,56 @@
                                 <a class="nav-link fw-medium text-dark px-3" asp-area="Guide" asp-controller="Verification" asp-action="Status">Status</a>
                             </li>
                         }
+                        @if (User.IsInRole(TourGuide.DAL.Constants.Roles.Admin))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link fw-medium text-dark px-3" asp-area="Admin" asp-controller="Admin" asp-action="Index">Admin</a>
+                            </li>
+                        }
                     </ul>
                     <div class="d-flex align-items-center gap-3">
-                        @* TEMPORARY dev login link (Development only) — remove with DevLoginController after Cycle 1.1.a *@
-                        @if (HostEnv.EnvironmentName == "Development")
+                        @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <a class="nav-link fw-medium px-2" style="color:#b42318;" asp-area="" asp-controller="DevLogin" asp-action="Index">
-                                Dev login@(User.Identity?.IsAuthenticated == true ? $" ({User.Identity.Name})" : "")
-                            </a>
+                            <span class="text-muted small">@User.Identity.Name</span>
+                            <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                                <button type="submit" class="btn btn-outline-secondary fw-semibold px-3 py-2" style="border-radius: 8px;">Log out</button>
+                            </form>
                         }
-                        <a class="nav-link fw-medium text-dark px-2" asp-area="" asp-controller="Account" asp-action="Login">Sign In</a>
-                        <a class="btn text-white fw-semibold px-4 py-2" style="background-color: #0b6a8a; border-radius: 8px;" asp-area="" asp-controller="Account" asp-action="Login">
-                            Guide Portal
-                        </a>
+                        else
+                        {
+                            <a class="nav-link fw-medium text-dark px-2" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
+                            <a class="btn text-white fw-semibold px-4 py-2" style="background-color: #0b6a8a; border-radius: 8px;" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                        }
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            @if (User.IsInRole(TourGuide.DAL.Constants.Roles.Admin))
+                            {
+                                <a asp-area="Admin"
+                                   asp-controller="Home"
+                                   asp-action="Index">
+                                    Admin Dashboard
+                                </a>
+                            }
+
+                            @if (User.IsInRole(TourGuide.DAL.Constants.Roles.Guide))
+                            {
+                           
+                                <a class="btn text-white fw-semibold px-4 py-2" style="background-color: #0b6a8a; border-radius: 6px;" asp-area="Guide" asp-controller="BookingRequests" asp-action="Index">
+                                    View Booking Requests
+                                </a>
+                            }
+
+                            @if (User.IsInRole(TourGuide.DAL.Constants.Roles.Tourist))
+                            {
+                                
+							<a class="btn text-white fw-semibold px-4 py-2" style="background-color: #0b6a8a; border-radius: 6px;" asp-area="Tourist" asp-controller="Bookings" asp-action="Index">
+								My Bookings
+                                </a>
+                            }
+                        }
+                        
                     </div>
                 </div>
             </div>

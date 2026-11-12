@@ -7,6 +7,7 @@ using TourGuide.BLL.DTOs.Booking;
 using TourGuide.BLL.Services.Interfaces;
 using TourGuide.DAL.Constants;
 using TourGuide.DAL.Enums;
+using TourGuide.PL.Controllers.Base;
 using TourGuide.PL.Extensions;
 using TourGuide.PL.Services;
 using TourGuide.PL.ViewModels;
@@ -15,7 +16,7 @@ namespace TourGuide.PL.Areas.Tourist.Controllers;
 
 [Area("Tourist")]
 [Authorize(Roles = Roles.Tourist)] // NFR-01
-public class BookingsController : Controller
+public class BookingsController : TouristBaseController
 {
     private readonly IBookingService _bookings;
     private readonly ICurrentUserService _currentUser;
@@ -86,6 +87,22 @@ public class BookingsController : Controller
 
         TempData["BookingMessage"] =
             $"Request sent to {model.GuideName}. The guide has {BookingRules.PendingExpiryHours} hours to answer.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    // POST /Tourist/Bookings/Withdraw/5 — FR-15, BR-07. PRG back to My Bookings with a message.
+    [HttpPost]
+    public async Task<IActionResult> Withdraw(int id, CancellationToken ct)
+    {
+        if (_currentUser.UserId is not { } userId)
+            return Challenge();
+
+        var result = await _bookings.WithdrawAsync(userId, id, ct);
+        if (result.Succeeded)
+            TempData["BookingMessage"] = $"Booking #{BookingItemViewModel.RefOf(id)} withdrawn.";
+        else
+            TempData["BookingError"] = result.Message;
+
         return RedirectToAction(nameof(Index));
     }
 

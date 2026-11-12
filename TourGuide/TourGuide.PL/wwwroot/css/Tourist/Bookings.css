@@ -150,10 +150,47 @@
 .mb-flash.is-error { background: #fde2e2; color: #b42318; border-color: #f5b5b5; }
 .mb-note.mb-overlap { color: #b42318; font-weight: 600; }
 
-/* Guide list (2.7.c): inline confirm for Reject */
-.mb-confirm { display: inline-block; }
-.mb-confirm > summary { list-style: none; cursor: pointer; }
-.mb-confirm > summary::-webkit-details-marker { display: none; }
-.mb-confirm[open] > summary { opacity: .6; }
-.mb-confirm-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; padding: 10px 12px;
-    background: #fff5f5; border: 1px solid #f5b5b5; border-radius: 10px; color: #b42318; font-weight: 500; }
+.mb-btn-danger:hover { background: #fbcfcf; color: #b42318; }
+.mb-btn-danger-solid { background: #b42318; color: #fff; }
+.mb-btn-danger-solid:hover:not(:disabled) { background: #912018; color: #fff; }
+.mb-btn:focus-visible { outline: 3px solid #7cc4dc; outline-offset: 2px; }
+
+/* Confirm dialog for Withdraw (2.8.b) and Reject (2.7.c) — Views/Shared/_ConfirmDialog.cshtml */
+.mb-dialog {
+    width: min(420px, calc(100vw - 32px));
+    border: 0;
+    border-radius: 16px;
+    padding: 28px 28px 24px;
+    text-align: center;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: #1f2933;
+    background: #fff;
+    box-shadow: 0 24px 60px rgba(15, 23, 32, .28);
+}
+.mb-dialog::backdrop { background: rgba(15, 23, 32, .55); backdrop-filter: blur(3px); }
+.mb-dialog-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: #fde2e2;
+    color: #b42318;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+.mb-dialog-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.5rem; font-weight: 700; margin: 0 0 8px; }
+.mb-dialog-text { color: #5b6670; margin: 0 0 24px; line-height: 1.5; }
+.mb-dialog-actions { display: flex; gap: 10px; }
+.mb-dialog-actions .mb-btn { flex: 1; padding: 12px 16px; }
+
+@media (prefers-reduced-motion: no-preference) {
+    .mb-dialog[open] { animation: mb-dialog-in .18s ease-out; }
+    .mb-dialog[open]::backdrop { animation: mb-backdrop-in .18s ease-out; }
+}
+@keyframes mb-dialog-in { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes mb-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+
+@media (max-width: 420px) { .mb-dialog-actions { flex-direction: column-reverse; } }

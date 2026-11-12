@@ -65,6 +65,30 @@ public static class DemoDataSeeder
         var nour = await CreateApprovedGuideAsync(users, db, settings, admin, now, "nour.ibrahim", "Nour Ibrahim", "EG", "Luxor", "Africa/Cairo", 16m, 3,
             "West Bank tombs and desert camping under the stars.", new[] { 1, 2, 3 }, new[] { 1, 2 });
 
+        // More searchable guides, no bookings, so the search pager (FR-10, 9 per page) has 3 pages,
+        // and "Egypt" alone has 2. Languages: 1 En, 2 Ar, 3 Fr, 4 De, 5 Es, 6 It, 7 Ru, 8 Zh, 9 Ja.
+        // Specializations: 1 Historical, 2 Camping, 3 Cruise, 4 Walking, 5 Photography.
+        var moreGuides = new (string Login, string Name, string Country, string City, string Zone, decimal Price, int Years, string Bio, int[] Langs, int[] Specs)[]
+        {
+            ("salma.youssef",   "Salma Youssef",   "EG", "Cairo",       "Africa/Cairo",        24m,  7, "Egyptian Museum and Saqqara with a hieroglyph crash course.",          new[] { 1, 2, 4 }, new[] { 1 }),
+            ("tarek.nabil",     "Tarek Nabil",     "EG", "Hurghada",    "Africa/Cairo",        28m,  9, "Red Sea boat days and Eastern Desert jeep trips.",                       new[] { 1, 2, 7 }, new[] { 2, 3 }),
+            ("dina.farouk",     "Dina Farouk",     "EG", "Siwa",        "Africa/Cairo",        19m,  5, "Siwa oasis, salt lakes and a night in the Great Sand Sea.",              new[] { 1, 2, 3 }, new[] { 2, 4 }),
+            ("youssef.gamal",   "Youssef Gamal",   "EG", "Aswan",       "Africa/Cairo",        21m,  6, "Abu Simbel at sunrise and slow Nile cruises to Kom Ombo.",               new[] { 1, 2, 6 }, new[] { 1, 3 }),
+            ("rana.khaled",     "Rana Khaled",     "EG", "Dahab",       "Africa/Cairo",        17m,  4, "Mount Sinai night hikes and Bedouin camps.",                             new[] { 1, 2 },    new[] { 2, 4 }),
+            ("amr.saeed",       "Amr Saeed",       "EG", "Alexandria",  "Africa/Cairo",        23m,  8, "Catacombs, Qaitbay citadel and Mediterranean light for photographers.",  new[] { 1, 2, 5 }, new[] { 1, 5 }),
+            ("giulia.rossi",    "Giulia Rossi",    "IT", "Rome",        "Europe/Rome",         45m, 11, "The Colosseum, the Forum and Rome's quiet piazzas.",                     new[] { 1, 6, 3 }, new[] { 1, 4 }),
+            ("lucia.fernandez", "Lucia Fernandez", "ES", "Seville",     "Europe/Madrid",       38m,  9, "Alcázar, Triana and flamenco nights.",                                   new[] { 1, 5 },    new[] { 1, 4 }),
+            ("nikos.papadakis", "Nikos Papadakis", "GR", "Athens",      "Europe/Athens",       40m, 14, "Acropolis at opening time and island day cruises.",                      new[] { 1, 4 },    new[] { 1, 3 }),
+            ("elif.yilmaz",     "Elif Yilmaz",     "TR", "Istanbul",    "Europe/Istanbul",     32m,  7, "Hagia Sophia, the Grand Bazaar and a Bosphorus cruise.",                 new[] { 1, 4, 7 }, new[] { 1, 3, 5 }),
+            ("youssef.amrani",  "Youssef Amrani",  "MA", "Marrakesh",   "Africa/Casablanca",   26m,  8, "Medina souks and two nights in Sahara camps.",                           new[] { 1, 2, 3 }, new[] { 2, 4 }),
+            ("layla.haddad",    "Layla Haddad",    "JO", "Wadi Musa",   "Asia/Amman",          34m, 10, "Petra by day and Wadi Rum under the stars.",                             new[] { 1, 2 },    new[] { 1, 2 }),
+            ("mei.chen",        "Mei Chen",        "CN", "Beijing",     "Asia/Shanghai",       30m,  6, "Forbidden City, hutongs and a wild stretch of the Great Wall.",          new[] { 1, 8 },    new[] { 1, 4, 5 }),
+            ("carlos.mendoza",  "Carlos Mendoza",  "PE", "Cusco",       "America/Lima",        36m, 12, "Sacred Valley and the Inca Trail to Machu Picchu.",                      new[] { 1, 5 },    new[] { 1, 2, 4 }),
+        };
+        foreach (var g in moreGuides)
+            await CreateApprovedGuideAsync(users, db, settings, admin, now, g.Login, g.Name, g.Country, g.City, g.Zone,
+                g.Price, g.Years, g.Bio, g.Langs, g.Specs);
+
         // Approved but profile not complete -> hidden from search (BR-02).
         var mahmoudUser = await CreateUserAsync(users, "mahmoud.ali", "Mahmoud Ali", "EG", Roles.Guide, settings, now.AddDays(-10));
         var mahmoud = AddGuideProfile(db, settings, mahmoudUser, now.AddDays(-10));
@@ -211,8 +235,9 @@ public static class DemoDataSeeder
         {
             var bytes = PlaceholderPdf($"{user.FullName} - {type}");
             var stored = $"{Guid.NewGuid():N}.pdf";
-            Directory.CreateDirectory(settings.UploadsRootPath);
-            File.WriteAllBytes(Path.Combine(settings.UploadsRootPath, stored), bytes);
+            var folder = Path.Combine(settings.UploadsRootPath, "guide-documents"); // same as FileFolders.GuideDocuments
+            Directory.CreateDirectory(folder);
+            File.WriteAllBytes(Path.Combine(folder, stored), bytes);
             profile.Documents.Add(new GuideDocument
             {
                 DocumentType = type,
