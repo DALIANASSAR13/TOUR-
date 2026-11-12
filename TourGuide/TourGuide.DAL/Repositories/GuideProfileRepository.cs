@@ -21,6 +21,60 @@ public partial class GuideProfileRepository
         && g.Languages.Any()
         && g.Specializations.Any();
 
+    public async Task<PagedList<GuideProfile>> SearchAsync(GuideSearchQuery query, CancellationToken ct = default)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+
+        var page = Math.Max(1, query.Page);
+        var pageSize = Math.Max(1, query.PageSize);
+
+        IQueryable<GuideProfile> profiles = Set.AsNoTracking()
+            .Where(Searchable);
+
+        if (!string.IsNullOrWhiteSpace(query.CountryCode))
+        {
+            var countryCode = query.CountryCode.Trim().ToUpperInvariant();
+            profiles = profiles.Where(g => g.CountryCode == countryCode);
+        }
+
+        if (query.LanguageId.HasValue)
+            profiles = profiles.Where(g => g.Languages.Any(l => l.LanguageId == query.LanguageId.Value));
+
+        if (query.SpecializationId.HasValue)
+            profiles = profiles.Where(g => g.Specializations.Any(s => s.SpecializationId == query.SpecializationId.Value));
+
+        if (query.MinPrice.HasValue)
+            profiles = profiles.Where(g => g.PricePerHour >= query.MinPrice.Value);
+
+        if (query.MaxPrice.HasValue)
+            profiles = profiles.Where(g => g.PricePerHour <= query.MaxPrice.Value);
+
+        var totalCount = await profiles.CountAsync(ct);
+
+        var items = await profiles
+            .Include(g => g.User)
+            .Include(g => g.Languages).ThenInclude(l => l.Language)
+            .Include(g => g.Specializations).ThenInclude(s => s.Specialization)
+            .AsSplitQuery()
+            .OrderByDescending(g => g.AverageRating)
+            .ThenByDescending(g => g.ReviewCount)
+            .ThenBy(g => g.User.FullName)
+            .ThenBy(g => g.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(ct);
+
+        return new PagedList<GuideProfile>(items, page, pageSize, totalCount);
+    }
+
+    public Task<List<string>> GetSearchableCountryCodesAsync(CancellationToken ct = default) =>
+        Set.AsNoTracking()
+            .Where(Searchable)
+            .Select(g => g.CountryCode!)
+            .Distinct()
+            .OrderBy(code => code)
+            .ToListAsync(ct);
+
     public Task<GuideProfile?> GetWithDetailsAsync(int id, CancellationToken ct = default) =>
         Set.AsNoTracking()
             .Include(g => g.User)

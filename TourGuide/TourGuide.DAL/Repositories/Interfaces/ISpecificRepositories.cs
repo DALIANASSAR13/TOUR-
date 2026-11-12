@@ -1,6 +1,7 @@
 using TourGuide.DAL.Common;
 using TourGuide.DAL.Entities;
 using TourGuide.DAL.Enums;
+using TourGuide.DAL.Queries;
 
 namespace TourGuide.DAL.Repositories.Interfaces;
 
@@ -8,6 +9,12 @@ namespace TourGuide.DAL.Repositories.Interfaces;
 // (signatures in docs/class-diagram.md, section 6.1).
 public interface IGuideProfileRepository : IRepository<GuideProfile>
 {
+    // FR-10: approved, complete guide profiles matching the supplied filters.
+    Task<PagedList<GuideProfile>> SearchAsync(GuideSearchQuery query, CancellationToken ct = default);
+
+    // Country codes used by approved, complete profiles for the filter dropdown.
+    Task<List<string>> GetSearchableCountryCodesAsync(CancellationToken ct = default);
+
     // Guide with user, languages and specializations (+ names) for BR-02 and the public profile (FR-09). Read-only.
     Task<GuideProfile?> GetWithDetailsAsync(int id, CancellationToken ct = default);
 
@@ -45,4 +52,7 @@ public interface IPaymentRepository : IRepository<Payment>
     Task<Payment?> GetByBookingAsync(int bookingId, CancellationToken ct = default);
 }
 
-public interface IReviewRepository : IRepository<Review> { }
+public interface IReviewRepository : IRepository<Review>
+{
+    Task<PagedList<Review>> GetForGuideAsync(int guideId, int page, int pageSize, CancellationToken ct = default);
+}

@@ -2,10 +2,15 @@
 using FluentValidation;
 using Microsoft.Extensions.Options;
 using TourGuide.BLL.Common;
+using TourGuide.BLL.Domain;
+using TourGuide.BLL.DTOs.Guide;
 using TourGuide.BLL.DTOs.GuideProfile;
+using TourGuide.BLL.DTOs.Review;
+using TourGuide.BLL.Infrastructure;
 using TourGuide.BLL.Options;
 using TourGuide.BLL.Services.Interfaces;
 using TourGuide.DAL.Entities;
+using TourGuide.DAL.Common;
 using TourGuide.DAL.Exceptions;
 using TourGuide.DAL.UnitOfWork;
 
@@ -17,17 +22,45 @@ public class GuideProfileService : IGuideProfileService
     private readonly IMapper _mapper;
     private readonly IValidator<UpdateGuideProfileRequest> _validator;
     private readonly FileStorageOptions _storageOptions;
+    private readonly ICountryProvider _countries;
 
     public GuideProfileService(
         IUnitOfWork uow,
         IMapper mapper,
         IValidator<UpdateGuideProfileRequest> validator,
-        IOptions<FileStorageOptions> storageOptions)
+        IOptions<FileStorageOptions> storageOptions,
+        ICountryProvider countries)
     {
         _uow = uow;
         _mapper = mapper;
         _validator = validator;
         _storageOptions = storageOptions.Value;
+        _countries = countries;
+    }
+
+    public async Task<Result<PublicGuideProfileDto>> GetPublicProfileAsync(
+        int id, int page = 1, CancellationToken ct = default)
+    {
+        if (id <= 0)
+            return Result<PublicGuideProfileDto>.Fail(ErrorCodes.NotFound, "Guide profile not found.");
+
+        var profile = await _uow.GuideProfiles.GetWithDetailsAsync(id, ct);
+        if (profile is null || !GuideRules.IsBookable(profile))
+            return Result<PublicGuideProfileDto>.Fail(ErrorCodes.NotFound, "Guide profile not found.");
+
+        var reviewPage = await _uow.Reviews.GetForGuideAsync(id, Math.Max(1, page), 5, ct);
+        var dto = _mapper.Map<PublicGuideProfileDto>(profile);
+        dto.CountryName = _countries.GetName(dto.CountryCode);
+        dto.Reviews = new PagedList<ReviewDto>(
+            _mapper.Map<List<ReviewDto>>(reviewPage.Items),
+            reviewPage.Page,
+            reviewPage.PageSize,
+            reviewPage.TotalCount);
+
+        foreach (var review in dto.Reviews.Items)
+            review.TouristCountryName = _countries.GetName(review.TouristCountryCode);
+
+        return Result<PublicGuideProfileDto>.Ok(dto);
     }
 
     public async Task<Result<GuideProfileEditDto>> GetForEditAsync(string userId, CancellationToken ct = default)
