@@ -235,8 +235,9 @@ public static class DemoDataSeeder
         {
             var bytes = PlaceholderPdf($"{user.FullName} - {type}");
             var stored = $"{Guid.NewGuid():N}.pdf";
-            Directory.CreateDirectory(settings.UploadsRootPath);
-            File.WriteAllBytes(Path.Combine(settings.UploadsRootPath, stored), bytes);
+            var folder = Path.Combine(settings.UploadsRootPath, "guide-documents"); // same as FileFolders.GuideDocuments
+            Directory.CreateDirectory(folder);
+            File.WriteAllBytes(Path.Combine(folder, stored), bytes);
             profile.Documents.Add(new GuideDocument
             {
                 DocumentType = type,

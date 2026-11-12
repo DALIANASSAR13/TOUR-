@@ -1,66 +1,46 @@
 @model TourGuide.PL.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Log in";
+}
 
-<link rel="stylesheet" href="~/css/Account/Login.css" />
+<link rel="stylesheet" href="~/css/Account/Login.css" asp-append-version="true" />
 
+<section class="auth-page">
+    <div class="auth-wrap">
+        <div class="auth-card auth-card-narrow">
+            <h1 class="auth-title text-center">Welcome back</h1>
+            <p class="auth-subtitle text-center">One login for travelers, guides and admins.</p>
 
-<div class="login-page">
+            @if (TempData["AccountMessage"] is string accountMessage)
+            {
+                <div class="auth-success" role="status">@accountMessage</div>
+            }
 
-    @* ===== left side ===== *@
-    <div class="hero-text">
-        <h1>Begin Your Next <span>Great Adventure</span>.</h1>
-        <p>
-            Connect directly with verified local guides, book exclusive tailor-made
-            experiences, or manage your expert tour portfolio in one unified platform.
-        </p>
-    </div>
+            <form asp-controller="Account" asp-action="Login" method="post">
+                <input type="hidden" asp-for="ReturnUrl" />
 
-    @* ===== right side: the card ===== *@
-    <div class="login-card">
+                <label class="auth-label" asp-for="Email">Email</label>
+                <input asp-for="Email" class="auth-input" autocomplete="email" />
+                <span asp-validation-for="Email"></span>
 
-        <div class="tabs">
-            <span class="tab active">Sign In</span>
-            <a class="tab" href="#">Create Account</a>
+                <label class="auth-label" asp-for="Password">Password</label>
+                <input asp-for="Password" class="auth-input" autocomplete="current-password" />
+                <span asp-validation-for="Password"></span>
+
+                <div asp-validation-summary="ModelOnly" class="auth-alert"></div>
+
+                <label class="auth-check">
+                    <input asp-for="RememberMe" type="checkbox" /> Keep me logged in
+                </label>
+
+                <button type="submit" class="auth-btn">Log in</button>
+            </form>
+
+            <p class="auth-foot">New here? <a asp-controller="Account" asp-action="Register">Create an account</a></p>
         </div>
-
-        <form method="post" asp-controller="Account" asp-action="Login">
-            <div asp-validation-summary="ModelOnly" class="error-box"></div>
-
-            <label class="field-label" for="email">Email Address</label>
-            <div class="input-box">
-                <span class="input-icon">✉️</span>
-                <input asp-for="Email" id="email" placeholder="alex@wanderlust.com" />
-            </div>
-            <span asp-validation-for="Email" class="field-error"></span>
-
-            <div class="label-row">
-                <label class="field-label" for="password">Password</label>
-                <a href="#" class="forgot">Forgot?</a>
-            </div>
-            <div class="input-box">
-                <span class="input-icon">🔒</span>
-                <input asp-for="Password" id="password" type="password" placeholder="••••••••" />
-                <button type="button" class="eye-btn" onclick="togglePassword()">👁</button>
-            </div>
-            <span asp-validation-for="Password" class="field-error"></span>
-
-            <label class="remember">
-                <input asp-for="RememberMe" type="checkbox" /> Remember this device
-            </label>
-
-            <button type="submit" class="signin-btn">Sign In →</button>
-
-            <div class="divider"><span>or continue with</span></div>
-
-            <button type="button" class="google-btn">
-                <b style="color:#4285f4">G</b> Continue with Google
-            </button>
-        </form>
     </div>
-</div>
+</section>
 
-<script>
-    function togglePassword() {
-        var p = document.getElementById("password");
-        p.type = p.type === "password" ? "text" : "password";
-    }
-</script>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

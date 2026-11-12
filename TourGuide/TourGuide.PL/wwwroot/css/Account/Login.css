@@ -1,223 +1,326 @@
-﻿* {
-    box-sizing: border-box;
+﻿/* Auth pages (UI screens 2 and 7): log in, tourist sign-up, guide sign-up, access denied.
+   Every class starts with "auth-", so nothing leaks into the layout. */
+.auth-page {
+    background: #f3f5f7;
+    padding: 56px 16px 72px;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: #1f2933;
 }
 
-body {
-    margin: 0;
-    font-family: Georgia, "Times New Roman", serif;
-    background: #f7f9fb;
-    color: #1d2433;
-}
-
-.login-page {
-    min-height: 100vh;
+.auth-wrap {
+    max-width: 1080px;
+    margin: 0 auto;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    gap: 80px;
-    padding: 40px;
+    gap: 64px;
     flex-wrap: wrap;
-    position: relative;
-    overflow: hidden;
 }
 
-.login-page::before {
-    content: "";
-    position: absolute;
-    left: 3%;
-    bottom: 8%;
-    width: 280px;
-    height: 280px;
-    border-radius: 50%;
-    background: radial-gradient(#dcebfa, transparent 70%);
-    z-index: 0;
+/* left side (sign-up pages) */
+.auth-hero {
+    flex: 1 1 360px;
+    max-width: 460px;
+    padding-top: 24px;
 }
 
-/* left side */
-.hero-text {
-    max-width: 420px;
-    position: relative;
-    z-index: 1;
-}
+    .auth-hero h1 {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-weight: 700;
+        font-size: 2.8rem;
+        line-height: 1.15;
+        margin: 0 0 16px;
+    }
 
-.hero-text h1 {
-    font-size: 2.6rem;
-    line-height: 1.15;
-    margin: 0 0 18px;
-}
+        .auth-hero h1 span {
+            color: #0b6a8a;
+        }
 
-.hero-text h1 span {
-    color: #0b6a8a;
-}
+    .auth-hero p, .auth-hero ol {
+        color: #5b6670;
+        line-height: 1.7;
+    }
 
-.hero-text p {
-    color: #555;
-    line-height: 1.6;
-}
+    .auth-hero ol {
+        padding-left: 20px;
+        margin-top: 20px;
+    }
 
 /* card */
-.login-card {
+.auth-card {
+    flex: 1 1 440px;
     width: 100%;
-    max-width: 440px;
+    max-width: 520px;
     background: #fff;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 12px 40px rgba(0,0,0,.1);
-    position: relative;
-    z-index: 1;
+    border: 1px solid #e3e6ea;
+    border-radius: 14px;
+    padding: 32px;
+    box-shadow: 0 8px 28px rgba(31, 41, 51, .06);
 }
 
-.tabs {
-    display: flex;
-    background: #f1f3f5;
-    border-radius: 12px;
-    padding: 4px;
-    margin-bottom: 22px;
+.auth-card-narrow {
+    flex: 0 1 460px;
 }
 
-.tab {
-    flex: 1;
+.auth-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: 2rem;
+    margin: 0 0 4px;
+}
+
+.auth-subtitle {
+    color: #5b6670;
+    margin: 0 0 22px;
+}
+
+.text-center {
     text-align: center;
-    padding: 10px;
-    border-radius: 9px;
-    text-decoration: none;
-    color: #444;
-    font-size: .9rem;
 }
 
-.tab.active {
-    background: #0b6a8a;
-    color: #fff;
-}
-
-.field-label {
+/* Tourist / Tour Guide switch */
+.auth-switch-label {
     display: block;
-    font-size: .78rem;
-    color: #444;
-    margin: 16px 0 6px;
-}
-
-.label-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.forgot {
-    color: #0b6a8a;
-    font-size: .78rem;
-    text-decoration: none;
-    margin-top: 10px;
-}
-
-/* role picker */
-.role-picker {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.role-picker input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.role-picker label {
-    text-align: center;
-    padding: 14px;
-    border: 2px solid #e4e8ec;
-    background: #f4f6f8;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: .9rem;
-}
-
-.role-picker input:checked + label {
-    border-color: #0b6a8a;
-    background: #eef6fa;
-}
-
-/* inputs */
-.input-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #f1f3f5;
-    border-radius: 12px;
-    padding: 0 14px;
-}
-
-.input-box input {
-    flex: 1;
-    border: 0;
-    background: transparent;
-    padding: 15px 0;
-    outline: none;
-    font-size: .9rem;
-    font-family: inherit;
-}
-
-.eye-btn {
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-}
-
-.field-error {
-    color: #c0392b;
-    font-size: .75rem;
-}
-
-.error-box {
-    color: #c0392b;
     font-size: .85rem;
+    color: #5b6670;
+    margin-bottom: 6px;
+}
+
+.auth-roles {
+    display: flex;
+    background: #eef1f3;
+    border-radius: 10px;
+    padding: 4px;
     margin-bottom: 8px;
 }
 
-.remember {
+.auth-role {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #1f2933;
+    font-weight: 600;
+    font-size: .92rem;
+}
+
+    .auth-role:hover {
+        color: #0b6a8a;
+    }
+
+    .auth-role.is-active {
+        background: #fff;
+        color: #0b6a8a;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+    }
+
+/* fields */
+.auth-label {
+    display: block;
+    font-size: .88rem;
+    font-weight: 600;
+    margin: 16px 0 6px;
+}
+
+.auth-input {
+    display: block;
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid #d6dbe0;
+    border-radius: 10px;
+    background: #fff;
+    font: inherit;
+    color: #1f2933;
+}
+
+    .auth-input:focus {
+        outline: none;
+        border-color: #0b6a8a;
+        box-shadow: 0 0 0 3px rgba(11, 106, 138, .15);
+    }
+
+    .auth-input.input-validation-error {
+        border-color: #b42318;
+    }
+
+.auth-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+    .auth-row > div {
+        min-width: 0;
+    }
+
+.auth-help {
+    display: block;
+    color: #5b6670;
+    font-size: .8rem;
+    margin-top: 6px;
+}
+
+.field-validation-error {
+    display: block;
+    color: #b42318;
+    font-size: .82rem;
+    margin-top: 4px;
+}
+
+/* messages */
+.auth-alert {
+    background: #fff1f0;
+    color: #b42318;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-top: 16px;
+    font-size: .92rem;
+}
+
+    .auth-alert ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .auth-alert.validation-summary-valid {
+        display: none;
+    }
+
+.auth-success {
+    background: #eaf6ef;
+    color: #1d6b3d;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: .92rem;
+}
+
+.auth-check {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     margin: 18px 0;
-    font-size: .85rem;
+    font-size: .95rem;
 }
+
+    .auth-check input {
+        width: 18px;
+        height: 18px;
+        accent-color: #0b6a8a;
+    }
 
 /* buttons */
-.signin-btn {
+.auth-btn {
+    display: block;
     width: 100%;
+    border: 0;
+    border-radius: 10px;
+    padding: 14px;
     background: #0b6a8a;
     color: #fff;
-    border: 0;
-    padding: 15px;
-    border-radius: 12px;
-    font-size: 1rem;
+    font: inherit;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
     cursor: pointer;
-    font-family: inherit;
 }
 
-.divider {
+    .auth-btn:hover {
+        background: #095a75;
+        color: #fff;
+    }
+
+.auth-btn-inline {
+    display: inline-block;
+    width: auto;
+    padding: 12px 26px;
+}
+
+.auth-foot {
+    text-align: center;
+    color: #5b6670;
+    margin: 18px 0 0;
+}
+
+    .auth-foot a {
+        color: #0b6a8a;
+        font-weight: 600;
+    }
+
+/* guide documents */
+.auth-docs-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 26px 0 2px;
+}
+
+.auth-docs-help {
+    color: #5b6670;
+    font-size: .88rem;
+    margin: 0 0 12px;
+}
+
+.auth-doc {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
-    margin: 20px 0;
-    color: #888;
-    font-size: .75rem;
-}
-
-.divider::before, .divider::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: #e4e8ec;
-}
-
-.google-btn {
-    width: 100%;
-    background: #fff;
-    border: 1px solid #e0e4e8;
-    padding: 12px;
+    border: 1px dashed #c4ccd3;
     border-radius: 12px;
+    padding: 12px 14px;
+}
+
+    .auth-doc.has-file {
+        border-style: solid;
+        border-color: #b9dfc8;
+        background: #f3faf6;
+    }
+
+.auth-doc-name {
+    font-weight: 600;
+}
+
+.auth-doc-meta {
+    color: #5b6670;
+    font-size: .82rem;
+}
+
+.auth-doc-btn {
+    flex-shrink: 0;
+    background: #e8eaed;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: .88rem;
     cursor: pointer;
-    font-family: inherit;
+}
+
+    .auth-doc-btn:hover {
+        background: #dadde1;
+    }
+/* Visually hidden but not display:none, so jQuery Validation still checks it. */
+.auth-file {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+@media (max-width: 560px) {
+    .auth-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .auth-card {
+        padding: 22px;
+    }
+
+    .auth-hero h1 {
+        font-size: 2.2rem;
+    }
 }

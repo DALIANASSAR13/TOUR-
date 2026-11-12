@@ -12,4 +12,20 @@
         return endOfDay.getTime() >= Date.now() + Number(hours) * 3600 * 1000;
     });
     $.validator.unobtrusive.adapters.addSingleVal('futuredate', 'hours');
+    // [MaxFileSize]: the chosen file must not be larger than `bytes`.
+    $.validator.addMethod('maxfilesize', function (value, element, bytes) {
+        if (!element.files || element.files.length === 0) return true;
+        return element.files[0].size <= Number(bytes);
+    });
+    $.validator.unobtrusive.adapters.addSingleVal('maxfilesize', 'bytes');
+
+    // [AllowedFileTypes]: the file name must end with one of the comma-separated `extensions`.
+    $.validator.addMethod('allowedfiletypes', function (value, element, extensions) {
+        if (!element.files || element.files.length === 0) return true;
+        const name = element.files[0].name.toLowerCase();
+        return String(extensions).split(',').some(function (ext) {
+            return name.endsWith(ext.trim().toLowerCase());
+        });
+    });
+    $.validator.unobtrusive.adapters.addSingleVal('allowedfiletypes', 'extensions');
 })(jQuery);
