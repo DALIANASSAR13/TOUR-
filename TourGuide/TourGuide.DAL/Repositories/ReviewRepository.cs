@@ -23,4 +23,7 @@ public partial class ReviewRepository
 
         return new PagedList<Review>(items, page, pageSize, total);
     }
+
+    public Task<bool> ExistsForBookingAsync(int bookingId, CancellationToken ct = default) =>
+        Set.AnyAsync(r => r.BookingId == bookingId, ct);
 }

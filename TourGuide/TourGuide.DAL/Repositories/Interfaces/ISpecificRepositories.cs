@@ -55,4 +55,7 @@ public interface IPaymentRepository : IRepository<Payment>
 public interface IReviewRepository : IRepository<Review>
 {
     Task<PagedList<Review>> GetForGuideAsync(int guideId, int page, int pageSize, CancellationToken ct = default);
+
+    // BR-15: does this booking already have a review? (one review per booking)
+    Task<bool> ExistsForBookingAsync(int bookingId, CancellationToken ct = default);
 }

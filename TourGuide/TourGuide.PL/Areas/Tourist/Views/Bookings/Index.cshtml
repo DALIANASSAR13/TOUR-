@@ -62,7 +62,7 @@
                                 <strong>@b.TotalText</strong> <span>@b.PriceDetail</span>
                             </div>
                             <div class="mb-actions">
-                                @* Buttons follow the status (BR-07). Review arrives in 3.2. *@
+                                @* Buttons follow the status (BR-07, BR-13 to BR-15). *@
                                 @if (b.CanPay)
                                 {
                                     <a asp-area="Tourist" asp-controller="Payments" asp-action="Checkout" asp-route-id="@b.Id" class="mb-btn mb-btn-primary">Pay now</a>
@@ -80,7 +80,7 @@
                                 }
                                 @if (b.CanReview)
                                 {
-                                    <button type="button" class="mb-btn mb-btn-primary" disabled title="Not available yet">Write a review</button>
+                                    <a asp-area="Tourist" asp-controller="Reviews" asp-action="Create" asp-route-id="@b.Id" class="mb-btn mb-btn-primary">Write a review</a>
                                 }
                                 @if (b.ReviewRating is not null)
                                 {
