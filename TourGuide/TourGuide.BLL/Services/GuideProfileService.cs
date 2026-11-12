@@ -14,9 +14,9 @@ public class GuideProfileService : IGuideProfileService
 {
     private readonly IUnitOfWork _uow;
     private readonly IMapper _mapper;
-    private readonly ICountryProvider _countries;
+    private readonly Infrastructure.ICountryProvider _countries;
 
-    public GuideProfileService(IUnitOfWork uow, IMapper mapper, ICountryProvider countries)
+    public GuideProfileService(IUnitOfWork uow, IMapper mapper, Infrastructure.ICountryProvider countries)
     {
         _uow = uow;
         _mapper = mapper;

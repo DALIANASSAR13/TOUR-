@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TourGuide.BLL.DTOs.Account;
+using TourGuide.BLL.Infrastructure;
 using TourGuide.BLL.Services.Interfaces;
 using TourGuide.DAL.Entities;
 using TourGuide.PL.Extensions;
@@ -90,7 +91,7 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Register()
     {
-        ViewBag.Countries = _countryProvider.GetCountries();
+        ViewBag.Countries = _countryProvider.GetAll();
 
         return View(new RegisterTouristViewModel());
     }
@@ -99,7 +100,7 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult RegisterGuide()
     {
-        ViewBag.Countries = _countryProvider.GetCountries();
+        ViewBag.Countries = _countryProvider.GetAll();
 
         return View(new RegisterGuideViewModel());
     }
@@ -109,7 +110,7 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Countries = _countryProvider.GetCountries();
+            ViewBag.Countries = _countryProvider.GetAll();
             return View(model);
         }
 
@@ -125,7 +126,7 @@ public class AccountController : Controller
         if (!result.Succeeded)
         {
             ModelState.AddResultErrors(result);
-            ViewBag.Countries = _countryProvider.GetCountries();
+            ViewBag.Countries = _countryProvider.GetAll();
             return View(model);
         }
 
@@ -139,7 +140,7 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Countries = _countryProvider.GetCountries();
+            ViewBag.Countries = _countryProvider.GetAll();
             return View(model);
         }
 
@@ -162,7 +163,7 @@ public class AccountController : Controller
         if (!result.Succeeded)
         {
             ModelState.AddResultErrors(result);
-            ViewBag.Countries = _countryProvider.GetCountries();
+            ViewBag.Countries = _countryProvider.GetAll();
             return View(model);
         }
 

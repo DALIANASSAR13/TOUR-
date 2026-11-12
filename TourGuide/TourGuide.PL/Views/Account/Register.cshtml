@@ -1,7 +1,7 @@
 ﻿@model TourGuide.PL.ViewModels.RegisterTouristViewModel
 @{
     ViewData["Title"] = "Create your account";
-    var countries = (IEnumerable<TourGuide.BLL.Services.Interfaces.CountryOption>)ViewBag.Countries;
+    var countries = (IEnumerable<TourGuide.BLL.DTOs.Search.CountryDto>)ViewBag.Countries;
 }
 
 <link rel="stylesheet" href="~/css/Account/Login.css" asp-append-version="true" />

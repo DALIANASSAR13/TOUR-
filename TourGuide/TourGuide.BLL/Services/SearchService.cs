@@ -16,7 +16,7 @@ public class SearchService : ISearchService
     private readonly IUnitOfWork _uow;
     private readonly IMapper _mapper;
     private readonly IValidator<GuideSearchFilter> _validator;
-    private readonly ICountryProvider _countries;
+    private readonly Infrastructure.ICountryProvider _countries;
 
     public SearchService(IUnitOfWork uow, IMapper mapper, IValidator<GuideSearchFilter> validator, ICountryProvider countries)
     {

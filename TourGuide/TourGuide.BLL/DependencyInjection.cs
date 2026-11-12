@@ -28,7 +28,6 @@ public static class DependencyInjection
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjection));
 
         // Services are added here by later cycles, each as: services.AddScoped<IXService, XService>();
-        services.AddSingleton<ICountryProvider, CountryProvider>();
         services.AddScoped<IFileStorage, LocalFileStorage>();
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IBookingService, BookingService>();

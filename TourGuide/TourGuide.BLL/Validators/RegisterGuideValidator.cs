@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using TourGuide.BLL.DTOs.Account;
-using TourGuide.BLL.Services.Interfaces;
+using TourGuide.BLL.Infrastructure;
 
 namespace TourGuide.BLL.Validators;
 
@@ -23,7 +23,7 @@ public class RegisterGuideValidator : AbstractValidator<RegisterGuideRequest>
 
         RuleFor(x => x.CountryCode)
             .NotEmpty()
-            .Must(countryProvider.IsValidCountry)
+            .Must(countryProvider.Exists)
             .WithMessage("Invalid country.");
 
         RuleFor(x => x.ProofOfResidence).NotNull().WithMessage("Upload your proof of residence.")

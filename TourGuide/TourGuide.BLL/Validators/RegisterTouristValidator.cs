@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using TourGuide.BLL.DTOs.Account;
-using TourGuide.BLL.Services.Interfaces;
+using TourGuide.BLL.Infrastructure;
 
 namespace TourGuide.BLL.Validators;
 
@@ -24,7 +24,7 @@ public class RegisterTouristValidator
 
         RuleFor(x => x.CountryCode)
             .NotEmpty()
-            .Must(countryProvider.IsValidCountry)
+            .Must(countryProvider.Exists)
             .WithMessage("Please select a valid country.");
     }
 }
