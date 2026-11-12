@@ -32,46 +32,10 @@ public partial class GuideProfileRepository
     public Task<GuideProfile?> GetByUserIdAsync(string userId, CancellationToken ct = default) =>
         Set.AsNoTracking().FirstOrDefaultAsync(g => g.UserId == userId, ct);
 
-    public async Task<PagedList<GuideProfile>> SearchAsync(GuideSearchQuery query, CancellationToken ct = default)
-    {
-        var guides = Set.AsNoTracking().Where(Searchable);
-
-        if (!string.IsNullOrWhiteSpace(query.CountryCode))
-        {
-            var country = query.CountryCode.Trim().ToUpperInvariant();
-            guides = guides.Where(g => g.CountryCode == country);
-        }
-        if (query.LanguageId is int languageId)
-            guides = guides.Where(g => g.Languages.Any(l => l.LanguageId == languageId));
-        if (query.SpecializationId is int specializationId)
-            guides = guides.Where(g => g.Specializations.Any(s => s.SpecializationId == specializationId));
-        if (query.MinPrice is decimal min)
-            guides = guides.Where(g => g.PricePerHour >= min);
-        if (query.MaxPrice is decimal max)
-            guides = guides.Where(g => g.PricePerHour <= max);
-
-        var total = await guides.CountAsync(ct);
-
-        var items = await guides
-            .OrderByDescending(g => g.AverageRating)
-            .ThenByDescending(g => g.ReviewCount)
-            .ThenBy(g => g.User.FullName)
-            .ThenBy(g => g.Id)
-            .Skip((query.Page - 1) * query.PageSize)
-            .Take(query.PageSize)
-            .Include(g => g.User)
-            .Include(g => g.Languages).ThenInclude(l => l.Language)
-            .Include(g => g.Specializations).ThenInclude(s => s.Specialization)
+    public Task<GuideProfile?> GetByUserIdForUpdateAsync(string userId, CancellationToken ct = default) =>
+        Set.Include(g => g.User)
+            .Include(g => g.Languages)
+            .Include(g => g.Specializations)
             .AsSplitQuery()
-            .ToListAsync(ct);
-
-        return new PagedList<GuideProfile>(items, query.Page, query.PageSize, total);
-    }
-
-    public Task<List<string>> GetSearchableCountryCodesAsync(CancellationToken ct = default) =>
-        Set.AsNoTracking()
-            .Where(Searchable)
-            .Select(g => g.CountryCode!)
-            .Distinct()
-            .ToListAsync(ct);
+            .FirstOrDefaultAsync(g => g.UserId == userId, ct);
 }

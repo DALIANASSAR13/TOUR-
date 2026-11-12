@@ -44,6 +44,12 @@
                             <li class="nav-item">
                                 <a class="nav-link fw-medium text-dark px-3" asp-area="Guide" asp-controller="BookingRequests" asp-action="Index">Requests</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link fw-medium text-dark px-3" asp-area="Guide" asp-controller="Profile" asp-action="Edit">My Profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fw-medium text-dark px-3" asp-area="Guide" asp-controller="Verification" asp-action="Status">Status</a>
+                            </li>
                         }
                         @if (User.IsInRole(TourGuide.DAL.Constants.Roles.Admin))
                         {

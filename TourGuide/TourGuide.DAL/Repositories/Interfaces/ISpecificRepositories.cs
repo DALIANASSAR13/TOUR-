@@ -1,12 +1,11 @@
 using TourGuide.DAL.Common;
 using TourGuide.DAL.Entities;
-using TourGuide.DAL.Queries;
+using TourGuide.DAL.Enums;
 
 namespace TourGuide.DAL.Repositories.Interfaces;
 
 // Specific repositories. Each later cycle adds its own query methods here
 // (signatures in docs/class-diagram.md, section 6.1).
-
 public interface IGuideProfileRepository : IRepository<GuideProfile>
 {
     // Guide with user, languages and specializations (+ names) for BR-02 and the public profile (FR-09). Read-only.
@@ -15,15 +14,14 @@ public interface IGuideProfileRepository : IRepository<GuideProfile>
     // The logged-in guide's own profile (FR-16). Read-only.
     Task<GuideProfile?> GetByUserIdAsync(string userId, CancellationToken ct = default);
 
-    // FR-10: one page of searchable guides (always Approved + profile complete, BR-02), with user,
-    // languages and specializations. Best rated first. Read-only.
-    Task<PagedList<GuideProfile>> SearchAsync(GuideSearchQuery query, CancellationToken ct = default);
-
-    // FR-10 country filter: the distinct country codes of searchable guides (BR-02). Read-only.
-    Task<List<string>> GetSearchableCountryCodesAsync(CancellationToken ct = default);
+    // Guide profile with user, languages, and specializations tracked for editing.
+    Task<GuideProfile?> GetByUserIdForUpdateAsync(string userId, CancellationToken ct = default);
 }
 
-public interface IGuideDocumentRepository : IRepository<GuideDocument> { }
+public interface IGuideDocumentRepository : IRepository<GuideDocument>
+{
+    Task<GuideDocument?> GetByTypeAsync(int guideId, DocumentType type, CancellationToken ct = default);
+}
 
 public interface IBookingRepository : IRepository<Booking>
 {
@@ -47,8 +45,4 @@ public interface IPaymentRepository : IRepository<Payment>
     Task<Payment?> GetByBookingAsync(int bookingId, CancellationToken ct = default);
 }
 
-public interface IReviewRepository : IRepository<Review>
-{
-    // FR-09: one page of a guide's reviews, newest first, with the tourist (name, country). Read-only.
-    Task<PagedList<Review>> GetForGuideAsync(int guideId, int page, int pageSize, CancellationToken ct = default);
-}
+public interface IReviewRepository : IRepository<Review> { }

@@ -10,6 +10,7 @@ using TourGuide.BLL.Services.Interfaces;
 using TourGuide.BLL.Services.Account;
 using TourGuide.BLL.Validators;
 
+
 namespace TourGuide.BLL;
 
 public static class DependencyInjection
@@ -31,6 +32,8 @@ public static class DependencyInjection
         services.AddScoped<IFileStorage, LocalFileStorage>();
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IBookingService, BookingService>();
+        services.AddScoped<IGuideProfileService, GuideProfileService>();
+        services.AddScoped<IGuideVerificationService, GuideVerificationService>();
         services.AddScoped<ISearchService, SearchService>();
         services.AddScoped<IGuideProfileService, GuideProfileService>();
         services.AddScoped<IPaymentService, PaymentService>();

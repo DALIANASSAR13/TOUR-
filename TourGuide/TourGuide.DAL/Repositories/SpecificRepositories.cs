@@ -1,11 +1,12 @@
+using Microsoft.EntityFrameworkCore;
 using TourGuide.DAL.Data;
 using TourGuide.DAL.Entities;
+using TourGuide.DAL.Enums;
 using TourGuide.DAL.Repositories.Interfaces;
 
 namespace TourGuide.DAL.Repositories;
 
 // Specific repositories. `partial` so each later cycle can add its queries in its own file.
-
 public partial class GuideProfileRepository : Repository<GuideProfile>, IGuideProfileRepository
 {
     public GuideProfileRepository(AppDbContext context) : base(context) { }
@@ -13,7 +14,15 @@ public partial class GuideProfileRepository : Repository<GuideProfile>, IGuidePr
 
 public partial class GuideDocumentRepository : Repository<GuideDocument>, IGuideDocumentRepository
 {
-    public GuideDocumentRepository(AppDbContext context) : base(context) { }
+    private readonly AppDbContext _context;
+
+    public GuideDocumentRepository(AppDbContext context) : base(context)
+    {
+        _context = context;
+    }
+
+    public Task<GuideDocument?> GetByTypeAsync(int guideId, DocumentType type, CancellationToken ct = default) =>
+        _context.Set<GuideDocument>().FirstOrDefaultAsync(d => d.GuideProfileId == guideId && d.DocumentType == type, ct);
 }
 
 public partial class BookingRepository : Repository<Booking>, IBookingRepository
