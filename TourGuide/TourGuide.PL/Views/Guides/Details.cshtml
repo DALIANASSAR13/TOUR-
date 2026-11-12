@@ -1,0 +1,135 @@
+@model TourGuide.PL.ViewModels.PublicGuideProfileViewModel
+@{
+    ViewData["Title"] = Model.FullName;
+}
+
+<link rel="stylesheet" href="~/css/Guides/Details.css" asp-append-version="true" />
+
+<section class="gp-page">
+    <a asp-controller="Search" asp-action="Index" class="gp-back">‹ Back to guides</a>
+
+    <div class="gp-layout">
+        <div class="gp-main">
+            @* Header *@
+            <header class="gp-header">
+                <div class="gp-photo" aria-hidden="true"><span>@Model.Initials</span></div>
+                <div class="gp-intro">
+                    <h1 class="gp-name">@Model.FullName</h1>
+                    <p class="gp-location">@Model.Location</p>
+                    <p class="gp-rating">
+                        @if (Model.HasReviews)
+                        {
+                            <span class="gp-stars" aria-label="@Model.RatingText of 5 stars">@Model.Stars</span>
+                            <strong>@Model.RatingText</strong>
+                            <span class="gp-muted">(@Model.ReviewCountText)</span>
+                        }
+                        else
+                        {
+                            <span class="gp-muted">New guide · no reviews yet</span>
+                        }
+                    </p>
+                    @if (Model.ExperienceText is not null)
+                    {
+                        <p class="gp-muted gp-small">@Model.ExperienceText</p>
+                    }
+                </div>
+            </header>
+
+            @* About *@
+            <section class="gp-section" aria-labelledby="gp-about">
+                <h2 id="gp-about" class="gp-h2">About</h2>
+                @if (string.IsNullOrWhiteSpace(Model.Bio))
+                {
+                    <p class="gp-muted">This guide has not written a bio yet.</p>
+                }
+                else
+                {
+                    <p class="gp-bio">@Model.Bio</p>
+                }
+
+                <div class="gp-tag-group">
+                    <h3 class="gp-h3">Languages</h3>
+                    <ul class="gp-tags">
+                        @foreach (var l in Model.Languages)
+                        {
+                            <li class="gp-tag">@l</li>
+                        }
+                    </ul>
+                </div>
+                <div class="gp-tag-group">
+                    <h3 class="gp-h3">Specializations</h3>
+                    <ul class="gp-tags">
+                        @foreach (var s in Model.Specializations)
+                        {
+                            <li class="gp-tag gp-tag-alt">@s</li>
+                        }
+                    </ul>
+                </div>
+            </section>
+
+            @* Reviews *@
+            <section class="gp-section" id="reviews" aria-labelledby="gp-reviews">
+                <h2 id="gp-reviews" class="gp-h2">Reviews <span class="gp-muted gp-count">(@Model.ReviewCount)</span></h2>
+
+                @if (!Model.Reviews.Any())
+                {
+                    <p class="gp-muted">No reviews yet. Reviews appear after completed trips.</p>
+                }
+                else
+                {
+                    <ul class="gp-reviews">
+                        @foreach (var r in Model.Reviews)
+                        {
+                            <li class="gp-review">
+                                <div class="gp-avatar" aria-hidden="true">@r.Initial</div>
+                                <div class="gp-review-body">
+                                    <div class="gp-review-top">
+                                        <strong>@r.ByLine</strong>
+                                        <span class="gp-muted gp-small">@r.DateText</span>
+                                    </div>
+                                    <span class="gp-stars gp-stars-sm" aria-label="@r.Rating of 5 stars">@r.Stars</span>
+                                    @if (!string.IsNullOrWhiteSpace(r.Comment))
+                                    {
+                                        <p class="gp-comment">@r.Comment</p>
+                                    }
+                                </div>
+                            </li>
+                        }
+                    </ul>
+
+                    @if (Model.ReviewTotalPages > 1)
+                    {
+                        <nav class="gp-pager" aria-label="Review pages">
+                            @for (var p = 1; p <= Model.ReviewTotalPages; p++)
+                            {
+                                if (p == Model.ReviewPage)
+                                {
+                                    <span class="gp-page-link is-current" aria-current="page">@p</span>
+                                }
+                                else
+                                {
+                                    <a class="gp-page-link" href="@Url.Action("Details", "Guides", new { id = Model.Id, page = p })#reviews">@p</a>
+                                }
+                            }
+                        </nav>
+                    }
+                }
+            </section>
+        </div>
+
+        @* Booking box *@
+        <aside class="gp-book" aria-label="Book this guide">
+            <p class="gp-price"><strong>@Model.PriceText</strong> <span>/ hour</span></p>
+            <p class="gp-muted gp-small">Hourly trips or several full days (@TourGuide.BLL.Domain.BookingRules.HoursPerDay h per day). Price is fixed when you send the request.</p>
+            @if (Model.CanBook)
+            {
+                <a asp-area="Tourist" asp-controller="Bookings" asp-action="Create" asp-route-guideProfileId="@Model.Id" class="gp-btn gp-btn-primary">Book @Model.FirstName</a>
+                <p class="gp-muted gp-small gp-center">The guide has @TourGuide.BLL.Domain.BookingRules.PendingExpiryHours hours to answer. You pay only after they accept.</p>
+            }
+            else
+            {
+                <p class="gp-note">Sign in with a tourist account to book a guide.</p>
+            }
+        </aside>
+    </div>
+</section>

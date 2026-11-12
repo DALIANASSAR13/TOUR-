@@ -1,0 +1,40 @@
+@model CheckoutViewModel
+@{
+    ViewData["Title"] = "Payment";
+}
+
+<link rel="stylesheet" href="~/css/Tourist/Checkout.css" asp-append-version="true" />
+
+<section class="co-page">
+    <h1 class="co-title">Payment</h1>
+    <p class="co-subtitle">Booking #@Model.Reference with @Model.GuideName</p>
+
+    <div class="co-test" role="note">
+        <strong>Test mode.</strong> This is a simulated payment. No real card is charged.
+    </div>
+
+    <div class="co-grid">
+        <div class="co-card">
+            <h2>Your trip</h2>
+            <dl class="co-list">
+                <div><dt>Guide</dt><dd>@Model.GuideName</dd></div>
+                @if (!string.IsNullOrEmpty(Model.Location))
+                {
+                    <div><dt>Location</dt><dd>@Model.Location</dd></div>
+                }
+                <div><dt>When</dt><dd>@Model.WhenText</dd></div>
+                <div><dt>Price</dt><dd>@Model.PriceDetail</dd></div>
+            </dl>
+            <p class="co-note">Dates and times are in the guide's local time.</p>
+        </div>
+
+        <aside class="co-card co-total-box">
+            <h2>Total to pay</h2>
+            <p class="co-total">@Model.TotalText</p>
+            <p class="co-deadline">Pay before @Model.PayBeforeText or the booking is cancelled.</p>
+            @* The card form and the Pay POST arrive in 2.9.b. *@
+            <button type="button" class="co-btn co-btn-primary" disabled title="Not available yet">Pay @Model.TotalText</button>
+            <a asp-area="Tourist" asp-controller="Bookings" asp-action="Index" class="co-btn co-btn-light">Back to My Bookings</a>
+        </aside>
+    </div>
+</section>

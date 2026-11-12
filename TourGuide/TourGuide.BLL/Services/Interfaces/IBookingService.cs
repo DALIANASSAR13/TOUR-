@@ -3,7 +3,7 @@ using TourGuide.BLL.DTOs.Booking;
 
 namespace TourGuide.BLL.Services.Interfaces;
 
-// FR-11 – FR-13, FR-15, FR-16. Later cycles add Withdraw.
+// FR-11 – FR-13, FR-15, FR-16.
 public interface IBookingService
 {
     // FR-12: price before the request is sent. Saves nothing.
@@ -22,4 +22,7 @@ public interface IBookingService
 
     // FR-13: the owner guide rejects a Pending request (BR-06: Rejected is final).
     Task<Result> RejectAsync(string guideUserId, int bookingId, CancellationToken ct = default);
+
+    // FR-15: the owner tourist withdraws a Pending or Accepted booking (BR-07: before payment only).
+    Task<Result> WithdrawAsync(string touristId, int bookingId, CancellationToken ct = default);
 }
