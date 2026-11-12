@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using TourGuide.BLL;
 using TourGuide.BLL.Domain;
 using TourGuide.BLL.Options;
@@ -40,8 +41,12 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 // Every POST must carry the anti-forgery token.
+builder.Services.AddScoped<TourGuide.PL.Filters.GuideApprovalFilter>();
 builder.Services.AddControllersWithViews(options =>
-    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+{
+    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+    options.Filters.AddService<TourGuide.PL.Filters.GuideApprovalFilter>();
+});
 
 var app = builder.Build();
 

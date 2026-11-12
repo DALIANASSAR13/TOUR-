@@ -1,5 +1,6 @@
 using AutoMapper;
 using TourGuide.BLL.DTOs.Booking;
+using TourGuide.BLL.DTOs.GuideVerification;
 using TourGuide.PL.ViewModels;
 
 namespace TourGuide.PL.Mappings;
@@ -11,5 +12,6 @@ public class GuideViewModelProfile : Profile
     {
         // FR-16 requests list
         CreateMap<BookingDto, GuideBookingItemViewModel>();
+        CreateMap<GuideStatusDto, GuideStatusViewModel>();
     }
 }

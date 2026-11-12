@@ -1,0 +1,116 @@
+﻿@model TourGuide.PL.ViewModels.GuideStatusViewModel
+@using TourGuide.DAL.Enums
+@{
+    ViewData["Title"] = "Verification Status";
+}
+
+<div class="container py-5" style="max-width: 760px;">
+    <div class="mb-4">
+        <h1 class="h2 fw-bold" style="color: #0b6a8a;">Account Verification Status</h1>
+        <p class="text-muted mb-0">Track the review progress of your tour guide application and documents.</p>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4 p-md-5">
+
+            @if (Model.Status == VerificationStatus.Pending)
+            {
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="badge rounded-pill px-3 py-2 fs-6" style="background-color: #fef3c7; color: #92400e;">
+                        &#9203; Pending Review
+                    </span>
+                </div>
+
+                <h2 class="h4 fw-semibold mb-2">Your application is under review</h2>
+                <p class="text-muted mb-4">
+                    Our verification team is currently reviewing your uploaded documents (proof of residence, government ID, and criminal record certificate).
+                    You will gain full access to your guide profile and booking requests once your account is approved.
+                </p>
+
+                <div class="p-3 rounded-3 bg-light border d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <span class="text-muted small">Submitted on (UTC)</span>
+                    <span class="fw-semibold">@Model.SubmittedAtUtc.ToString("MMM dd, yyyy 'at' HH:mm") UTC</span>
+                </div>
+            }
+            else if (Model.Status == VerificationStatus.Rejected)
+            {
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="badge rounded-pill px-3 py-2 fs-6" style="background-color: #fee2e2; color: #991b1b;">
+                        &#10007; Application Rejected
+                    </span>
+                </div>
+
+                <h2 class="h4 fw-semibold mb-2">Your verification application was not approved</h2>
+                <p class="text-muted mb-3">
+                    Please review the feedback from our verification team below before submitting updated documents.
+                </p>
+
+                <div class="alert alert-danger border-0 rounded-3 mb-4" role="alert">
+                    <div class="fw-semibold mb-1">Reason for rejection:</div>
+                    <div>@(string.IsNullOrWhiteSpace(Model.RejectionReason) ? "No specific reason was provided." : Model.RejectionReason)</div>
+                </div>
+
+                <div class="p-3 rounded-3 bg-light border d-flex flex-column gap-2 mb-4">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted small">Submitted on (UTC)</span>
+                        <span class="fw-medium">@Model.SubmittedAtUtc.ToString("MMM dd, yyyy 'at' HH:mm") UTC</span>
+                    </div>
+                    @if (Model.ReviewedAtUtc.HasValue)
+                    {
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted small">Reviewed on (UTC)</span>
+                            <span class="fw-medium">@Model.ReviewedAtUtc.Value.ToString("MMM dd, yyyy 'at' HH:mm") UTC</span>
+                        </div>
+                    }
+                </div>
+            }
+            else if (Model.Status == VerificationStatus.Approved)
+            {
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="badge rounded-pill px-3 py-2 fs-6" style="background-color: #dcfce7; color: #166534;">
+                        &#10003; Approved &amp; Verified
+                    </span>
+                </div>
+
+                <h2 class="h4 fw-semibold mb-2">You are a verified TourGuide!</h2>
+                <p class="text-muted mb-4">
+                    Your documents have been verified.
+                    @if (!Model.IsProfileComplete)
+                    {
+                        <span class="fw-semibold text-dark">Complete your public profile (city, rate, languages, and specializations) so tourists can find and book you.</span>
+                    }
+                    else
+                    {
+                        <span>Your profile is complete and visible to tourists.</span>
+                    }
+                </p>
+
+                <div class="p-3 rounded-3 bg-light border d-flex flex-column gap-2 mb-4">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted small">Submitted on (UTC)</span>
+                        <span class="fw-medium">@Model.SubmittedAtUtc.ToString("MMM dd, yyyy 'at' HH:mm") UTC</span>
+                    </div>
+                    @if (Model.ReviewedAtUtc.HasValue)
+                    {
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted small">Approved on (UTC)</span>
+                            <span class="fw-medium">@Model.ReviewedAtUtc.Value.ToString("MMM dd, yyyy 'at' HH:mm") UTC</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <a asp-area="Guide" asp-controller="Profile" asp-action="Edit"
+                       class="btn text-white px-4" style="background-color: #0b6a8a;">
+                        @(Model.IsProfileComplete ? "Edit My Profile" : "Complete My Profile")
+                    </a>
+                    <a asp-area="Guide" asp-controller="BookingRequests" asp-action="Index"
+                       class="btn btn-outline-secondary px-4">
+                        View Booking Requests
+                    </a>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

@@ -7,6 +7,7 @@ using TourGuide.BLL.Options;
 using TourGuide.BLL.Services;
 using TourGuide.BLL.Services.Interfaces;
 
+
 namespace TourGuide.BLL;
 
 public static class DependencyInjection
@@ -26,6 +27,7 @@ public static class DependencyInjection
         // Services are added here by later cycles, each as: services.AddScoped<IXService, XService>();
         services.AddScoped<IBookingService, BookingService>();
         services.AddScoped<IGuideProfileService, GuideProfileService>();
+        services.AddScoped<IGuideVerificationService, GuideVerificationService>();
 
         return services;
     }
