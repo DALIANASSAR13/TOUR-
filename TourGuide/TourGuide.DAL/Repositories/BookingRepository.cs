@@ -33,4 +33,9 @@ public partial class BookingRepository
             && (b.Status == BookingStatus.Accepted || b.Status == BookingStatus.Confirmed)
             && (excludeId == null || b.Id != excludeId)
             && b.StartUtc < endUtc && startUtc < b.EndUtc, ct);
+
+    public Task<Booking?> GetWithGuideAsync(int id, CancellationToken ct = default) =>
+        Set.AsNoTracking()
+            .Include(b => b.GuideProfile).ThenInclude(g => g.User)
+            .FirstOrDefaultAsync(b => b.Id == id, ct);
 }

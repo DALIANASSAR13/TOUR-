@@ -90,6 +90,22 @@ public class BookingsController : TouristBaseController
         return RedirectToAction(nameof(Index));
     }
 
+    // POST /Tourist/Bookings/Withdraw/5 — FR-15, BR-07. PRG back to My Bookings with a message.
+    [HttpPost]
+    public async Task<IActionResult> Withdraw(int id, CancellationToken ct)
+    {
+        if (_currentUser.UserId is not { } userId)
+            return Challenge();
+
+        var result = await _bookings.WithdrawAsync(userId, id, ct);
+        if (result.Succeeded)
+            TempData["BookingMessage"] = $"Booking #{BookingItemViewModel.RefOf(id)} withdrawn.";
+        else
+            TempData["BookingError"] = result.Message;
+
+        return RedirectToAction(nameof(Index));
+    }
+
     // POST /Tourist/Bookings/PreviewPrice (AJAX) — FR-12. Saves nothing (NFR-05).
     [HttpPost]
     public async Task<IActionResult> PreviewPrice(CreateBookingViewModel model, CancellationToken ct)

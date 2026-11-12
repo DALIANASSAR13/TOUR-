@@ -73,7 +73,7 @@
                             </div>
                             <div class="mb-actions">
                                 @* Buttons follow the status (BR-06): Accept and Reject only on Pending.
-                                   Reject is final, so it opens an inline confirm first (no browser dialog, no JS). *@
+                                   Reject is final, so the shared confirm dialog asks first (confirm-dialog.js). *@
                                 @if (b.CanAccept)
                                 {
                                     <form method="post" asp-action="Accept" asp-route-id="@b.Id" class="d-inline">
@@ -82,15 +82,13 @@
                                 }
                                 @if (b.CanReject)
                                 {
-                                    <details class="mb-confirm">
-                                        <summary class="mb-btn mb-btn-danger">Reject</summary>
-                                        <div class="mb-confirm-panel" role="group" aria-label="Confirm reject">
-                                            <span>Reject #@(b.Reference)? This cannot be undone.</span>
-                                            <form method="post" asp-action="Reject" asp-route-id="@b.Id" class="d-inline">
-                                                <button type="submit" class="mb-btn mb-btn-danger">Yes, reject</button>
-                                            </form>
-                                        </div>
-                                    </details>
+                                    <form method="post" asp-action="Reject" asp-route-id="@b.Id" class="d-inline"
+                                          data-confirm-title="Reject this request?"
+                                          data-confirm-text="Request #@(b.Reference) from @b.TouristName will be declined. This cannot be undone."
+                                          data-confirm-ok="Yes, reject"
+                                          data-confirm-cancel="Keep request">
+                                        <button type="submit" class="mb-btn mb-btn-danger">Reject</button>
+                                    </form>
                                 }
                                 @if (b.ReviewRating is not null)
                                 {
@@ -107,7 +105,10 @@
     }
 </section>
 
+<partial name="_ConfirmDialog" />
+
 @section Scripts {
+    <script src="~/js/confirm-dialog.js" asp-append-version="true"></script>
     <script>
         // Status chips filter the cards in the page (no reload).
         (function () {
