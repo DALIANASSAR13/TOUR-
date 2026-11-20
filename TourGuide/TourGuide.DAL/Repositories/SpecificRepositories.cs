@@ -11,7 +11,6 @@ public partial class GuideProfileRepository : Repository<GuideProfile>, IGuidePr
 {
     public GuideProfileRepository(AppDbContext context) : base(context) { }
 }
-
 public partial class GuideDocumentRepository : Repository<GuideDocument>, IGuideDocumentRepository
 {
     private readonly AppDbContext _context;
@@ -23,6 +22,13 @@ public partial class GuideDocumentRepository : Repository<GuideDocument>, IGuide
 
     public Task<GuideDocument?> GetByTypeAsync(int guideId, DocumentType type, CancellationToken ct = default) =>
         _context.Set<GuideDocument>().FirstOrDefaultAsync(d => d.GuideProfileId == guideId && d.DocumentType == type, ct);
+
+    public async Task<IReadOnlyList<GuideDocument>> GetByGuideAsync(int guideId, CancellationToken ct = default) =>
+        await _context.Set<GuideDocument>()
+            .AsNoTracking()
+            .Where(d => d.GuideProfileId == guideId)
+            .OrderBy(d => d.DocumentType)
+            .ToListAsync(ct);
 }
 
 public partial class BookingRepository : Repository<Booking>, IBookingRepository

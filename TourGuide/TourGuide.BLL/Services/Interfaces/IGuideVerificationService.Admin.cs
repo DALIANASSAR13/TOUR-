@@ -6,4 +6,6 @@ namespace TourGuide.BLL.Services.Interfaces;
 public partial interface IGuideVerificationService
 {
     Task<Result<IReadOnlyList<PendingGuideDto>>> GetPendingAsync(CancellationToken ct = default);
+    Task<Result<GuideReviewDto>> GetForReviewAsync(int guideProfileId, CancellationToken ct = default);
+    Task<Result<DocumentStreamDto>> OpenDocumentAsync(int documentId, CancellationToken ct = default);
 }

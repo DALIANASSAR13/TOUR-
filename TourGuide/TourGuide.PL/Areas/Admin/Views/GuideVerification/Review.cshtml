@@ -1,0 +1,151 @@
+﻿@using TourGuide.DAL.Enums
+@model TourGuide.PL.ViewModels.GuideReviewViewModel
+@{
+    ViewData["Title"] = $"Review Guide - {Model.FullName}";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a asp-area="Admin"
+               asp-controller="GuideVerification"
+               asp-action="Index"
+               class="btn btn-sm btn-outline-secondary mb-2">
+                &larr; Back to Pending List
+            </a>
+            <h2 class="mb-0">@Model.FullName</h2>
+        </div>
+
+        @{
+            var badgeClass = Model.VerificationStatus switch
+            {
+                VerificationStatus.Pending => "bg-warning text-dark",
+                VerificationStatus.Approved => "bg-success",
+                VerificationStatus.Rejected => "bg-danger",
+                _ => "bg-secondary"
+            };
+        }
+        <span class="badge @badgeClass fs-6">@Model.VerificationStatus</span>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light fw-semibold">
+                    Guide Profile Details
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4 text-muted">Email</dt>
+                        <dd class="col-sm-8">@Model.Email</dd>
+
+                        <dt class="col-sm-4 text-muted">Phone</dt>
+                        <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.PhoneNumber) ? "—" : Model.PhoneNumber)</dd>
+
+                        <dt class="col-sm-4 text-muted">Location</dt>
+                        <dd class="col-sm-8">
+                            @{
+                                var location = string.Join(", ", new[] { Model.City, Model.CountryCode }.Where(x => !string.IsNullOrWhiteSpace(x)));
+                            }
+                            @(string.IsNullOrWhiteSpace(location) ? "—" : location)
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Time Zone</dt>
+                        <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.TimeZoneId) ? "—" : Model.TimeZoneId)</dd>
+
+                        <dt class="col-sm-4 text-muted">Hourly Rate</dt>
+                        <dd class="col-sm-8">$@Model.PricePerHour.ToString("0.00") / hr</dd>
+
+                        <dt class="col-sm-4 text-muted">Submitted At</dt>
+                        <dd class="col-sm-8">@(Model.SubmittedAtUtc?.ToString("dd MMM yyyy, HH:mm 'UTC'") ?? "—")</dd>
+
+                        <dt class="col-sm-4 text-muted">Languages</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.Languages.Any())
+                            {
+                                foreach (var lang in Model.Languages)
+                                {
+                                    <span class="badge bg-info text-dark me-1">@lang</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">None specified</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Specializations</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.Specializations.Any())
+                            {
+                                foreach (var spec in Model.Specializations)
+                                {
+                                    <span class="badge bg-secondary me-1">@spec</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">None specified</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Bio</dt>
+                        <dd class="col-sm-8 mb-0">
+                            @(string.IsNullOrWhiteSpace(Model.Bio) ? "No bio provided." : Model.Bio)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold">Submitted Documents</span>
+                    <span class="badge bg-secondary">@Model.Documents.Count</span>
+                </div>
+                <div class="card-body">
+                    @if (!Model.Documents.Any())
+                    {
+                        <div class="alert alert-warning mb-0">
+                            No verification documents were uploaded for this guide.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="list-group">
+                            @foreach (var doc in Model.Documents)
+                            {
+                                var docLabel = doc.DocumentType switch
+                                {
+                                    DocumentType.ProofOfResidence => "Proof of Residence",
+                                    DocumentType.GovernmentId => "Government ID",
+                                    DocumentType.CriminalRecord => "Criminal Record",
+                                    _ => doc.DocumentType.ToString()
+                                };
+                                var sizeKb = Math.Max(1, doc.SizeBytes / 1024);
+
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="me-2 text-truncate">
+                                        <div class="fw-semibold">@docLabel</div>
+                                        <small class="text-muted d-block text-truncate">@doc.OriginalFileName (@sizeKb KB)</small>
+                                        <small class="text-muted">Uploaded @doc.UploadedAtUtc.ToString("dd MMM yyyy")</small>
+                                    </div>
+                                    <a asp-area="Admin"
+                                       asp-controller="GuideVerification"
+                                       asp-action="Document"
+                                       asp-route-documentId="@doc.Id"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="btn btn-sm btn-outline-primary flex-shrink-0">
+                                        View File
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

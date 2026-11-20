@@ -28,6 +28,7 @@ public interface IGuideProfileRepository : IRepository<GuideProfile>
 public interface IGuideDocumentRepository : IRepository<GuideDocument>
 {
     Task<GuideDocument?> GetByTypeAsync(int guideId, DocumentType type, CancellationToken ct = default);
+    Task<IReadOnlyList<GuideDocument>> GetByGuideAsync(int guideId, CancellationToken ct = default);
 }
 
 public interface IBookingRepository : IRepository<Booking>
