@@ -1,0 +1,60 @@
+﻿@model TourGuide.PL.ViewModels.PendingGuidesViewModel
+@{
+    ViewData["Title"] = "Pending Guide Verifications";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Pending Guide Verifications</h2>
+        <span class="badge bg-warning text-dark fs-6">@Model.Guides.Count Pending</span>
+    </div>
+
+    @if (!Model.Guides.Any())
+    {
+        <div class="alert alert-info">
+            There are currently no pending guide applications to review.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Guide Name</th>
+                            <th>Email</th>
+                            <th>Location</th>
+                            <th>Documents</th>
+                            <th>Submitted</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var guide in Model.Guides)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@guide.FullName</td>
+                                <td>@guide.Email</td>
+                                <td>@(string.Join(", ", new[] { guide.City, guide.CountryCode }.Where(x => !string.IsNullOrWhiteSpace(x))))</td>
+                                <td>
+                                    <span class="badge bg-secondary">@guide.DocumentCount files</span>
+                                </td>
+                                <td>@guide.SubmittedAtUtc.ToString("dd MMM yyyy")</td>
+                                <td class="text-end">
+                                    <a asp-area="Admin"
+                                       asp-controller="GuideVerification"
+                                       asp-action="Review"
+                                       asp-route-id="@guide.GuideProfileId"
+                                       class="btn btn-sm btn-primary">
+                                        Review
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

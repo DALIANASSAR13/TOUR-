@@ -20,7 +20,7 @@ public interface IGuideProfileRepository : IRepository<GuideProfile>
 
     // The logged-in guide's own profile (FR-16). Read-only.
     Task<GuideProfile?> GetByUserIdAsync(string userId, CancellationToken ct = default);
-
+    Task<IReadOnlyList<GuideProfile>> GetPendingAsync(CancellationToken ct = default);
     // Guide profile with user, languages, and specializations tracked for editing.
     Task<GuideProfile?> GetByUserIdForUpdateAsync(string userId, CancellationToken ct = default);
 }
