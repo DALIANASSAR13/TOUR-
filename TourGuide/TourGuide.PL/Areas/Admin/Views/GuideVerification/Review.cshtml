@@ -96,6 +96,32 @@
                     </dl>
                 </div>
             </div>
+
+    @if (Model.VerificationStatus == VerificationStatus.Pending)
+    {
+        <div class="card shadow-sm mt-4">
+            <div class="card-body d-flex flex-wrap gap-3 justify-content-end">
+                <form asp-area="Admin" asp-controller="GuideVerification" asp-action="Approve" method="post">
+                    <input type="hidden" name="id" value="@Model.GuideProfileId" />
+                    <button type="submit" class="btn btn-success fw-semibold px-4"
+                            onclick="return confirm('Approve this guide application?');">
+                        Approve Guide
+                    </button>
+                </form>
+
+                <form asp-area="Admin" asp-controller="GuideVerification" asp-action="Reject" method="post" class="d-flex flex-grow-1 gap-2" style="max-width: 700px;">
+                    <input type="hidden" name="id" value="@Model.GuideProfileId" />
+                    <input type="text" name="rejectionReason" class="form-control"
+                           placeholder="Reason for rejection (minimum 10 characters)"
+                           minlength="10" maxlength="1000" required />
+                    <button type="submit" class="btn btn-danger fw-semibold px-4"
+                            onclick="return confirm('Reject this guide application?');">
+                        Reject Guide
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
         </div>
 
         <div class="col-lg-5">

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TourGuide.BLL.Services.Interfaces;
 using TourGuide.PL.Controllers.Base;
 using TourGuide.PL.ViewModels;
@@ -88,5 +89,41 @@ public class GuideVerificationController : AdminBaseController
         Response.Headers.ContentDisposition =
             $"inline; filename*=UTF-8''{Uri.EscapeDataString(result.Value.OriginalFileName)}";
         return File(result.Value.Stream, result.Value.ContentType, enableRangeProcessing: true);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Approve(int id, CancellationToken ct)
+    {
+        var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(adminId))
+            return Challenge();
+
+        var result = await _verificationService.ApproveAsync(id, adminId, ct);
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded
+            ? "The guide application was approved."
+            : result.Message;
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Reject(int id, string rejectionReason, CancellationToken ct)
+    {
+        var adminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(adminId))
+            return Challenge();
+
+        var result = await _verificationService.RejectAsync(id, adminId, rejectionReason, ct);
+        if (!result.Succeeded && result.ErrorCode == TourGuide.BLL.Common.ErrorCodes.Validation)
+        {
+            TempData["Error"] = result.Errors.FirstOrDefault()?.Message ?? result.Message;
+            return RedirectToAction(nameof(Review), new { id });
+        }
+
+        TempData[result.Succeeded ? "Success" : "Error"] = result.Succeeded
+            ? "The guide application was rejected."
+            : result.Message;
+
+        return RedirectToAction(nameof(Index));
     }
 }

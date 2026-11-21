@@ -2,11 +2,61 @@
 using TourGuide.BLL.DTOs.GuideVerification;
 using TourGuide.BLL.Services.Interfaces;
 using TourGuide.DAL.Constants;
+using TourGuide.DAL.Enums;
 
 namespace TourGuide.BLL.Services;
 
 public partial class GuideVerificationService
 {
+    public async Task<Result> ApproveAsync(int guideProfileId, string adminUserId, CancellationToken ct = default)
+    {
+        var profile = await _uow.GuideProfiles.GetByIdAsync(guideProfileId, ct);
+        if (profile is null)
+            return Result.Fail(ErrorCodes.NotFound, "Guide profile was not found.");
+
+        if (profile.VerificationStatus != VerificationStatus.Pending)
+            return Result.Fail(ErrorCodes.InvalidStatusChange, "Only pending guide applications can be approved.");
+
+        profile.VerificationStatus = VerificationStatus.Approved;
+        profile.RejectionReason = null;
+        profile.ReviewedAtUtc = _time.GetUtcNow().UtcDateTime;
+        profile.ReviewedByAdminId = adminUserId;
+
+        await _uow.SaveChangesAsync(ct);
+        return Result.Ok();
+    }
+
+    public async Task<Result> RejectAsync(int guideProfileId, string adminUserId, string reason, CancellationToken ct = default)
+    {
+        reason = (reason ?? string.Empty).Trim();
+        if (reason.Length < 10)
+            return Result.Invalid(new List<ValidationError>
+            {
+                new("RejectionReason", "Please provide a rejection reason of at least 10 characters.")
+            });
+
+        if (reason.Length > 1000)
+            return Result.Invalid(new List<ValidationError>
+            {
+                new("RejectionReason", "The rejection reason cannot exceed 1000 characters.")
+            });
+
+        var profile = await _uow.GuideProfiles.GetByIdAsync(guideProfileId, ct);
+        if (profile is null)
+            return Result.Fail(ErrorCodes.NotFound, "Guide profile was not found.");
+
+        if (profile.VerificationStatus != VerificationStatus.Pending)
+            return Result.Fail(ErrorCodes.InvalidStatusChange, "Only pending guide applications can be rejected.");
+
+        profile.VerificationStatus = VerificationStatus.Rejected;
+        profile.RejectionReason = reason;
+        profile.ReviewedAtUtc = _time.GetUtcNow().UtcDateTime;
+        profile.ReviewedByAdminId = adminUserId;
+
+        await _uow.SaveChangesAsync(ct);
+        return Result.Ok();
+    }
+
     public async Task<Result<IReadOnlyList<PendingGuideDto>>> GetPendingAsync(CancellationToken ct = default)
     {
         var pendingGuides = await _uow.GuideProfiles.GetPendingAsync(ct);
