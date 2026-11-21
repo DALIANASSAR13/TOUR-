@@ -85,7 +85,8 @@ public class GuideVerificationController : AdminBaseController
         if (!result.Succeeded || result.Value is null)
             return NotFound();
 
-        Response.Headers.ContentDisposition = $"inline; filename=\"{Uri.EscapeDataString(result.Value.OriginalFileName)}\"";
-        return File(result.Value.Stream, result.Value.ContentType);
+        Response.Headers.ContentDisposition =
+            $"inline; filename*=UTF-8''{Uri.EscapeDataString(result.Value.OriginalFileName)}";
+        return File(result.Value.Stream, result.Value.ContentType, enableRangeProcessing: true);
     }
 }

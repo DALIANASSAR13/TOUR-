@@ -70,7 +70,10 @@ public partial class GuideVerificationService
         var safeFileName = Path.GetFileName(doc.StoredFileName);
         var candidatePaths = new[]
         {
+            // Current storage layout: FileStorage:RootPath/guide-documents.
             Path.Combine(_storageOptions.RootPath, FileFolders.GuideDocuments, safeFileName),
+            // Legacy layouts kept for documents uploaded before the storage fix.
+            Path.Combine(_storageOptions.RootPath, safeFileName),
             Path.Combine(_storageOptions.RootPath, "uploads", safeFileName)
         };
 

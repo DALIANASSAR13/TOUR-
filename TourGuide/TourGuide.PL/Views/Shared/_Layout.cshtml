@@ -51,19 +51,13 @@
                                 <a class="nav-link fw-medium text-dark px-3" asp-area="Guide" asp-controller="Verification" asp-action="Status">Status</a>
                             </li>
                         }
-                        @if (User.IsInRole(TourGuide.DAL.Constants.Roles.Admin))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link fw-medium text-dark px-3" asp-area="Admin" asp-controller="Admin" asp-action="Index">Admin</a>
-                            </li>
-                        }
                     </ul>
                     <div class="d-flex align-items-center gap-3">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <span class="text-muted small">@User.Identity.Name</span>
                             <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="m-0">
-                                <button type="submit" class="btn btn-outline-secondary fw-semibold px-3 py-2" style="border-radius: 8px;">Log out</button>
+                                <button type="submit" class="m-4 btn btn-danger fw-semibold px-3 py-2" style="border-radius: 8px;">Log out</button>
                             </form>
                         }
                         else
@@ -77,9 +71,11 @@
                         {
                             @if (User.IsInRole(TourGuide.DAL.Constants.Roles.Admin))
                             {
-                                <a asp-area="Admin"
+                                <a class="btn text-white fw-semibold px-4 py-2 admin-dashboard-button"
+                                   asp-area="Admin"
                                    asp-controller="Home"
-                                   asp-action="Index">
+                                   asp-action="Index"
+                                   style="background-color: #0b6a8a; border-radius: 8px;">
                                     Admin Dashboard
                                 </a>
                             }
