@@ -1,5 +1,6 @@
 using AutoMapper;
 using TourGuide.BLL.DTOs.Guide;
+using TourGuide.BLL.DTOs.GuideVerification;
 using TourGuide.BLL.DTOs.Search;
 using TourGuide.DAL.Entities;
 using TourGuide.DAL.Queries;
@@ -31,5 +32,13 @@ public class GuideMappingProfile : Profile
         // FR-10 filter -> DAL query. PageSize comes from SearchRules, set by SearchService.
         CreateMap<GuideSearchFilter, GuideSearchQuery>()
             .ForMember(d => d.PageSize, o => o.Ignore());
+        CreateMap<GuideProfile, PendingGuideDto>()
+                  .ForMember(d => d.GuideProfileId, opt => opt.MapFrom(s => s.Id))
+                  .ForMember(d => d.FullName, opt => opt.MapFrom(s => s.User.FullName))
+                  .ForMember(d => d.Email, opt => opt.MapFrom(s => s.User.Email ?? string.Empty))
+                  .ForMember(d => d.City, opt => opt.MapFrom(s => s.City))
+                  .ForMember(d => d.CountryCode, opt => opt.MapFrom(s => s.CountryCode))
+                  .ForMember(d => d.DocumentCount, opt => opt.MapFrom(s => s.Documents.Count))
+                  .ForMember(d => d.SubmittedAtUtc, opt => opt.MapFrom(s => s.SubmittedAtUtc));
     }
 }

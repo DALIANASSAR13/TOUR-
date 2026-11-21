@@ -1,0 +1,157 @@
+TourGuide Demo Accounts
+========================
+
+All demo accounts use this password:
+Password: Demo@12345
+
+ADMIN
+-----
+Name: Demo Admin
+Email: admin@tourguide.local
+Password: Demo@12345
+Role: Admin
+
+GUIDES
+------
+Name: Omar Hassan
+Email: omar.hassan@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Yasmin El-Masry
+Email: yasmin.elmasry@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Karim Adel
+Email: karim.adel@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Mona Fawzy
+Email: mona.fawzy@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Kenji Sato
+Email: kenji.sato@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Hany Samir
+Email: hany.samir@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Nour Ibrahim
+Email: nour.ibrahim@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Salma Youssef
+Email: salma.youssef@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Tarek Nabil
+Email: tarek.nabil@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Dina Farouk
+Email: dina.farouk@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Youssef Gamal
+Email: youssef.gamal@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Rana Khaled
+Email: rana.khaled@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Amr Saeed
+Email: amr.saeed@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Giulia Rossi
+Email: giulia.rossi@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Lucia Fernandez
+Email: lucia.fernandez@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Nikos Papadakis
+Email: nikos.papadakis@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Elif Yilmaz
+Email: elif.yilmaz@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Youssef Amrani
+Email: youssef.amrani@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Layla Haddad
+Email: layla.haddad@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Mei Chen
+Email: mei.chen@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Carlos Mendoza
+Email: carlos.mendoza@tourguide.local
+Password: Demo@12345
+Role: Guide
+
+Name: Mahmoud Ali
+Email: mahmoud.ali@tourguide.local
+Password: Demo@12345
+Role: Guide (approved, incomplete profile)
+
+Name: Ahmed Tarek
+Email: ahmed.tarek@tourguide.local
+Password: Demo@12345
+Role: Guide (pending verification)
+
+Name: Laila Mostafa
+Email: laila.mostafa@tourguide.local
+Password: Demo@12345
+Role: Guide (rejected verification)
+
+TOURISTS
+--------
+Name: Emma Schmidt
+Email: emma.schmidt@tourguide.local
+Password: Demo@12345
+Role: Tourist
+
+Name: John Carter
+Email: john.carter@tourguide.local
+Password: Demo@12345
+Role: Tourist
+
+Name: Sophie Martin
+Email: sophie.martin@tourguide.local
+Password: Demo@12345
+Role: Tourist
+
+Notes
+-----
+- These accounts are created by DemoDataSeeder in Development when Seed:DemoData is true.
+- If the database already contains guide profiles, demo seeding is skipped.
+- Do not use these credentials in production.

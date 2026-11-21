@@ -92,4 +92,12 @@ public partial class GuideProfileRepository
             .Include(g => g.Specializations)
             .AsSplitQuery()
             .FirstOrDefaultAsync(g => g.UserId == userId, ct);
+
+    public async Task<IReadOnlyList<GuideProfile>> GetPendingAsync(CancellationToken ct = default) =>
+        await Set.AsNoTracking()
+            .Include(g => g.User)
+            .Include(g => g.Documents)
+            .Where(g => g.VerificationStatus == VerificationStatus.Pending)
+            .OrderBy(g => g.SubmittedAtUtc)
+            .ToListAsync(ct);
 }

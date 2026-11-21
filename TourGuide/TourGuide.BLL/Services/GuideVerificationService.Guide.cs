@@ -154,7 +154,7 @@ public partial class GuideVerificationService : IGuideVerificationService
         }
 
         var storedFileName = $"{Guid.NewGuid():N}{ext}";
-        var folder = Path.Combine(_storageOptions.RootPath, "uploads");
+        var folder = Path.Combine(_storageOptions.RootPath, FileFolders.GuideDocuments);
         Directory.CreateDirectory(folder);
 
         var fullPath = Path.Combine(folder, storedFileName);

@@ -20,7 +20,7 @@ public interface IGuideProfileRepository : IRepository<GuideProfile>
 
     // The logged-in guide's own profile (FR-16). Read-only.
     Task<GuideProfile?> GetByUserIdAsync(string userId, CancellationToken ct = default);
-
+    Task<IReadOnlyList<GuideProfile>> GetPendingAsync(CancellationToken ct = default);
     // Guide profile with user, languages, and specializations tracked for editing.
     Task<GuideProfile?> GetByUserIdForUpdateAsync(string userId, CancellationToken ct = default);
 }
@@ -28,6 +28,7 @@ public interface IGuideProfileRepository : IRepository<GuideProfile>
 public interface IGuideDocumentRepository : IRepository<GuideDocument>
 {
     Task<GuideDocument?> GetByTypeAsync(int guideId, DocumentType type, CancellationToken ct = default);
+    Task<IReadOnlyList<GuideDocument>> GetByGuideAsync(int guideId, CancellationToken ct = default);
 }
 
 public interface IBookingRepository : IRepository<Booking>
