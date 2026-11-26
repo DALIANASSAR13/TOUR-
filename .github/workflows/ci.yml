@@ -33,10 +33,10 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore dependencies
-        run: dotnet restore TourGuide/TourGuide.Tests/TourGuide.Tests.csproj
+        run: dotnet restore TourGuide/TourGuide.sln
 
       - name: Build solution
-        run: dotnet build TourGuide/TourGuide.Tests/TourGuide.Tests.csproj --configuration Release --no-restore
+        run: dotnet build TourGuide/TourGuide.sln --configuration Release --no-restore
 
       - name: Run tests
         run: dotnet test TourGuide/TourGuide.Tests/TourGuide.Tests.csproj --configuration Release --no-build --verbosity normal
