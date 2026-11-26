@@ -1,0 +1,42 @@
+name: .NET Tests
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dotnet-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Build and run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore TourGuide/TourGuide.Tests/TourGuide.Tests.csproj
+
+      - name: Build solution
+        run: dotnet build TourGuide/TourGuide.Tests/TourGuide.Tests.csproj --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test TourGuide/TourGuide.Tests/TourGuide.Tests.csproj --configuration Release --no-build --verbosity normal
