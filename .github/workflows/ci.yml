@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  build_and_test:
     name: Build and run tests
     runs-on: ubuntu-latest
 
