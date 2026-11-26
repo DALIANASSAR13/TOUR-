@@ -75,6 +75,7 @@ Newest first. One row per work cycle.
 
 | Date | What changed | Build |
 | --- | --- | --- |
+| 2026-11-26 | Fixed GitHub Actions to restore/build the nested solution; removed unavailable FluentValidation.TestHelper package reference | Restore/build passed; all 11 tests passed |
 | 2026-11-07 | Built + reviewed Cycle 2.8.a; temporary Dev login; old tour UI deleted (5 files deleted by mistake restored from git) | Build passes on the team's machine; page opens after restoring `[Area]` |
 | 2026-11-07 | Planned Cycle 2.8.a (`tasks/FR-15-2.8.a.md`); added `DemoDataSeeder` for all tables + `Seed:DemoData`/`DemoPassword` settings | Build passed on the team's machine; DB dropped, updated and seeded |
 | 2026-11-06 | Cycles 1.0.a – 1.0.c on `cycle-1/foundation`: new data model + `InitialCreate`, BLL/PL skeleton, seed; old tour model removed; ViewModels moved to PL; `AGENTS.md` paths fixed to `TourGuide/TourGuide.*` | Passes (only `NU1903` AutoMapper warning); migration applied to a test DB; 5 pages return 200 |
