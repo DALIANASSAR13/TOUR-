@@ -1,0 +1,78 @@
+﻿@model TourGuide.PL.ViewModels.PendingGuidesViewModel
+@{
+    ViewData["Title"] = "Guide Reviews";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Admin/Verification.css" asp-append-version="true" />
+}
+
+<section class="admin-section">
+    <div class="tg-container">
+        <div class="admin-header">
+            <h1 class="tg-page-title">Guide Reviews</h1>
+            <p class="tg-page-subtitle mb-0">Check each guide's documents, then approve or reject with a reason.</p>
+        </div>
+
+        <div class="admin-toolbar">
+            <div class="admin-filter-pills">
+                <span class="admin-pill-btn active">Waiting (@Model.Guides.Count)</span>
+            </div>
+        </div>
+
+        @if (!Model.Guides.Any())
+        {
+            <div class="tg-card text-center py-5">
+                <p class="text-muted mb-0">There are currently no pending guide applications to review.</p>
+            </div>
+        }
+        else
+        {
+            <div class="admin-table-card">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Guide</th>
+                                <th>Location</th>
+                                <th>Submitted</th>
+                                <th>Documents</th>
+                                <th class="text-end"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var guide in Model.Guides)
+                            {
+                                var daysAgo = (int)(DateTime.UtcNow.Date - guide.SubmittedAtUtc.Date).TotalDays;
+                                var relativeTime = daysAgo <= 0 ? "Today" : daysAgo == 1 ? "Yesterday" : $"{daysAgo} days ago";
+                                var location = string.Join(", ", new[] { guide.City, guide.CountryCode }.Where(x => !string.IsNullOrWhiteSpace(x)));
+
+                                <tr>
+                                    <td>
+                                        <span class="admin-guide-name">@guide.FullName</span>
+                                        <span class="admin-guide-sub">@guide.Email</span>
+                                    </td>
+                                    <td>@(string.IsNullOrWhiteSpace(location) ? guide.CountryCode : location)</td>
+                                    <td>
+                                        <span class="d-block">@guide.SubmittedAtUtc.ToString("MMM d, yyyy")</span>
+                                        <span class="admin-guide-sub">@relativeTime</span>
+                                    </td>
+                                    <td>@guide.DocumentCount of 3 uploaded</td>
+                                    <td class="text-end">
+                                        <a asp-area="Admin"
+                                           asp-controller="GuideVerification"
+                                           asp-action="Review"
+                                           asp-route-id="@guide.GuideProfileId"
+                                           class="btn btn-tg-primary px-4">
+                                            Review
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</section>

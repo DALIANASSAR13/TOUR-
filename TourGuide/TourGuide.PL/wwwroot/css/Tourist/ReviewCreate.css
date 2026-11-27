@@ -1,0 +1,25 @@
+/* Review form (FR-19) */
+.rv-page { max-width: 640px; margin: 0 auto; padding: 48px 16px 64px; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: #1f2933; }
+.rv-title { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 2.4rem; margin: 0; }
+.rv-subtitle { color: #5b6670; margin: 4px 0 24px; }
+.rv-form { background: #fff; border: 1px solid #e3e7eb; border-radius: 14px; padding: 24px; }
+.rv-field { margin-bottom: 20px; border: 0; padding: 0; }
+.rv-field legend, .rv-field label { font-weight: 600; font-size: .95rem; margin-bottom: 6px; display: block; }
+.rv-input { width: 100%; border: 1px solid #d6dbe0; border-radius: 8px; padding: 10px 12px; font-size: 1rem; font-family: inherit; resize: vertical; }
+.rv-error { color: #b42318; font-size: .88rem; }
+
+/* Star picker: radios are hidden but stay keyboard-focusable; the row is reversed so 1 is on the left
+   and "checked or later sibling" lights the stars up to the chosen one. */
+.rv-stars { position: relative; display: inline-flex; flex-direction: row-reverse; gap: 4px; }
+.rv-stars input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.rv-stars label { display: inline-block; margin: 0; font-size: 2.2rem; line-height: 1; color: #c5ccd3; cursor: pointer; }
+.rv-stars input:checked ~ label,
+.rv-stars label:hover,
+.rv-stars label:hover ~ label { color: #f5a623; }
+.rv-stars input:focus-visible + label { outline: 2px solid #0b6a8a; outline-offset: 2px; border-radius: 4px; }
+.rv-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.rv-actions { display: flex; align-items: center; gap: 16px; }
+.rv-btn { border: 0; border-radius: 8px; padding: 12px 20px; font-weight: 600; background: #0b6a8a; color: #fff; cursor: pointer; }
+.rv-link { color: #0b6a8a; text-decoration: none; font-weight: 600; }
+.rv-link:hover { text-decoration: underline; }

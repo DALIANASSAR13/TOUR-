@@ -1,0 +1,174 @@
+@model TourGuide.PL.ViewModels.SearchViewModel
+@{
+    ViewData["Title"] = "Find a guide";
+}
+
+<link rel="stylesheet" href="~/css/Search/Index.css" asp-append-version="true" />
+
+<section class="sg-page">
+    <div class="sg-head">
+        <h1 class="sg-title">Find your local guide</h1>
+        <p class="sg-subtitle">Verified guides only. Filter by country, language, interest and price.</p>
+    </div>
+
+    <div class="sg-layout">
+        @* Filters (screen 8 sidebar). GET, so the URL keeps the search. *@
+        <aside class="sg-filters" aria-label="Filters">
+            <form method="get" asp-controller="Search" asp-action="Index" novalidate>
+                <div asp-validation-summary="ModelOnly" class="sg-summary"></div>
+
+                <div class="sg-field">
+                    <label asp-for="CountryCode"></label>
+                    <select asp-for="CountryCode" asp-items="Model.Countries">
+                        <option value="">Any country</option>
+                    </select>
+                    <span asp-validation-for="CountryCode" class="sg-error"></span>
+                </div>
+
+                <div class="sg-field">
+                    <label asp-for="LanguageId"></label>
+                    <select asp-for="LanguageId" asp-items="Model.Languages">
+                        <option value="">Any language</option>
+                    </select>
+                    <span asp-validation-for="LanguageId" class="sg-error"></span>
+                </div>
+
+                <div class="sg-field">
+                    <label asp-for="SpecializationId"></label>
+                    <select asp-for="SpecializationId" asp-items="Model.Specializations">
+                        <option value="">Any specialization</option>
+                    </select>
+                    <span asp-validation-for="SpecializationId" class="sg-error"></span>
+                </div>
+
+                <fieldset class="sg-field">
+                    <legend>Price per hour (USD)</legend>
+                    <div class="sg-range">
+                        <div>
+                            <label asp-for="MinPrice" class="sg-sub"></label>
+                            <input asp-for="MinPrice" type="number" step="1" min="0" placeholder="Min" />
+                        </div>
+                        <span class="sg-dash" aria-hidden="true">–</span>
+                        <div>
+                            <label asp-for="MaxPrice" class="sg-sub"></label>
+                            <input asp-for="MaxPrice" type="number" step="1" min="0" placeholder="Max" />
+                        </div>
+                    </div>
+                    <span asp-validation-for="MinPrice" class="sg-error"></span>
+                    <span asp-validation-for="MaxPrice" class="sg-error"></span>
+                </fieldset>
+
+                <button type="submit" class="sg-btn sg-btn-primary sg-block">Search</button>
+                @if (Model.HasFilters)
+                {
+                    <a asp-controller="Search" asp-action="Index" class="sg-btn sg-btn-light sg-block">Clear filters</a>
+                }
+            </form>
+        </aside>
+
+        @* Results (screen 5) *@
+        <div class="sg-results">
+            @if (ViewData.ModelState.IsValid)
+            {
+                <p class="sg-count">
+                    @(Model.TotalCount == 1 ? "1 guide found" : $"{Model.TotalCount} guides found")
+                </p>
+            }
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="sg-empty">
+                    <h2>Check the filters.</h2>
+                    <p>Fix the fields marked in red, then search again.</p>
+                </div>
+            }
+            else if (!Model.Guides.Any())
+            {
+                <div class="sg-empty">
+                    <h2>No guides match these filters.</h2>
+                    <p>Try another language or a wider price range.</p>
+                </div>
+            }
+            else
+            {
+                <div class="sg-grid">
+                    @foreach (var g in Model.Guides)
+                    {
+                        <article class="sg-card">
+                            <div class="sg-photo" aria-hidden="true"><span>@g.Initials</span></div>
+                            <div class="sg-body">
+                                <h2 class="sg-name">@g.FullName</h2>
+                                <p class="sg-location">@g.Location</p>
+
+                                <p class="sg-rating">
+                                    @if (g.HasReviews)
+                                    {
+                                        <span class="sg-star" aria-hidden="true">★</span>
+                                        <strong>@g.RatingText</strong>
+                                        <span class="sg-muted">(@g.ReviewCountText)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="sg-muted">New guide · no reviews yet</span>
+                                    }
+                                </p>
+
+                                <ul class="sg-tags" aria-label="Languages">
+                                    @foreach (var l in g.Languages)
+                                    {
+                                        <li class="sg-tag">@l</li>
+                                    }
+                                </ul>
+                                <ul class="sg-tags" aria-label="Specializations">
+                                    @foreach (var s in g.Specializations)
+                                    {
+                                        <li class="sg-tag sg-tag-alt">@s</li>
+                                    }
+                                </ul>
+
+                                @if (g.ExperienceText is not null)
+                                {
+                                    <p class="sg-muted sg-small">@g.ExperienceText</p>
+                                }
+
+                                <div class="sg-foot">
+                                    <span class="sg-price"><strong>@g.PriceText</strong> / hour</span>
+                                    <a asp-area="" asp-controller="Guides" asp-action="Details" asp-route-id="@g.Id" class="sg-btn sg-btn-primary">View profile</a>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                </div>
+
+                @if (Model.TotalPages > 1)
+                {
+                    <nav class="sg-pager" aria-label="Pages">
+                        @if (Model.Page > 1)
+                        {
+                            <a class="sg-page-link" href="@Url.Action("Index", "Search", Model.RouteFor(Model.Page - 1))">‹ Previous</a>
+                        }
+                        @for (var p = 1; p <= Model.TotalPages; p++)
+                        {
+                            if (p == Model.Page)
+                            {
+                                <span class="sg-page-link is-current" aria-current="page">@p</span>
+                            }
+                            else
+                            {
+                                <a class="sg-page-link" href="@Url.Action("Index", "Search", Model.RouteFor(p))">@p</a>
+                            }
+                        }
+                        @if (Model.Page < Model.TotalPages)
+                        {
+                            <a class="sg-page-link" href="@Url.Action("Index", "Search", Model.RouteFor(Model.Page + 1))">Next ›</a>
+                        }
+                    </nav>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

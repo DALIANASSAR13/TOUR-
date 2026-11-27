@@ -1,0 +1,90 @@
+@{
+    ViewData["Title"] = "Home - Find a Verified Local Guide";
+}
+
+<link rel="stylesheet" href="~/css/Home/Index.css" asp-append-version="true" />
+
+<!-- ==========================================
+     HERO SECTION (UI screen 1)
+     ========================================== -->
+<section class="home-hero">
+    <div class="hero-inner">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Discover The World
+                <span class="highlight">With A Local Guide.</span>
+            </h1>
+            <p class="hero-description">
+                Find verified local guides and book them for a few hours or for several days. Every guide is checked by our team before they can take bookings.
+            </p>
+            <div class="hero-actions">
+                <a asp-controller="Search" asp-action="Index" class="btn-primary-tour">
+                    Find a Guide
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </a>
+                <a asp-controller="Account" asp-action="Login" class="btn-secondary-tour">
+                    Sign In
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     WHY BOOK WITH US
+     ========================================== -->
+<section class="features-section">
+    <div class="section-container">
+        <div class="section-header-center">
+            <span class="eyebrow-text">THE TOURGUIDE PROMISE</span>
+            <h2 class="section-title">Why Book With Us</h2>
+            <p class="section-subtitle">
+                Local knowledge, checked guides and clear prices.
+            </p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <polyline points="9 12 11 14 15 10"></polyline>
+                    </svg>
+                </div>
+                <h3 class="feature-card-title">Verified Guides</h3>
+                <p class="feature-card-description">
+                    Every guide uploads proof of residence, a government ID and a criminal record certificate, and is approved by an admin.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <polyline points="12 7 12 12 15 14"></polyline>
+                    </svg>
+                </div>
+                <h3 class="feature-card-title">By the Hour or by the Day</h3>
+                <p class="feature-card-description">
+                    Book a guide for a few hours on one day, or for several days in a row.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                </div>
+                <h3 class="feature-card-title">Clear Prices</h3>
+                <p class="feature-card-description">
+                    See the total before you send a request. The price is fixed when you book, and you pay only after the guide accepts.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>

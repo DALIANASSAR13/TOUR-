@@ -1,0 +1,221 @@
+﻿@using TourGuide.DAL.Enums
+@model TourGuide.PL.ViewModels.GuideReviewViewModel
+@{
+    ViewData["Title"] = $"Review Guide - {Model.FullName}";
+    var location = string.Join(", ", new[] { Model.City, Model.CountryCode }.Where(x => !string.IsNullOrWhiteSpace(x)));
+    var firstDoc = Model.Documents.FirstOrDefault();
+    var firstDocLabel = firstDoc?.DocumentType switch
+    {
+        DocumentType.GovernmentId => "Government ID",
+        DocumentType.ProofOfResidence => "Proof of residence",
+        DocumentType.CriminalRecord => "Criminal record certificate",
+        _ => firstDoc?.DocumentType.ToString() ?? "Document"
+    };
+    var firstDocUrl = firstDoc != null
+        ? Url.Action("Document", "GuideVerification", new { area = "Admin", documentId = firstDoc.Id })
+        : "";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Admin/Verification.css" asp-append-version="true" />
+}
+
+<section class="admin-section">
+    <div class="tg-container">
+        <div class="tg-breadcrumb">
+            <a asp-area="Admin" asp-controller="GuideVerification" asp-action="Index">Guide Reviews</a>
+            <span class="mx-1">&rsaquo;</span>
+            <span>@Model.FullName</span>
+        </div>
+
+        <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+            <h1 class="tg-page-title mb-0">@Model.FullName</h1>
+            @{
+                var statusBadgeClass = Model.VerificationStatus switch
+                {
+                    VerificationStatus.Pending => "tg-badge-pending",
+                    VerificationStatus.Approved => "tg-badge-approved",
+                    VerificationStatus.Rejected => "tg-badge-rejected",
+                    _ => "tg-badge-neutral"
+                };
+                var statusText = Model.VerificationStatus == VerificationStatus.Pending
+                    ? "Waiting for review"
+                    : Model.VerificationStatus.ToString();
+            }
+            <span class="tg-badge @statusBadgeClass">@statusText</span>
+        </div>
+
+        <div class="review-grid">
+            <!-- Left Column -->
+            <aside class="review-sidebar">
+                <div class="tg-card tg-card-sm">
+                    <h2 class="tg-section-title mb-3" style="font-size: 1.05rem;">Applicant</h2>
+                    <div class="applicant-row">
+                        <span class="applicant-row-label">Email</span>
+                        <span class="applicant-row-value">@Model.Email</span>
+                    </div>
+                    <div class="applicant-row">
+                        <span class="applicant-row-label">Country</span>
+                        <span class="applicant-row-value">@(string.IsNullOrWhiteSpace(location) ? "—" : location)</span>
+                    </div>
+                    <div class="applicant-row">
+                        <span class="applicant-row-label">Submitted</span>
+                        <span class="applicant-row-value">@(Model.SubmittedAtUtc?.ToString("MMM d, yyyy") ?? "—")</span>
+                    </div>
+                    <div class="applicant-row">
+                        <span class="applicant-row-label">Hourly rate</span>
+                        <span class="applicant-row-value">$@Model.PricePerHour.ToString("0.00") / hr</span>
+                    </div>
+                </div>
+
+                <div class="tg-card tg-card-sm">
+                    <h2 class="tg-section-title mb-3" style="font-size: 1.05rem;">Documents</h2>
+                    @if (!Model.Documents.Any())
+                    {
+                        <p class="text-muted small mb-0">No verification documents were uploaded.</p>
+                    }
+                    else
+                    {
+                        @for (int i = 0; i < Model.Documents.Count; i++)
+                        {
+                            var doc = Model.Documents[i];
+                            var docLabel = doc.DocumentType switch
+                            {
+                                DocumentType.GovernmentId => "Government ID",
+                                DocumentType.ProofOfResidence => "Proof of residence",
+                                DocumentType.CriminalRecord => "Criminal record certificate",
+                                _ => doc.DocumentType.ToString()
+                            };
+                            var sizeMb = (doc.SizeBytes / (1024.0 * 1024.0)).ToString("0.0");
+                            var sizeText = doc.SizeBytes >= 1024 * 1024
+                                ? $"{sizeMb} MB"
+                                : $"{Math.Max(1, doc.SizeBytes / 1024)} KB";
+                            var docUrl = Url.Action("Document", "GuideVerification", new { area = "Admin", documentId = doc.Id });
+
+                            <button type="button"
+                                    class="doc-item-btn @(i == 0 ? "active" : "")"
+                                    data-doc-title="@docLabel"
+                                    data-doc-url="@docUrl">
+                                <span class="doc-item-icon" aria-hidden="true">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                    </svg>
+                                </span>
+                                <span class="overflow-hidden">
+                                    <span class="doc-item-title text-truncate">@docLabel</span>
+                                    <span class="doc-item-meta d-block text-truncate">@doc.OriginalFileName &middot; @sizeText</span>
+                                </span>
+                            </button>
+                        }
+                    }
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.RejectionReason))
+                {
+                    <div class="rejection-history-card">
+                        <div class="rejection-history-title">Previous rejection</div>
+                        <p class="rejection-history-text">&ldquo;@Model.RejectionReason&rdquo;</p>
+                    </div>
+                }
+            </aside>
+
+            <!-- Right Column: Preview + Decision -->
+            <div class="tg-card">
+                @if (Model.Documents.Any())
+                {
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                        <h2 id="activeDocTitle" class="tg-section-title mb-0" style="font-size: 1.2rem;">@firstDocLabel</h2>
+                        <a id="openFullSizeBtn"
+                           href="@firstDocUrl"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn btn-tg-secondary px-3 py-2">
+                            Open full size
+                        </a>
+                    </div>
+
+                    <div class="doc-preview-box mb-2">
+                        <iframe id="docPreviewFrame" src="@firstDocUrl" title="Document preview"></iframe>
+                    </div>
+                    <p class="text-muted small mb-0">Files are stored privately and shown only to logged-in admins.</p>
+                }
+                else
+                {
+                    <div class="tg-banner tg-banner-warning">
+                        No verification documents were uploaded for this guide.
+                    </div>
+                }
+
+                @if (Model.VerificationStatus == VerificationStatus.Pending)
+                {
+                    <div class="decision-divider"></div>
+
+                    <div>
+                        <h2 class="tg-section-title mb-2" style="font-size: 1.15rem;">Decision</h2>
+                        <label for="rejectionReasonInput" class="tg-label text-muted fw-normal">
+                            Reason for rejection (required to reject, shown to the guide)
+                        </label>
+
+                        <form id="rejectForm" asp-area="Admin" asp-controller="GuideVerification" asp-action="Reject" method="post">
+                            <input type="hidden" name="id" value="@Model.GuideProfileId" />
+                            <textarea id="rejectionReasonInput"
+                                      name="rejectionReason"
+                                      class="form-control tg-input mb-3"
+                                      rows="3"
+                                      minlength="10"
+                                      maxlength="1000"
+                                      placeholder="e.g. The ID photo is blurry. Please upload a clearer scan."
+                                      required="required"></textarea>
+                        </form>
+
+                        <div class="d-flex flex-wrap justify-content-end gap-2">
+                            <button type="submit"
+                                    form="rejectForm"
+                                    class="btn btn-tg-secondary px-4"
+                                    onclick="return confirm('Reject this guide application?');">
+                                Reject with reason
+                            </button>
+
+                            <form asp-area="Admin" asp-controller="GuideVerification" asp-action="Approve" method="post" class="m-0">
+                                <input type="hidden" name="id" value="@Model.GuideProfileId" />
+                                <button type="submit"
+                                        class="btn btn-tg-success px-4"
+                                        onclick="return confirm('Approve this guide application?');">
+                                    Approve guide
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            var buttons = document.querySelectorAll('.doc-item-btn');
+            var titleEl = document.getElementById('activeDocTitle');
+            var fullBtn = document.getElementById('openFullSizeBtn');
+            var frame = document.getElementById('docPreviewFrame');
+
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].addEventListener('click', function () {
+                    for (var j = 0; j < buttons.length; j++) {
+                        buttons[j].classList.remove('active');
+                    }
+                    this.classList.add('active');
+
+                    var docTitle = this.getAttribute('data-doc-title');
+                    var docUrl = this.getAttribute('data-doc-url');
+
+                    if (titleEl) titleEl.textContent = docTitle;
+                    if (fullBtn) fullBtn.setAttribute('href', docUrl);
+                    if (frame) frame.setAttribute('src', docUrl);
+                });
+            }
+        })();
+    </script>
+}

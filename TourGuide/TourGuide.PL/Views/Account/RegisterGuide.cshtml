@@ -1,0 +1,120 @@
+﻿@model TourGuide.PL.ViewModels.RegisterGuideViewModel
+@{
+    ViewData["Title"] = "Create your guide account";
+    var countries = (IEnumerable<TourGuide.BLL.DTOs.Search.CountryDto>)ViewBag.Countries;
+}
+
+<link rel="stylesheet" href="~/css/Account/Login.css" asp-append-version="true" />
+
+<section class="auth-page">
+    <div class="auth-wrap">
+        <div class="auth-hero">
+            <h1>Begin Your Next <span>Great Adventure.</span></h1>
+            <p>Travelers sign up in a minute. Guides upload three documents, and our team reviews them before the profile goes live.</p>
+            <ol>
+                <li>Create your guide account and upload documents</li>
+                <li>An admin reviews them (you can track the status)</li>
+                <li>Once approved, finish your profile and get requests</li>
+            </ol>
+        </div>
+
+        <div class="auth-card">
+            <span class="auth-switch-label">I'm signing up as</span>
+            <div class="auth-roles">
+                <a class="auth-role" asp-controller="Account" asp-action="Register">Tourist</a>
+                <span class="auth-role is-active">Tour Guide</span>
+            </div>
+
+            <form asp-controller="Account" asp-action="RegisterGuide" method="post" enctype="multipart/form-data">
+                <div class="auth-row">
+                    <div>
+                        <label class="auth-label" asp-for="FullName">Full name</label>
+                        <input asp-for="FullName" class="auth-input" autocomplete="name" />
+                        <span asp-validation-for="FullName"></span>
+                    </div>
+                    <div>
+                        <label class="auth-label" asp-for="CountryCode">Country</label>
+                        <select asp-for="CountryCode" class="auth-input">
+                            <option value="">Select country</option>
+                            @foreach (var country in countries)
+                            {
+                                <option value="@country.Code" selected="@(country.Code == Model.CountryCode)">@country.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CountryCode"></span>
+                    </div>
+                </div>
+
+                <label class="auth-label" asp-for="Email">Email</label>
+                <input asp-for="Email" type="email" class="auth-input" autocomplete="email" />
+                <span asp-validation-for="Email"></span>
+
+                <label class="auth-label" asp-for="Password">Password</label>
+                <input asp-for="Password" class="auth-input" autocomplete="new-password" />
+                <span class="auth-help">Use at least 6 characters, with upper and lower case letters, a number and a symbol.</span>
+                <span asp-validation-for="Password"></span>
+
+                <h2 class="auth-docs-title">Verification documents</h2>
+                <p class="auth-docs-help">PDF, JPG or PNG, up to 5 MB each. Only our admins can see these files.</p>
+
+                <div class="auth-doc" data-doc>
+                    <div>
+                        <div class="auth-doc-name">Government ID</div>
+                        <div class="auth-doc-meta" data-doc-meta>National ID or passport</div>
+                    </div>
+                    <label class="auth-doc-btn" for="GovernmentId" data-doc-btn>Upload</label>
+                    <input asp-for="GovernmentId" type="file" class="auth-file" accept=".pdf,.jpg,.jpeg,.png" />
+                </div>
+                <span asp-validation-for="GovernmentId"></span>
+
+                <div class="auth-doc" data-doc style="margin-top: 10px;">
+                    <div>
+                        <div class="auth-doc-name">Proof of residence</div>
+                        <div class="auth-doc-meta" data-doc-meta>Utility bill or rental contract</div>
+                    </div>
+                    <label class="auth-doc-btn" for="ProofOfResidence" data-doc-btn>Upload</label>
+                    <input asp-for="ProofOfResidence" type="file" class="auth-file" accept=".pdf,.jpg,.jpeg,.png" />
+                </div>
+                <span asp-validation-for="ProofOfResidence"></span>
+
+                <div class="auth-doc" data-doc style="margin-top: 10px;">
+                    <div>
+                        <div class="auth-doc-name">Criminal record certificate</div>
+                        <div class="auth-doc-meta" data-doc-meta>In Egypt: فيش وتشبيه</div>
+                    </div>
+                    <label class="auth-doc-btn" for="CriminalRecord" data-doc-btn>Upload</label>
+                    <input asp-for="CriminalRecord" type="file" class="auth-file" accept=".pdf,.jpg,.jpeg,.png" />
+                </div>
+                <span asp-validation-for="CriminalRecord"></span>
+
+                <div asp-validation-summary="ModelOnly" class="auth-alert"></div>
+
+                <button type="submit" class="auth-btn" style="margin-top: 22px;">Create guide account &amp; submit for review</button>
+            </form>
+
+            <p class="auth-foot">Already have an account? <a asp-controller="Account" asp-action="Login">Log in</a></p>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Shows the chosen file's name and size in its row.
+        document.querySelectorAll("[data-doc]").forEach(function (row) {
+            var input = row.querySelector("input[type=file]");
+            var meta = row.querySelector("[data-doc-meta]");
+            var button = row.querySelector("[data-doc-btn]");
+            var hint = meta.textContent;
+
+            input.addEventListener("change", function () {
+                var file = input.files && input.files[0];
+                row.classList.toggle("has-file", !!file);
+                button.textContent = file ? "Replace" : "Upload";
+                meta.textContent = file
+                    ? file.name + " · " + (file.size / 1048576).toFixed(1) + " MB"
+                    : hint;
+            });
+        });
+    </script>
+}

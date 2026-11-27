@@ -1,0 +1,12 @@
+@* One confirm dialog per page for actions that cannot be undone (Withdraw, Reject).
+   A form with data-confirm-title / -text / -ok / -cancel opens it on submit (wwwroot/js/confirm-dialog.js).
+   The page must also load ~/css/Tourist/Bookings.css and ~/js/confirm-dialog.js. *@
+<dialog class="mb-dialog" id="confirm-dialog" aria-labelledby="confirm-dialog-title" aria-describedby="confirm-dialog-text">
+    <div class="mb-dialog-icon" aria-hidden="true">!</div>
+    <h2 class="mb-dialog-title" id="confirm-dialog-title"></h2>
+    <p class="mb-dialog-text" id="confirm-dialog-text"></p>
+    <div class="mb-dialog-actions">
+        <button type="button" class="mb-btn mb-btn-light" data-dialog-cancel>Go back</button>
+        <button type="button" class="mb-btn mb-btn-danger-solid" data-dialog-ok>Confirm</button>
+    </div>
+</dialog>

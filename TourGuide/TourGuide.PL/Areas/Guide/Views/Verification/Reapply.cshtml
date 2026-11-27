@@ -1,0 +1,61 @@
+﻿@model TourGuide.PL.ViewModels.ReapplyViewModel
+@{
+    ViewData["Title"] = "Re-apply with New Documents";
+}
+
+<div class="container py-5" style="max-width: 760px;">
+    <div class="mb-4">
+        <a asp-area="Guide" asp-controller="Verification" asp-action="Status" class="text-decoration-none text-muted small">
+            &larr; Back to Verification Status
+        </a>
+        <h1 class="h2 fw-bold mt-2" style="color: #0b6a8a;">Re-submit Verification Documents</h1>
+        <p class="text-muted mb-0">Upload updated documents for all three required files to submit your application again.</p>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.PreviousRejectionReason))
+    {
+        <div class="alert alert-danger border-0 rounded-3 mb-4" role="alert">
+            <div class="fw-semibold mb-1">Previous rejection reason:</div>
+            <div>@Model.PreviousRejectionReason</div>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4 p-md-5">
+            <form asp-area="Guide" asp-controller="Verification" asp-action="Reapply" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-4">
+                    <label asp-for="ProofOfResidence" class="form-label fw-semibold"></label>
+                    <input asp-for="ProofOfResidence" type="file" class="form-control" accept=".pdf,.jpg,.jpeg,.png" />
+                    <span asp-validation-for="ProofOfResidence" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="GovernmentId" class="form-label fw-semibold"></label>
+                    <input asp-for="GovernmentId" type="file" class="form-control" accept=".pdf,.jpg,.jpeg,.png" />
+                    <span asp-validation-for="GovernmentId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="CriminalRecord" class="form-label fw-semibold"></label>
+                    <input asp-for="CriminalRecord" type="file" class="form-control" accept=".pdf,.jpg,.jpeg,.png" />
+                    <span asp-validation-for="CriminalRecord" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 pt-2">
+                    <button type="submit" class="btn text-white fw-semibold px-4" style="background-color: #0b6a8a;">
+                        Submit Updated Documents
+                    </button>
+                    <a asp-area="Guide" asp-controller="Verification" asp-action="Status" class="btn btn-outline-secondary px-4">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

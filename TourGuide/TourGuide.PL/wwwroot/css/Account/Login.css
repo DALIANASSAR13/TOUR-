@@ -1,0 +1,326 @@
+﻿/* Auth pages (UI screens 2 and 7): log in, tourist sign-up, guide sign-up, access denied.
+   Every class starts with "auth-", so nothing leaks into the layout. */
+.auth-page {
+    background: #f3f5f7;
+    padding: 56px 16px 72px;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: #1f2933;
+}
+
+.auth-wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 64px;
+    flex-wrap: wrap;
+}
+
+/* left side (sign-up pages) */
+.auth-hero {
+    flex: 1 1 360px;
+    max-width: 460px;
+    padding-top: 24px;
+}
+
+    .auth-hero h1 {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-weight: 700;
+        font-size: 2.8rem;
+        line-height: 1.15;
+        margin: 0 0 16px;
+    }
+
+        .auth-hero h1 span {
+            color: #0b6a8a;
+        }
+
+    .auth-hero p, .auth-hero ol {
+        color: #5b6670;
+        line-height: 1.7;
+    }
+
+    .auth-hero ol {
+        padding-left: 20px;
+        margin-top: 20px;
+    }
+
+/* card */
+.auth-card {
+    flex: 1 1 440px;
+    width: 100%;
+    max-width: 520px;
+    background: #fff;
+    border: 1px solid #e3e6ea;
+    border-radius: 14px;
+    padding: 32px;
+    box-shadow: 0 8px 28px rgba(31, 41, 51, .06);
+}
+
+.auth-card-narrow {
+    flex: 0 1 460px;
+}
+
+.auth-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: 2rem;
+    margin: 0 0 4px;
+}
+
+.auth-subtitle {
+    color: #5b6670;
+    margin: 0 0 22px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Tourist / Tour Guide switch */
+.auth-switch-label {
+    display: block;
+    font-size: .85rem;
+    color: #5b6670;
+    margin-bottom: 6px;
+}
+
+.auth-roles {
+    display: flex;
+    background: #eef1f3;
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 8px;
+}
+
+.auth-role {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #1f2933;
+    font-weight: 600;
+    font-size: .92rem;
+}
+
+    .auth-role:hover {
+        color: #0b6a8a;
+    }
+
+    .auth-role.is-active {
+        background: #fff;
+        color: #0b6a8a;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+    }
+
+/* fields */
+.auth-label {
+    display: block;
+    font-size: .88rem;
+    font-weight: 600;
+    margin: 16px 0 6px;
+}
+
+.auth-input {
+    display: block;
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid #d6dbe0;
+    border-radius: 10px;
+    background: #fff;
+    font: inherit;
+    color: #1f2933;
+}
+
+    .auth-input:focus {
+        outline: none;
+        border-color: #0b6a8a;
+        box-shadow: 0 0 0 3px rgba(11, 106, 138, .15);
+    }
+
+    .auth-input.input-validation-error {
+        border-color: #b42318;
+    }
+
+.auth-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+    .auth-row > div {
+        min-width: 0;
+    }
+
+.auth-help {
+    display: block;
+    color: #5b6670;
+    font-size: .8rem;
+    margin-top: 6px;
+}
+
+.field-validation-error {
+    display: block;
+    color: #b42318;
+    font-size: .82rem;
+    margin-top: 4px;
+}
+
+/* messages */
+.auth-alert {
+    background: #fff1f0;
+    color: #b42318;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-top: 16px;
+    font-size: .92rem;
+}
+
+    .auth-alert ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .auth-alert.validation-summary-valid {
+        display: none;
+    }
+
+.auth-success {
+    background: #eaf6ef;
+    color: #1d6b3d;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: .92rem;
+}
+
+.auth-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0;
+    font-size: .95rem;
+}
+
+    .auth-check input {
+        width: 18px;
+        height: 18px;
+        accent-color: #0b6a8a;
+    }
+
+/* buttons */
+.auth-btn {
+    display: block;
+    width: 100%;
+    border: 0;
+    border-radius: 10px;
+    padding: 14px;
+    background: #0b6a8a;
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    .auth-btn:hover {
+        background: #095a75;
+        color: #fff;
+    }
+
+.auth-btn-inline {
+    display: inline-block;
+    width: auto;
+    padding: 12px 26px;
+}
+
+.auth-foot {
+    text-align: center;
+    color: #5b6670;
+    margin: 18px 0 0;
+}
+
+    .auth-foot a {
+        color: #0b6a8a;
+        font-weight: 600;
+    }
+
+/* guide documents */
+.auth-docs-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 26px 0 2px;
+}
+
+.auth-docs-help {
+    color: #5b6670;
+    font-size: .88rem;
+    margin: 0 0 12px;
+}
+
+.auth-doc {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px dashed #c4ccd3;
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+    .auth-doc.has-file {
+        border-style: solid;
+        border-color: #b9dfc8;
+        background: #f3faf6;
+    }
+
+.auth-doc-name {
+    font-weight: 600;
+}
+
+.auth-doc-meta {
+    color: #5b6670;
+    font-size: .82rem;
+}
+
+.auth-doc-btn {
+    flex-shrink: 0;
+    background: #e8eaed;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: .88rem;
+    cursor: pointer;
+}
+
+    .auth-doc-btn:hover {
+        background: #dadde1;
+    }
+/* Visually hidden but not display:none, so jQuery Validation still checks it. */
+.auth-file {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+@media (max-width: 560px) {
+    .auth-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .auth-card {
+        padding: 22px;
+    }
+
+    .auth-hero h1 {
+        font-size: 2.2rem;
+    }
+}

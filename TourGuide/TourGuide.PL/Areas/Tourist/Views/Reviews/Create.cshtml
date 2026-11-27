@@ -1,0 +1,46 @@
+@model CreateReviewViewModel
+@using TourGuide.BLL.Domain
+@{
+    ViewData["Title"] = "Write a review";
+}
+
+<link rel="stylesheet" href="~/css/Tourist/ReviewCreate.css" asp-append-version="true" />
+
+<section class="rv-page">
+    <h1 class="rv-title">Write a review</h1>
+    <p class="rv-subtitle">Booking #@Model.Reference. Tell other travellers how your trip went. A review cannot be changed after you send it.</p>
+
+    <form class="rv-form" asp-area="Tourist" asp-controller="Reviews" asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="rv-error"></div>
+        <input type="hidden" asp-for="BookingId" />
+
+        <fieldset class="rv-field">
+            <legend>Your rating</legend>
+            @* Highest star first in the markup; the row is reversed in CSS so 1 shows on the left. *@
+            <div class="rv-stars">
+                @for (var star = BookingRules.MaxRating; star >= BookingRules.MinRating; star--)
+                {
+                    var starId = $"rating-{star}";
+                    <input type="radio" id="@starId" asp-for="Rating" value="@star" />
+                    <label for="@starId" title="@star of @BookingRules.MaxRating stars">★<span class="rv-sr">@star of @BookingRules.MaxRating stars</span></label>
+                }
+            </div>
+            <span asp-validation-for="Rating" class="rv-error"></span>
+        </fieldset>
+
+        <div class="rv-field">
+            <label asp-for="Comment"></label>
+            <textarea asp-for="Comment" class="rv-input" rows="5" maxlength="@BookingRules.MaxCommentLength"></textarea>
+            <span asp-validation-for="Comment" class="rv-error"></span>
+        </div>
+
+        <div class="rv-actions">
+            <button type="submit" class="rv-btn">Send review</button>
+            <a asp-area="Tourist" asp-controller="Bookings" asp-action="Index" class="rv-link">Cancel</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

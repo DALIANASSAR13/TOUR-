@@ -1,0 +1,106 @@
+/* Public guide profile — FR-09. Same palette as Search and My Bookings. */
+.gp-page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 16px 64px;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: #1f2933;
+}
+.gp-back { display: inline-block; color: #0b6a8a; text-decoration: none; font-weight: 600; margin-bottom: 20px; }
+.gp-back:hover { text-decoration: underline; }
+
+.gp-layout { display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+.gp-main { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+
+.gp-header, .gp-section, .gp-book {
+    background: #fff;
+    border: 1px solid #e3e7eb;
+    border-radius: 14px;
+    padding: 24px;
+}
+.gp-header { display: flex; gap: 22px; align-items: center; }
+.gp-photo {
+    flex: 0 0 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0b6a8a, #3a9bb8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.gp-photo span { color: #fff; font-family: 'Playfair Display', Georgia, serif; font-size: 2.6rem; font-weight: 700; }
+.gp-name { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 2.2rem; margin: 0; }
+.gp-location { color: #5b6670; margin: 4px 0 8px; }
+.gp-rating { margin: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.gp-stars { color: #e0a100; letter-spacing: 1px; font-size: 1.05rem; }
+.gp-stars-sm { font-size: .9rem; }
+.gp-muted { color: #5b6670; }
+.gp-small { font-size: .88rem; margin: 6px 0 0; }
+.gp-center { text-align: center; }
+
+.gp-h2 { font-size: 1.3rem; font-weight: 700; margin: 0 0 12px; }
+.gp-h3 { font-size: .95rem; font-weight: 600; margin: 16px 0 8px; }
+.gp-count { font-weight: 500; font-size: 1rem; }
+.gp-bio { margin: 0; line-height: 1.6; white-space: pre-line; }
+.gp-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+.gp-tag { background: #e6f1f5; color: #0b6a8a; border-radius: 999px; padding: 4px 12px; font-size: .85rem; font-weight: 500; }
+.gp-tag-alt { background: #f3efe6; color: #7a5a17; }
+
+/* Reviews */
+.gp-reviews { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.gp-review { display: flex; gap: 14px; padding: 16px 0; border-top: 1px solid #eef1f3; }
+.gp-review:first-child { border-top: 0; padding-top: 4px; }
+.gp-avatar {
+    flex: 0 0 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e8eaed;
+    color: #1f2933;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.gp-review-body { flex: 1; min-width: 0; }
+.gp-review-top { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.gp-comment { margin: 6px 0 0; line-height: 1.55; }
+
+.gp-pager { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 16px; }
+.gp-page-link {
+    min-width: 36px;
+    padding: 6px 10px;
+    border: 1px solid #d6dbe0;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    color: #1f2933;
+}
+.gp-page-link:hover { border-color: #0b6a8a; color: #0b6a8a; }
+.gp-page-link.is-current { background: #0b6a8a; border-color: #0b6a8a; color: #fff; }
+
+/* Booking box */
+.gp-book { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 10px; }
+.gp-price { margin: 0; color: #5b6670; }
+.gp-price strong { color: #1f2933; font-size: 1.8rem; }
+.gp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 6px;
+}
+.gp-btn-primary { background: #0b6a8a; color: #fff; }
+.gp-btn-primary:hover { background: #095a75; color: #fff; }
+.gp-note { background: #f4f6f8; border-radius: 8px; padding: 10px 12px; margin: 6px 0 0; font-size: .9rem; color: #5b6670; }
+
+@media (max-width: 860px) {
+    .gp-layout { grid-template-columns: 1fr; }
+    .gp-book { position: static; order: -1; }
+    .gp-header { flex-direction: column; text-align: center; }
+    .gp-rating { justify-content: center; }
+    .gp-name { font-size: 1.8rem; }
+}

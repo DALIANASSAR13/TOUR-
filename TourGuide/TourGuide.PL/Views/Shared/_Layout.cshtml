@@ -1,0 +1,163 @@
+@using TourGuide.DAL.Constants
+@{
+    var currentArea = ViewContext.RouteData.Values["area"]?.ToString() ?? "";
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+
+    bool isAdmin = User.IsInRole(Roles.Admin);
+    bool isGuide = User.IsInRole(Roles.Guide);
+    bool isTourist = User.IsInRole(Roles.Tourist);
+    bool isAuthenticated = User.Identity?.IsAuthenticated == true;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Tourguide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TourGuide.PL.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <header class="tg-navbar-wrapper">
+        <nav class="navbar navbar-expand-lg tg-navbar">
+            <div class="tg-container d-flex align-items-center justify-content-between w-100">
+                <!-- Brand -->
+                <div class="d-flex align-items-center gap-2">
+                    <a class="tg-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <span class="tg-brand-icon" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </span>
+                        <span class="tg-brand-text">Tourguide</span>
+                    </a>
+                    @if (isAdmin)
+                    {
+                        <span class="tg-role-tag">Admin</span>
+                    }
+                    else if (isGuide)
+                    {
+                        <span class="tg-role-tag">for Guides</span>
+                    }
+                </div>
+
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <!-- Center Navigation Pills -->
+                    <ul class="navbar-nav mx-auto my-2 my-lg-0 gap-1 align-items-lg-center">
+                        @if (isAdmin)
+                        {
+                            <li class="nav-item">
+                                <a class="tg-nav-pill @(currentArea == "Admin" ? "active" : "")"
+                                   asp-area="Admin" asp-controller="GuideVerification" asp-action="Index">
+                                    Guide Reviews
+                                </a>
+                            </li>
+                        }
+                        else if (isGuide)
+                        {
+                            <li class="nav-item">
+                                <a class="tg-nav-pill @(currentArea == "Guide" && currentController == "BookingRequests" ? "active" : "")"
+                                   asp-area="Guide" asp-controller="BookingRequests" asp-action="Index">
+                                    Requests &amp; Bookings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="tg-nav-pill @(currentArea == "Guide" && currentController == "Profile" ? "active" : "")"
+                                   asp-area="Guide" asp-controller="Profile" asp-action="Edit">
+                                    My Profile
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="tg-nav-pill @(currentArea == "Guide" && currentController == "Verification" ? "active" : "")"
+                                   asp-area="Guide" asp-controller="Verification" asp-action="Status">
+                                    Verification
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="tg-nav-pill @(string.IsNullOrEmpty(currentArea) && currentController == "Home" ? "active" : "")"
+                                   asp-area="" asp-controller="Home" asp-action="Index">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="tg-nav-pill @(string.IsNullOrEmpty(currentArea) && (currentController == "Search" || currentController == "Guides") ? "active" : "")"
+                                   asp-area="" asp-controller="Search" asp-action="Index">
+                                    Find Guides
+                                </a>
+                            </li>
+                            @if (isTourist)
+                            {
+                                <li class="nav-item">
+                                    <a class="tg-nav-pill @(currentArea == "Tourist" ? "active" : "")"
+                                       asp-area="Tourist" asp-controller="Bookings" asp-action="Index">
+                                        My Bookings
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                    <!-- Right Auth Actions -->
+                    <div class="d-flex align-items-center gap-2">
+                        @if (isAuthenticated)
+                        {
+                            <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                                <button type="submit" class="btn btn-tg-secondary px-3 py-2">Log out</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a class="btn btn-tg-secondary px-3 py-2" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
+                            <a class="btn btn-tg-primary px-3 py-2" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="tg-footer">
+        <div class="tg-container">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-4">
+                <div>
+                    <div class="tg-footer-brand">Tourguide</div>
+                    <p class="tg-footer-desc mb-3">Verified local guides, booked by the hour or the day.</p>
+                    <div class="tg-footer-copy">&copy; 2026 Tourguide. All prices in USD.</div>
+                </div>
+                <div class="d-flex flex-wrap gap-4 pt-1">
+                    <a asp-area="" asp-controller="Search" asp-action="Index" class="tg-footer-link">Find Guides</a>
+                    @if (!isAuthenticated)
+                    {
+                        <a asp-area="" asp-controller="Account" asp-action="RegisterGuide" class="tg-footer-link">Become a Guide</a>
+                        <a asp-area="" asp-controller="Account" asp-action="Login" class="tg-footer-link">Log in</a>
+                    }
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="tg-footer-link">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

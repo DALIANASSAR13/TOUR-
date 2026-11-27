@@ -1,0 +1,64 @@
+﻿@model TourGuide.PL.ViewModels.RegisterTouristViewModel
+@{
+    ViewData["Title"] = "Create your account";
+    var countries = (IEnumerable<TourGuide.BLL.DTOs.Search.CountryDto>)ViewBag.Countries;
+}
+
+<link rel="stylesheet" href="~/css/Account/Login.css" asp-append-version="true" />
+
+<section class="auth-page">
+    <div class="auth-wrap">
+        <div class="auth-hero">
+            <h1>Begin Your Next <span>Great Adventure.</span></h1>
+            <p>Travelers sign up in a minute. Guides upload three documents, and our team reviews them before the profile goes live.</p>
+        </div>
+
+        <div class="auth-card">
+            <span class="auth-switch-label">I'm signing up as</span>
+            <div class="auth-roles">
+                <span class="auth-role is-active">Tourist</span>
+                <a class="auth-role" asp-controller="Account" asp-action="RegisterGuide">Tour Guide</a>
+            </div>
+
+            <form asp-controller="Account" asp-action="Register" method="post">
+                <div class="auth-row">
+                    <div>
+                        <label class="auth-label" asp-for="FullName">Full name</label>
+                        <input asp-for="FullName" class="auth-input" autocomplete="name" />
+                        <span asp-validation-for="FullName"></span>
+                    </div>
+                    <div>
+                        <label class="auth-label" asp-for="CountryCode">Country</label>
+                        <select asp-for="CountryCode" class="auth-input">
+                            <option value="">Select country</option>
+                            @foreach (var country in countries)
+                            {
+                                <option value="@country.Code" selected="@(country.Code == Model.CountryCode)">@country.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CountryCode"></span>
+                    </div>
+                </div>
+
+                <label class="auth-label" asp-for="Email">Email</label>
+                <input asp-for="Email" type="email" class="auth-input" autocomplete="email" />
+                <span asp-validation-for="Email"></span>
+
+                <label class="auth-label" asp-for="Password">Password</label>
+                <input asp-for="Password" class="auth-input" autocomplete="new-password" />
+                <span class="auth-help">Use at least 6 characters, with upper and lower case letters, a number and a symbol.</span>
+                <span asp-validation-for="Password"></span>
+
+                <div asp-validation-summary="ModelOnly" class="auth-alert"></div>
+
+                <button type="submit" class="auth-btn" style="margin-top: 22px;">Create account</button>
+            </form>
+
+            <p class="auth-foot">Already have an account? <a asp-controller="Account" asp-action="Login">Log in</a></p>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
