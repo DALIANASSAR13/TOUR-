@@ -25,12 +25,45 @@
     --tg-info-border: #bfe0ec;
     --tg-neutral-bg: #eef1f2;
     --tg-neutral-text: #526064;
-    --tg-font-serif: "Georgia", "Times New Roman", serif;
-    --tg-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* Fonts & Radii */
+    --tg-font-serif: "Playfair Display", "Georgia", "Times New Roman", serif;
+    --tg-font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --tg-radius-sm: 8px;
     --tg-radius-md: 12px;
     --tg-radius-lg: 16px;
     --tg-radius-pill: 999px;
+}
+
+/* =========================================
+   DARK MODE VARIABLES
+   ========================================= */
+[data-theme="dark"] {
+    --tg-primary: #1a8cb0;
+    --tg-primary-hover: #24a1c9;
+    --tg-primary-soft: rgba(26, 140, 176, 0.16);
+    --tg-bg: #0d1318;
+    --tg-surface: #151e26;
+    --tg-surface-muted: #1e2a35;
+    --tg-placeholder: #22303c;
+    --tg-text: #f0f4f8;
+    --tg-text-muted: #94a6b5;
+    --tg-border: #253340;
+    --tg-border-strong: #334657;
+    /* Status colors tuned for dark surfaces */
+    --tg-success-bg: rgba(26, 109, 66, 0.22);
+    --tg-success-text: #4ade80;
+    --tg-success-border: rgba(74, 222, 128, 0.28);
+    --tg-warning-bg: rgba(148, 93, 10, 0.24);
+    --tg-warning-text: #fbbf24;
+    --tg-warning-border: rgba(251, 191, 36, 0.28);
+    --tg-danger-bg: rgba(180, 35, 24, 0.24);
+    --tg-danger-text: #f87171;
+    --tg-danger-border: rgba(248, 113, 113, 0.28);
+    --tg-info-bg: rgba(26, 140, 176, 0.22);
+    --tg-info-text: #38bdf8;
+    --tg-info-border: rgba(56, 189, 248, 0.28);
+    --tg-neutral-bg: #1e2a35;
+    --tg-neutral-text: #94a6b5;
 }
 
 html {
@@ -47,6 +80,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 main {
@@ -90,6 +124,7 @@ main {
     border: 1px solid var(--tg-border);
     border-radius: var(--tg-radius-lg);
     padding: 1.5rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .tg-card-sm {
@@ -126,7 +161,7 @@ main {
 
     .btn-tg-secondary:hover,
     .btn-tg-secondary:focus {
-        background-color: #e2e8ea;
+        background-color: var(--tg-border);
         color: var(--tg-text);
     }
 
@@ -140,7 +175,7 @@ main {
 }
 
     .btn-tg-danger-soft:hover {
-        background-color: #fadada;
+        filter: brightness(0.95);
         color: var(--tg-danger-text);
     }
 
@@ -178,11 +213,18 @@ main {
     color: var(--tg-text);
 }
 
+    .tg-input::placeholder,
+    .form-control.tg-input::placeholder {
+        color: var(--tg-text-muted);
+    }
+
     .tg-input:focus,
     .form-control.tg-input:focus,
     .form-select.tg-input:focus {
+        background-color: var(--tg-surface);
+        color: var(--tg-text);
         border-color: var(--tg-primary);
-        box-shadow: 0 0 0 3px rgba(6, 96, 122, 0.12);
+        box-shadow: 0 0 0 3px rgba(26, 140, 176, 0.18);
         outline: none;
     }
 
@@ -248,7 +290,7 @@ main {
 .tg-banner-warning {
     background-color: var(--tg-warning-bg);
     border: 1px solid var(--tg-warning-border);
-    color: #5c3a06;
+    color: var(--tg-warning-text);
 }
 
 .tg-banner-danger {
@@ -305,6 +347,7 @@ main {
 .tg-navbar-wrapper {
     background-color: var(--tg-surface);
     border-bottom: 1px solid var(--tg-border);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .tg-navbar {
@@ -370,12 +413,38 @@ main {
         color: #ffffff;
     }
 
+/* Dark Mode Toggle Button */
+.theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--tg-radius-sm);
+    border: 1px solid var(--tg-border);
+    background-color: var(--tg-surface-muted);
+    color: var(--tg-text);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+    .theme-toggle-btn:hover {
+        border-color: var(--tg-primary);
+        color: var(--tg-primary);
+    }
+
+/* Mobile Navbar Toggler Icon in Dark Mode */
+[data-theme="dark"] .navbar-toggler-icon {
+    filter: invert(1);
+}
+
 /* Footer */
 .tg-footer {
     background-color: var(--tg-surface);
     border-top: 1px solid var(--tg-border);
     padding: 2.25rem 0;
     margin-top: 4rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .tg-footer-brand {
@@ -405,3 +474,316 @@ main {
     .tg-footer-link:hover {
         color: var(--tg-primary-hover);
     }
+/* =========================================
+   GLOBAL DARK MODE OVERRIDES FOR PAGE CSS
+   ========================================= */
+[data-theme="dark"] section,
+[data-theme="dark"] .hero-section,
+[data-theme="dark"] .tg-hero,
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .bg-light {
+    background-color: var(--tg-bg) !important;
+    color: var(--tg-text) !important;
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .feature-card,
+[data-theme="dark"] .step-card,
+[data-theme="dark"] .guide-card,
+[data-theme="dark"] .booking-card,
+[data-theme="dark"] .auth-card,
+[data-theme="dark"] .review-card,
+[data-theme="dark"] .filter-card,
+[data-theme="dark"] .summary-card,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .dropdown-menu {
+    background-color: var(--tg-surface) !important;
+    border-color: var(--tg-border) !important;
+    color: var(--tg-text) !important;
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] .text-dark {
+    color: var(--tg-text) !important;
+}
+
+[data-theme="dark"] p,
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] .text-secondary {
+    color: var(--tg-text-muted) !important;
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea,
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
+    background-color: var(--tg-surface) !important;
+    border-color: var(--tg-border-strong) !important;
+    color: var(--tg-text) !important;
+}
+/* =========================================
+   DARK MODE OVERRIDES FOR SEARCH PAGE (.sg-*)
+   ========================================= */
+[data-theme="dark"] .sg-filters,
+[data-theme="dark"] .sg-card,
+[data-theme="dark"] .sg-empty {
+    background-color: var(--tg-surface) !important;
+    border-color: var(--tg-border) !important;
+    color: var(--tg-text) !important;
+}
+
+[data-theme="dark"] .sg-field label,
+[data-theme="dark"] .sg-field legend,
+[data-theme="dark"] .sg-name,
+[data-theme="dark"] .sg-price,
+[data-theme="dark"] .sg-price strong,
+[data-theme="dark"] .sg-rating strong {
+    color: var(--tg-text) !important;
+}
+
+[data-theme="dark"] .sg-location,
+[data-theme="dark"] .sg-muted,
+[data-theme="dark"] .sg-count,
+[data-theme="dark"] .sg-dash,
+[data-theme="dark"] .sg-sub {
+    color: var(--tg-text-muted) !important;
+}
+
+[data-theme="dark"] .sg-foot {
+    border-top-color: var(--tg-border) !important;
+}
+
+[data-theme="dark"] .sg-tag {
+    background-color: var(--tg-info-bg) !important;
+    color: var(--tg-info-text) !important;
+    border-color: var(--tg-info-border) !important;
+}
+
+[data-theme="dark"] .sg-tag-alt {
+    background-color: var(--tg-warning-bg) !important;
+    color: var(--tg-warning-text) !important;
+    border-color: var(--tg-warning-border) !important;
+}
+
+[data-theme="dark"] .sg-btn-light,
+[data-theme="dark"] .sg-page-link:not(.is-current) {
+    background-color: var(--tg-surface-muted) !important;
+    color: var(--tg-text) !important;
+    border-color: var(--tg-border) !important;
+}
+/* =========================================
+   DARK MODE OVERRIDES FOR BOOKINGS (.mb-*)
+   (Covers both Tourist My Bookings & Guide Requests)
+   ========================================= */
+[data-theme="dark"] .mb-card,
+[data-theme="dark"] .mb-empty {
+    background-color: var(--tg-surface) !important;
+    border-color: var(--tg-border) !important;
+    color: var(--tg-text) !important;
+}
+
+[data-theme="dark"] .mb-photo {
+    background-color: var(--tg-surface-muted) !important;
+    color: var(--tg-text) !important;
+    border-right: 1px solid var(--tg-border) !important;
+}
+
+[data-theme="dark"] .mb-guide,
+[data-theme="dark"] .mb-price,
+[data-theme="dark"] .mb-price strong {
+    color: var(--tg-text) !important;
+}
+
+    [data-theme="dark"] .mb-location,
+    [data-theme="dark"] .mb-when,
+    [data-theme="dark"] .mb-note,
+    [data-theme="dark"] .mb-ref,
+    [data-theme="dark"] .mb-price span,
+    [data-theme="dark"] .mb-empty-filter {
+        color: var(--tg-text-muted) !important;
+    }
+
+[data-theme="dark"] .mb-foot {
+    border-top-color: var(--tg-border) !important;
+}
+
+[data-theme="dark"] .mb-chip:not(.is-active) {
+    background-color: var(--tg-surface-muted) !important;
+    color: var(--tg-text) !important;
+    border-color: var(--tg-border) !important;
+}
+
+    [data-theme="dark"] .mb-chip:not(.is-active):hover {
+        background-color: var(--tg-border) !important;
+    }
+
+[data-theme="dark"] .mb-flash {
+    background-color: var(--tg-success-bg) !important;
+    color: var(--tg-success-text) !important;
+    border-color: var(--tg-success-border) !important;
+}
+
+    [data-theme="dark"] .mb-flash.is-error {
+        background-color: var(--tg-danger-bg) !important;
+        color: var(--tg-danger-text) !important;
+        border-color: var(--tg-danger-border) !important;
+    }
+
+/* Status badges inside bookings */
+[data-theme="dark"] .mb-badge-pending {
+    background-color: var(--tg-warning-bg) !important;
+    color: var(--tg-warning-text) !important;
+}
+
+[data-theme="dark"] .mb-badge-accepted {
+    background-color: var(--tg-info-bg) !important;
+    color: var(--tg-info-text) !important;
+}
+
+[data-theme="dark"] .mb-badge-confirmed,
+[data-theme="dark"] .mb-badge-completed {
+    background-color: var(--tg-success-bg) !important;
+    color: var(--tg-success-text) !important;
+}
+
+[data-theme="dark"] .mb-badge-rejected {
+    background-color: var(--tg-danger-bg) !important;
+    color: var(--tg-danger-text) !important;
+}
+
+[data-theme="dark"] .mb-badge-cancelled {
+    background-color: var(--tg-neutral-bg) !important;
+    color: var(--tg-neutral-text) !important;
+}
+/* =========================================
+   DARK MODE OVERRIDES FOR GUIDE PROFILE (.gp-*)
+   ========================================= */
+[data-theme="dark"] .gp-header,
+[data-theme="dark"] .gp-section,
+[data-theme="dark"] .gp-book {
+    background-color: var(--tg-surface) !important;
+    border-color: var(--tg-border) !important;
+    color: var(--tg-text) !important;
+}
+
+[data-theme="dark"] .gp-page,
+[data-theme="dark"] .gp-name,
+[data-theme="dark"] .gp-h2,
+[data-theme="dark"] .gp-h3,
+[data-theme="dark"] .gp-bio,
+[data-theme="dark"] .gp-comment,
+[data-theme="dark"] .gp-price strong {
+    color: var(--tg-text) !important;
+}
+
+[data-theme="dark"] .gp-location,
+[data-theme="dark"] .gp-muted,
+[data-theme="dark"] .gp-price {
+    color: var(--tg-text-muted) !important;
+}
+
+[data-theme="dark"] .gp-back {
+    color: var(--tg-primary) !important;
+}
+
+[data-theme="dark"] .gp-tag {
+    background-color: var(--tg-info-bg) !important;
+    color: var(--tg-info-text) !important;
+}
+
+[data-theme="dark"] .gp-tag-alt {
+    background-color: var(--tg-warning-bg) !important;
+    color: var(--tg-warning-text) !important;
+}
+
+[data-theme="dark"] .gp-review {
+    border-top-color: var(--tg-border) !important;
+}
+
+[data-theme="dark"] .gp-avatar,
+[data-theme="dark"] .gp-note,
+[data-theme="dark"] .gp-page-link:not(.is-current) {
+    background-color: var(--tg-surface-muted) !important;
+    color: var(--tg-text) !important;
+    border-color: var(--tg-border) !important;
+}
+/* =========================================
+   DARK MODE OVERRIDES FOR ADMIN VERIFICATION
+   ========================================= */
+[data-theme="dark"] .admin-table-card {
+    background-color: var(--tg-surface) !important;
+    border-color: var(--tg-border) !important;
+}
+
+[data-theme="dark"] .admin-table thead th {
+    background-color: var(--tg-surface-muted) !important;
+    color: var(--tg-text-muted) !important;
+    border-bottom-color: var(--tg-border) !important;
+}
+
+[data-theme="dark"] .admin-table tbody tr,
+[data-theme="dark"] .admin-table tbody td {
+    background-color: var(--tg-surface) !important;
+    color: var(--tg-text) !important;
+    border-bottom-color: var(--tg-border) !important;
+}
+
+    [data-theme="dark"] .admin-table tbody tr:hover td {
+        background-color: var(--tg-surface-muted) !important;
+    }
+
+[data-theme="dark"] .admin-guide-name,
+[data-theme="dark"] .applicant-row-value {
+    color: var(--tg-text) !important;
+}
+
+[data-theme="dark"] .admin-guide-sub,
+[data-theme="dark"] .applicant-row-label {
+    color: var(--tg-text-muted) !important;
+}
+
+[data-theme="dark"] .applicant-row {
+    border-bottom-color: var(--tg-border) !important;
+}
+
+/* Document selector buttons in Review page */
+[data-theme="dark"] .doc-item-btn {
+    background-color: var(--tg-surface-muted) !important;
+    border-color: var(--tg-border) !important;
+    color: var(--tg-text) !important;
+}
+
+    [data-theme="dark"] .doc-item-btn:hover {
+        border-color: var(--tg-primary) !important;
+    }
+
+    [data-theme="dark"] .doc-item-btn.active {
+        background-color: var(--tg-info-bg) !important;
+        border-color: var(--tg-primary) !important;
+        color: var(--tg-text) !important;
+    }
+
+[data-theme="dark"] .doc-item-title {
+    color: var(--tg-text) !important;
+}
+
+[data-theme="dark"] .doc-item-meta {
+    color: var(--tg-text-muted) !important;
+}
+
+[data-theme="dark"] .doc-preview-box {
+    background-color: var(--tg-surface-muted) !important;
+    border-color: var(--tg-border) !important;
+}
+
+[data-theme="dark"] .rejection-history-card {
+    background-color: var(--tg-danger-bg) !important;
+    border-color: var(--tg-danger-border) !important;
+    color: var(--tg-danger-text) !important;
+}

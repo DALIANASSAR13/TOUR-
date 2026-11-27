@@ -467,3 +467,71 @@ body {
         align-items: flex-start;
     }
 }
+/* ============================================================
+   DARK MODE OVERRIDES FOR HOME PAGE
+   ============================================================ */
+[data-theme="dark"] {
+    --primary-color: #1a8cb0;
+    --primary-hover: #24a1c9;
+    --primary-light: rgba(26, 140, 176, 0.16);
+    --text-main: #f0f4f8;
+    --text-muted: #94a6b5;
+    --bg-light: #0d1318;
+    --card-border: #253340;
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    --card-shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.5);
+}
+
+    [data-theme="dark"] body,
+    [data-theme="dark"] .features-section,
+    [data-theme="dark"] .tours-section {
+        background-color: #0d1318;
+        color: #f0f4f8;
+    }
+
+    /* تدرج غامق فوق صورة الأهرامات يندمج مع الموقع في الوضع الليلي */
+    [data-theme="dark"] .home-hero {
+        background: linear-gradient(90deg, rgba(13, 19, 24, 0.96) 0%, rgba(13, 19, 24, 0.88) 38%, rgba(13, 19, 24, 0.48) 70%, rgba(13, 19, 24, 0.15) 100%), url('/Images/home/hero-pyramids.jpg') center right / cover no-repeat;
+    }
+
+    [data-theme="dark"] .hero-description {
+        color: #a3b3c2;
+    }
+
+    [data-theme="dark"] .btn-secondary-tour {
+        background-color: rgba(30, 42, 53, 0.85);
+        color: #f0f4f8 !important;
+        border-color: #334657;
+    }
+
+        [data-theme="dark"] .btn-secondary-tour:hover {
+            background-color: #253340;
+            border-color: #1a8cb0;
+        }
+
+    [data-theme="dark"] .feature-card,
+    [data-theme="dark"] .tour-card {
+        background-color: #151e26;
+        border-color: #253340;
+    }
+
+    [data-theme="dark"] .tour-footer {
+        border-top-color: #253340;
+    }
+
+    [data-theme="dark"] .tour-rating-badge {
+        background: rgba(21, 30, 38, 0.92);
+        color: #f0f4f8;
+    }
+
+@media (max-width: 992px) {
+    [data-theme="dark"] .home-hero {
+        background: linear-gradient(90deg, rgba(13, 19, 24, 0.96) 0%, rgba(13, 19, 24, 0.88) 58%, rgba(13, 19, 24, 0.65) 100%), url('/Images/home/hero-pyramids.jpg') center right / cover no-repeat;
+    }
+}
+
+@media (max-width: 680px) {
+    [data-theme="dark"] .home-hero {
+        background: linear-gradient(180deg, rgba(13, 19, 24, 0.95) 0%, rgba(13, 19, 24, 0.85) 100%), url('/Images/home/hero-pyramids.jpg') center right / cover no-repeat;
+    }
+}
